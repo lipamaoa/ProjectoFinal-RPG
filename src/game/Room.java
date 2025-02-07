@@ -1,107 +1,112 @@
 package src.game;
 
-import src.entities.FriendlyNPC;
-import src.entities.Hero;
-import src.entities.NPC;
-
+import src.entities.*;
+import java.util.List;
 import java.util.Random;
-import java.util.Scanner;
 
 /**
- * Represents a room in the laboratory with different events.
+ * Represents a room where the player can encounter battles, NPCs, and unique events.
  */
 public class Room {
     private String name;
-    private boolean hasEnemy;
-    private boolean hasVendor;
-    private boolean hasItem;
+    private List<NPC> possibleEnemies;
     private FriendlyNPC friendlyNPC;
-    private static Random random = new Random();
-    private static Scanner scanner = new Scanner(System.in);
+    private boolean isCompleted = false;
+    private static final Random random = new Random();
 
-    public Room(String name, boolean hasEnemy, boolean hasVendor, boolean hasItem) {
+    /**
+     * Constructs a room with predefined enemies and NPC interactions.
+     *
+     * @param name            The name of the room.
+     * @param possibleEnemies The list of enemies that can appear in this room.
+     * @param friendlyNPC     The friendly NPC in this room (if any).
+     */
+    public Room(String name, List<NPC> possibleEnemies, FriendlyNPC friendlyNPC) {
         this.name = name;
-        this.hasEnemy = hasEnemy;
-        this.hasVendor = hasVendor;
-        this.hasItem = hasItem;
+        this.possibleEnemies = possibleEnemies;
         this.friendlyNPC = friendlyNPC;
     }
 
     /**
-     * Executes the event in the room.
+     * Triggers room events, including battles and NPC interactions.
+     *
+     * @param player The player's hero.
      */
     public void enter(Hero player) {
         System.out.println("\n🚪 Entering " + name + "...");
 
+        // Interact with NPC (if available)
         if (friendlyNPC != null) {
             friendlyNPC.interact(player);
         }
 
-        if (hasEnemy) {
+        // Trigger a battle if there are enemies in this room
+        if (!possibleEnemies.isEmpty()) {
             System.out.println("⚠️ An enemy appears!");
-            NPC enemy = new NPC("Lab Guard", 40, 6, 10);
-            Battle battle = new Battle(player, enemy);
+
+            // Select a random enemy from the list
+            NPC enemy = selectRandomEnemy();
+            Battle battle = new Battle(player,enemy);
             battle.start();
+
+            // If the player dies, stop further events
+            if (player.getCurrentHp() <= 0) {
+                return;
+            }
         }
 
-        if (hasVendor) {
-            System.out.println("🛒 You found a vendor!");
-            Vendor vendor = new Vendor();
-            vendor.buyItem(player);
-        }
+        // Trigger a random event (loot, trap, special effect)
+        triggerRandomEvent(player);
 
-        if (hasItem) {
-            System.out.println("🎁 You found an item!");
-            player.addItemToInventory(new items.HealthPotion(5, 25));
-        }
+        // Mark the room as completed
+        isCompleted = true;
 
         System.out.println("✅ You finished exploring " + name + ".");
     }
-}
 
-     /**
-     * Triggers a random event with a 50% probability.
+    /**
+     * Randomly selects an enemy from the list of possible enemies in this room.
+     *
+     * @return A randomly selected enemy.
+     */
+    private NPC selectRandomEnemy() {
+        return possibleEnemies.get(random.nextInt(possibleEnemies.size()));
+    }
+
+    /**
+     * Triggers a random event in the room (50% chance).
      */
     private void triggerRandomEvent(Hero player) {
-        int eventChance = random.nextInt(100); // 0 to 99
-        if (eventChance < 50) { // 50% chance to trigger an event
-            int eventType = random.nextInt(4); // 0 to 3 (4 different events)
+        if (random.nextInt(100) < 50) { // 50% chance of an event
+            int eventType = random.nextInt(4); // Select a random event
 
             switch (eventType) {
-                case 0:
-                    treasureChest(player);
-                    break;
-                case 1:
-                    trap(player);
-                    break;
-                case 2:
-                    secretFile();
-                    break;
-                case 3:
-                    chemicalSurprise(player);
-                    break;
+                case 0 -> treasureChest(player);
+                case 1 -> trap(player);
+                case 2 -> secretFile();
+                case 3 -> chemicalSurprise(player);
             }
         }
     }
 
     /**
-     * The player finds a treasure chest and gains gold or an item.
+     * The player finds a hidden chest containing gold or a powerful item.
      */
     private void treasureChest(Hero player) {
         System.out.println("🎁 You found a hidden chest!");
         int rewardType = random.nextInt(2);
         if (rewardType == 0) {
             int goldAmount = random.nextInt(15) + 5; // Between 5 and 20 gold
-            player.addGold(goldAmount);
+            player.collectGold(goldAmount);
             System.out.println("💰 You found " + goldAmount + " gold inside!");
         } else {
             System.out.println("🧪 You found a rare chemical!");
-            player.addItemToInventory(new items.HealthPotion(10, 50)); // Stronger potion
+            player.addItemToInventory(new src.items.HealthPotion(10, 50)); // Stronger potion
         }
     }
 
     /**
-     * The player falls into a trap and loses health.
+     * The player steps on a trap and loses health.
      */
     private void trap(Hero player) {
         System.out.println("☠️ You stepped on a trap!");
@@ -111,21 +116,21 @@ public class Room {
     }
 
     /**
-     * The player finds secret files revealing the truth about PharmaCorp.
+     * The player finds secret files revealing PharmaCorp's illegal experiments.
      */
     private void secretFile() {
         System.out.println("📜 You discovered a hidden document!");
-        System.out.println("It contains classified information about PharmaCorp's illegal experiments...");
+        System.out.println("It contains classified information about PharmaCorp's unethical projects...");
     }
 
     /**
-     * The player drinks a chemical, resulting in a random effect.
+     * The player drinks an unknown chemical, which has a random effect.
      */
     private void chemicalSurprise(Hero player) {
         System.out.println("⚗️ You found a mysterious chemical sample.");
         System.out.println("Do you want to drink it? (1 = Yes, 2 = No)");
 
-        int choice = scanner.nextInt();
+        int choice = new java.util.Scanner(System.in).nextInt();
         if (choice == 1) {
             int effect = random.nextInt(2);
             if (effect == 0) {
@@ -140,5 +145,18 @@ public class Room {
         } else {
             System.out.println("⚠️ You ignored the chemical.");
         }
+    }
+
+    /**
+     * Checks if the room has been completed.
+     *
+     * @return true if the room is completed, false otherwise.
+     */
+    public boolean isCompleted() {
+        return isCompleted;
+    }
+
+    public String getName() {
+        return name;
     }
 }

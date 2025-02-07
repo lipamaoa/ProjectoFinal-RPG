@@ -1,6 +1,8 @@
 package src.game;
 
+import src.items.HealthPotion;
 import src.items.ItemHero;
+import src.items.Weapon;
 import src.entities.Hero;
 import java.util.ArrayList;
 import java.util.Random;
@@ -26,9 +28,9 @@ public class Vendor {
      */
     private void generateStoreInventory() {
         // Add some predefined items to the store
-        storeInventory.add(new items.HealthPotion(5, 25));
-        storeInventory.add(new items.Weapon("Chemical Blade", 15, 8, 12));
-        storeInventory.add(new items.Weapon("Toxic Dart Gun", 20, 10, 15));
+        storeInventory.add(new HealthPotion(5, 25));
+        storeInventory.add(new Weapon("Chemical Blade", 15, 8, 12));
+        storeInventory.add(new Weapon("Toxic Dart Gun", 20, 10, 15));
     }
 
     /**
@@ -84,11 +86,11 @@ public class Vendor {
             if (choice == 0) break;
 
             if (choice > 0 && choice <= player.getInventorySize()) {
-                ItemHero itemToSell = player.getInventoryItem(choice - 1);
+                ItemHero itemToSell = player.getInventory().getItem(choice - 1);
                 int sellPrice = itemToSell.getPrice() / 2; // Player gets half the original price
 
-                player.addGold(sellPrice);
-                player.removeItemFromInventory(itemToSell);
+                player.collectGold(sellPrice);
+                player.getInventory().removeItem(itemToSell);
                 System.out.println("✅ You sold " + itemToSell.getName() + " for " + sellPrice + " gold!");
             } else {
                 System.out.println("❌ Invalid choice!");

@@ -2,30 +2,41 @@ package src.game;
 
 import src.entities.Hero;
 import src.entities.NPC;
+import src.entities.PharmacologistHacker;
 import src.utils.AsciiArt;
-
+import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
 
 /**
- * Handles the turn-based battle system with improved enemy AI.
+ * Handles turn-based battles with room-defined enemies and NPC hacking.
  */
 public class Battle {
     private Hero player;
     private NPC enemy;
     private Scanner scanner;
+    private static final Random random = new Random();
 
+    /**
+     * Constructs a battle instance with a predefined list of enemies.
+     *
+     * @param player The player's hero.
+     * @param possibleEnemies The list of enemies available in this room.
+     */
     public Battle(Hero player, NPC enemy) {
         this.player = player;
         this.enemy = enemy;
         this.scanner = new Scanner(System.in);
     }
 
+    
+
     /**
      * Starts the battle loop.
      */
     public void start() {
-          AsciiArt.showBattleScreen();
-        System.out.println("\n⚔️ A battle begins between " + player.getName() + " and " + enemy.getName() + "!");
+        AsciiArt.showBattleScreen();
+        System.out.println("\n⚔️ A battle begins against " + enemy.getName() + "!");
 
         while (player.getCurrentHp() > 0 && enemy.getCurrentHp() > 0) {
             playerTurn();
@@ -45,83 +56,68 @@ public class Battle {
         System.out.println("🔻 " + enemy.getName() + ": " + enemy.getCurrentHp() + " HP");
 
         System.out.println("\nChoose an action:");
-        System.out.println("1️⃣ Attack");
-        System.out.println("2️⃣ Special Attack");
-        System.out.println("3️⃣ Use Item");
-        System.out.println("4️⃣ Hack System (if applicable)");
+        System.out.println("1️⃣ Attack " + enemy.getName());
+        System.out.println("2️⃣ Use Item");
+
+        if (player instanceof PharmacologistHacker) {
+            System.out.println("3️⃣ Hack " + enemy.getName());
+        }
 
         int choice = scanner.nextInt();
 
         switch (choice) {
-            case 1:
-                normalAttack();
-                break;
-            case 2:
-                specialAttack();
-                break;
-            case 3:
-                useItem();
-                break;
-            case 4:
-                hackSystem();
-                break;
-            default:
-                System.out.println("❌ Invalid choice! Turn skipped.");
+            case 1 -> attackEnemy();
+            case 2 -> useItem();
+            case 3 -> {
+                if (player instanceof PharmacologistHacker) {
+                    hackEnemy();
+                } else {
+                    System.out.println("❌ Invalid choice!");
+                }
+            }
+            default -> System.out.println("❌ Invalid choice! Turn skipped.");
         }
+    }
+
+    /**
+     * Allows the player to attack the enemy NPC.
+     */
+    private void attackEnemy() {
+        if (enemy.getCurrentHp() > 0) {
+            player.attack(enemy);
+        } else {
+            System.out.println("⚠️ " + enemy.getName() + " is already defeated!");
+        }
+    }
+
+    /**
+     * Allows the player to hack the enemy.
+     */
+    private void hackEnemy() {
+        if (!(player instanceof PharmacologistHacker)) {
+            System.out.println("⚠️ Hacking is only available for PharmacologistHackers!");
+            return;
+        }
+
+        PharmacologistHacker hacker = (PharmacologistHacker) player;
+        hacker.hackEnemy(enemy, enemy);
+
+        System.out.println("💻 " + enemy.getName() + " is confused and attacks itself!");
+    }
+
+    /**
+     * Allows the player to use an item.
+     */
+    private void useItem() {
+        player.usePotion();
     }
 
     /**
      * Handles the enemy's turn.
      */
     private void enemyTurn() {
-        System.out.println("🔴 " + enemy.getName() + "'s turn!");
+        System.out.println("\n🔴 " + enemy.getName() + "'s turn!");
         enemy.attack(player);
-    }
-
-    /**
-     * Executes a normal attack.
-     */
-    private void normalAttack() {
-        int damage = player.getStrength();
-        System.out.println("🗡️ " + player.getName() + " attacks " + enemy.getName() + " for " + damage + " damage.");
-        enemy.takeDamage(damage);
-    }
-
-    /**
-     * Executes a special attack.
-     */
-    private void specialAttack() {
-        int damage = player.getStrength() * 2;
-        System.out.println("💥 " + player.getName() + " uses a special attack on " + enemy.getName() + " for " + damage + " damage!");
-        enemy.takeDamage(damage);
-    }
-
-    /**
-     * Uses an item from the inventory.
-     */
-    private void useItem() {
-        if (player.getInventorySize() > 0) {
-            player.usePotion();
-        } else {
-            System.out.println("⚠️ No items available.");
-        }
-    }
-
-    /**
-     * Hacks the system (only for Pharmacologist Hacker).
-     */
-    private void hackSystem() {
-        if (player instanceof entities.PharmacologistHacker) {
-            System.out.println("💻 Attempting to hack...");
-            if (Math.random() < 0.5) { // 50% success rate
-                System.out.println("✅ Hack successful! Enemy disabled.");
-                enemy.takeDamage(enemy.getCurrentHp()); // Instant defeat
-            } else {
-                System.out.println("❌ Hack failed! The enemy attacks.");
-            }
-        } else {
-            System.out.println("⚠️ You cannot hack!");
-        }
     }
 
     /**
@@ -129,11 +125,9 @@ public class Battle {
      */
     private void endBattle() {
         if (player.getCurrentHp() > 0) {
-            AsciiArt.showVictoryScreen();
-            player.gainXP(10);
-            player.collectGold(enemy.getGold());
+            System.out.println("🎉 " + player.getName() + " won the battle!");
         } else {
-            AsciiArt.showDefeatScreen();
+            System.out.println("💀 " + player.getName() + " was defeated...");
         }
     }
 }

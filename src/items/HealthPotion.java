@@ -1,18 +1,42 @@
 package src.items;
 
+import src.entities.Hero;
+
 /**
- * A potion that restores health.
+ * Represents a health potion that restores HP when consumed.
  */
-public class HealthPotion extends Consumable {
+public class HealthPotion extends ItemHero {
     private int healingAmount;
 
-    public HealthPotion(int price, int healingAmount) {
-        super("Health Potion", price);
+    /**
+     * Constructs a health potion.
+     *
+     * @param healingAmount The amount of HP the potion restores.
+     * @param value         The price of the potion.
+     */
+    public HealthPotion(int healingAmount, int value) {
+        super("Health Potion", "Restores " + healingAmount + " HP.", value);
         this.healingAmount = healingAmount;
     }
 
+
+    
+
+    /**
+     * Uses the potion to heal the hero.
+     *
+     * @param player The hero consuming the potion.
+     */
     @Override
-    public int getHealingAmount() {
+    public void use(Hero player) {
+        System.out.println("💊 " + player.getName() + " drinks a Health Potion and recovers " + healingAmount + " HP!");
+        player.heal(healingAmount);
+    }
+
+
+
+
+    public int getEffectValue() {
         return healingAmount;
     }
 }

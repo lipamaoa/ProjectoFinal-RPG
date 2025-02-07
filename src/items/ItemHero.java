@@ -1,27 +1,50 @@
 package src.items;
 
-
-import java.util.ArrayList;
-
 /**
- * Abstract class for all items a hero can use.
+ * Represents a base class for items that a hero can use or equip.
  */
 public abstract class ItemHero {
     protected String name;
-    protected int price;
-    protected ArrayList<String> allowedHeroes;
+    protected String description;
+    protected int price; // Cost or sell price
 
-    public ItemHero(String name, int price) {
+    /**
+     * Constructs a hero item.
+     *
+     * @param name        The name of the item.
+     * @param description The description of what the item does.
+     * @param price       The item's value (cost or selling price).
+     */
+    public ItemHero(String name, String description, int price) {
         this.name = name;
+        this.description = description;
         this.price = price;
-        this.allowedHeroes = new ArrayList<>();
     }
 
-    public String getName(){
+    /**
+     * Applies the item's effect when used by the hero.
+     */
+    public abstract void use(src.entities.Hero player);
+
+    /**
+     * Displays item details.
+     */
+    public void showDetails() {
+        System.out.println("🛠️ Item: " + this.name);
+        System.out.println("ℹ️ " + this.description);
+        System.out.println("💰 Value: " + this.price + " gold");
+    }
+
+    // Getters
+    public String getName() {
         return name;
     }
 
-    public void showDetails() {
-        System.out.println("Item: " + name + " - Price: " + price + " gold");
+    public String getDescription() {
+        return description;
+    }
+
+    public int getPrice() {
+        return price;
     }
 }

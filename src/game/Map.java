@@ -1,18 +1,17 @@
 package src.game;
 
-import src.entities.Hero;
-import src.entities.FriendlyNPC;
-import src.game.Room;
-import src.game.Mission;
+import src.entities.*;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 /**
- * Handles navigation between rooms.
+ * Handles room navigation, battles, and mission progression.
  */
 public class Map {
-    private ArrayList<Room> rooms;
+    private List<Room> rooms;
     private Scanner scanner;
+    private boolean complexExitUnlocked = false; // Locked until player progresses
 
     public Map() {
         this.rooms = new ArrayList<>();
@@ -21,33 +20,47 @@ public class Map {
     }
 
     /**
-     * Creates different rooms with NPCs and events.
+     * Creates different rooms with predefined enemies and NPCs.
      */
     private void initializeRooms() {
+        // Create predefined enemy lists for each room
+        List<NPC> labEnemies = List.of(
+                new NPC("Security Guard", 50, 8, 10, 1),
+                new NPC("Lab Mutant", 60, 10, 15, 2));
 
-        Mission findSecretFiles = new Mission("Find Secret Files", "Retrieve the hidden PharmaCorp documents.", 20, 50);
-        Mission defeatMutant = new Mission("Defeat the Mutant Experiment", "Destroy the escaped mutant in the lab.", 30, 60);
+        List<NPC> securityEnemies = List.of(
+                new NPC("Security Commander", 70, 12, 20, 3),
+                new NPC("Automated Drone", 80, 14, 25, 3));
 
-        
+        List<NPC> testingEnemies = List.of(
+                new NPC("Failed Experiment", 70, 12, 20, 3),
+                new NPC("Enhanced Guard", 80, 14, 25, 3));
+
+        List<NPC> finalBoss = List.of(new NPC("Prototype Eden-9", 120, 20, 70, 5));
+
+        // Create Friendly NPCs with missions
         FriendlyNPC drMira = new FriendlyNPC(
-            "Dr. Mira",
-            "I used to work in PharmaCorp before they betrayed us. They said they were curing diseases, but they were creating weapons...",
-            new String[]{"There are encrypted files in the Security Department.", "Eden-9... I wish I had never seen it."},
-            true, true, false, findSecretFiles
+                "Dr. Mira",
+                "I used to work in PharmaCorp before they betrayed us. They said they were curing diseases, but they were creating weapons...",
+                new String[] { "PharmaCorp is hiding something deep in the lab.",
+                        "There are secret documents in the Security Department." },
+                true, true, false, null 
         );
 
         FriendlyNPC exSoldier = new FriendlyNPC(
-            "Ex-PharmaCorp Soldier",
-            "I was hired to protect this lab... but I never signed up for what they did to people down here.",
-            new String[]{"Their experiments went out of control. No one is safe.", "If you're going to fight Eden-9, make sure you're ready."},
-            false, false, true, defeatMutant
+                "Ex-PharmaCorp Soldier",
+                "I was part of the PharmaCorp security forces until I saw what they were doing. Now, I help those who fight back.",
+                new String[] { "Be careful, some of the test subjects have mutated beyond control.",
+                        "I have seen Prototype Eden-9... It’s unstoppable." },
+                false, false, true, null 
         );
 
-        rooms.add(new Room("Biological Research Lab", true, false, true, drMira));
-        rooms.add(new Room("Security Department", true, false, false, null));
-        rooms.add(new Room("Human Testing Facility", true, false, true, exSoldier));
-        rooms.add(new Room("Chemical Storage", false, true, true, null));
-        rooms.add(new Room("Complex Exit", true, false, false, null));
+        // Create rooms with predefined enemies and NPCs
+        rooms.add(new Room("Biological Research Lab", labEnemies, drMira));
+        rooms.add(new Room("Security Department", securityEnemies, null));
+        rooms.add(new Room("Human Testing Facility", testingEnemies, exSoldier));
+        rooms.add(new Room("Chemical Storage", new ArrayList<>(), null)); // Vendor room, no enemies
+        rooms.add(new Room("Complex Exit", finalBoss, null)); // Final battle room (LOCKED)
     }
 
     /**
@@ -60,23 +73,42 @@ public class Map {
             Room currentRoom = rooms.get(currentRoomIndex);
             currentRoom.enter(player);
 
+            // Check if the player is still alive
             if (player.getCurrentHp() <= 0) {
                 System.out.println("💀 You did not survive...");
                 break;
             }
 
-            if (currentRoomIndex == rooms.size() - 1) {
-                System.out.println("🎉 You reached the final room! Prepare for the final battle!");
-                break;
-            }
+            // Unlock the Complex Exit if key rooms are explored
+            checkUnlockConditions();
 
+            // Offer choices for the next room
             System.out.println("\n📍 Choose where to go next:");
             for (int i = currentRoomIndex + 1; i < rooms.size(); i++) {
+                if (!complexExitUnlocked && rooms.get(i).getName().equals("Complex Exit")) {
+                    System.out.println("❌ Complex Exit is locked. Explore more before proceeding.");
+                    continue; // Skip displaying locked exit
+                }
                 System.out.println((i - currentRoomIndex) + "️⃣ " + rooms.get(i).getName());
             }
 
             int choice = scanner.nextInt();
             currentRoomIndex += choice;
+        }
+    }
+
+    /**
+     * Unlocks the Complex Exit once the player has completed key rooms.
+     */
+    private void checkUnlockConditions() {
+        if (!complexExitUnlocked) {
+            boolean securityDepartmentCleared = rooms.get(1).isCompleted(); // Security Department
+            boolean humanTestingFacilityCleared = rooms.get(2).isCompleted(); // Human Testing Facility
+
+            if (securityDepartmentCleared && humanTestingFacilityCleared) {
+                complexExitUnlocked = true;
+                System.out.println("🔓 The Complex Exit is now unlocked!");
+            }
         }
     }
 }
