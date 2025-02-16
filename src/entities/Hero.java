@@ -26,6 +26,7 @@ public abstract class Hero extends Entity {
      * @param level The hero's starting level.
      * @param gold The initial gold amount.
      * @param defaultWeapon The hero's starting  weapon.
+     * @param inventory The inventory.
      */
 
     public Hero(String name, int maxHp, int strength, int level, int gold, Weapon mainWeapon) {
@@ -60,7 +61,7 @@ public abstract class Hero extends Entity {
      * Allows the hero to use a potion from inventory.
      */
     public void usePotion() {
-    ItemHero potion = inventory.getFirstPotion(); // Retrieves the first potion
+    ItemHero potion = inventory.getFirstPotion();
 
     if (potion == null) {
         System.out.println("⚠️ No health potions available!");

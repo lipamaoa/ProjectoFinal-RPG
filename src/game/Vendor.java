@@ -1,6 +1,7 @@
 package src.game;
 
 import src.items.HealthPotion;
+import src.items.HealthPotionSize;
 import src.items.ItemHero;
 import src.items.Weapon;
 import src.entities.Hero;
@@ -28,7 +29,7 @@ public class Vendor {
      */
     private void generateStoreInventory() {
         // Add some predefined items to the store
-        storeInventory.add(new HealthPotion(5, 25));
+        storeInventory.add(new HealthPotion(HealthPotionSize.Large));
         storeInventory.add(new Weapon("Chemical Blade", 15, 8, 12));
         storeInventory.add(new Weapon("Toxic Dart Gun", 20, 10, 15));
     }

@@ -11,7 +11,7 @@ public class NPC extends Entity {
     protected int attackPower;
     protected int specialAttackPower;
     protected boolean canHeal;
-    private boolean isHacked = false; // Tracks if the NPC is hacked
+    private boolean isHacked = false;
     private static Random random = new Random();
 
     /**
@@ -59,7 +59,7 @@ public class NPC extends Entity {
             return;
         }
 
-        int action = random.nextInt(100); // Generate a number between 0 and 99
+        int action = random.nextInt(100);
 
         if (action < 60) { // 60% chance for normal attack
             normalAttack(target);

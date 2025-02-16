@@ -1,6 +1,9 @@
 package src.game;
 
 import src.entities.*;
+import src.items.HealthPotion;
+import src.items.HealthPotionSize;
+
 import java.util.List;
 import java.util.Random;
 
@@ -101,7 +104,7 @@ public class Room {
             System.out.println("💰 You found " + goldAmount + " gold inside!");
         } else {
             System.out.println("🧪 You found a rare chemical!");
-            player.addItemToInventory(new src.items.HealthPotion(10, 50)); // Stronger potion
+            player.addItemToInventory(new HealthPotion(HealthPotionSize.Large)); // Stronger potion
         }
     }
 

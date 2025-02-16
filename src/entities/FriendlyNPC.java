@@ -2,6 +2,8 @@ package src.entities;
 
 import src.game.Mission;
 import src.items.HealthPotion;
+import src.items.HealthPotionSize;
+
 import java.util.Random;
 import java.util.Scanner;
 
@@ -9,15 +11,15 @@ import java.util.Scanner;
  * Represents a friendly NPC that can assist the player.
  */
 public class FriendlyNPC {
-    private String name;
-    private String backstory;
-    private String[] dialogues;
-    private boolean canGiveItem;
+    private final String name;
+    private final String backstory;
+    private final String[] dialogues;
+    private final boolean canGiveItem;
     private boolean canHeal;
-    private boolean canFight;
-     private Mission mission;
-    private static Scanner scanner = new Scanner(System.in);
-    private static Random random = new Random();
+    private final boolean canFight;
+    private final Mission mission;
+    private final static Scanner scanner = new Scanner(System.in);
+    private final static Random random = new Random();
 
     public FriendlyNPC(String name, String backstory, String[] dialogues, boolean canGiveItem, boolean canHeal, boolean canFight, Mission mission) {
         this.name = name;
@@ -33,7 +35,7 @@ public class FriendlyNPC {
      * Interacts with the player, offering different choices.
      */
     public void interact(Hero player) {
-        System.out.println("\n👤 You met " + name + "!");
+        System.out.println("\n👤 You meet " + name + "!");
         System.out.println("\"" + backstory + "\"");
 
         while (true) {
@@ -43,7 +45,13 @@ public class FriendlyNPC {
                 System.out.println("3️⃣ \"Do you need my help with anything?\"");
             }
             System.out.println("4️⃣ \"I have to go.\"");
-            int choice = scanner.nextInt();
+            int choice = 0;
+
+            if (scanner.hasNextInt()) {
+                choice = scanner.nextInt();
+            } else {
+                scanner.nextLine();
+            }
 
             switch (choice) {
                 case 1:
@@ -80,13 +88,15 @@ public class FriendlyNPC {
     private void assist(Hero player) {
         if (canGiveItem) {
             System.out.println("🎁 " + name + " hands you a small vial.");
-            player.addItemToInventory(new HealthPotion(5, 25));
+            player.addItemToInventory(new HealthPotion(HealthPotionSize.Small));
         }
 
         if (canHeal) {
-            int healAmount = random.nextInt(20) + 10; // Between 10 and 30 HP
+            int healAmount = random.nextInt(30) + 20; // Between 20 and 50 HP
             player.heal(healAmount);
             System.out.println("🩹 " + name + " patches up your wounds.");
+            // Heal just once
+            this.canHeal = false;
         }
 
         if (canFight) {
@@ -95,7 +105,7 @@ public class FriendlyNPC {
             // Future implementation: NPC joins battle
         }
 
-        /**
+     /**
      * Checks if the player completed a mission and rewards them.
      */
     public void checkMissionCompletion(Hero player, boolean completed) {
