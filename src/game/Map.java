@@ -4,24 +4,18 @@ import src.entities.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.Scanner;
-import java.util.Arrays;
 
 /**
  * Handles room navigation, battles, and mission progression.
  */
 public class Map {
     private List<Room> rooms;
-    private Scanner scanner;
-    private boolean complexExitUnlocked = false; // Locked until player progresses
-    private Random rand;
-    private static List<FriendlyNPC> assignedFriendlyNPCs = new ArrayList<>();
-    private static List<Vendor> assignedVendors = new ArrayList<>();
+    private boolean complexExitUnlocked = false;
+    private final Random rand;
 
     public Map() {
         this.rooms = new ArrayList<>();
-        this.scanner = new Scanner(System.in);
-        this.rand = new Random();
+        this.rand = GameRandom.getInstance();
         initializeRooms();
     }
 
@@ -60,7 +54,6 @@ public class Map {
         rooms.add(new Room("Complex Exit", NPCRegistry.FINAL_BOSS, null, false));
 
         // Randomly assign a vendor to one of the rooms (excluding the final boss room)
-        Random rand = new Random();
         int vendorRoomIndex = rand.nextInt(rooms.size() - 1);
 
         // Replace the selected room with a new version that has a vendor
@@ -98,7 +91,7 @@ public class Map {
                 System.out.println((i - currentRoomIndex) + "️⃣ " + rooms.get(i).getName());
             }
 
-            int choice = scanner.nextInt();
+            int choice = GameScanner.getInt();
             currentRoomIndex += choice;
         }
     }

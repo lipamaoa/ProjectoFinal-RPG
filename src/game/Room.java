@@ -20,9 +20,7 @@ public class Room {
     private final Vendor vendor;
     private boolean isCompleted = false;
     private boolean isVendorRoom = false;
-    private static final Random random = new Random();
-    private static List<FriendlyNPC> assignedFriendlyNPCs = new ArrayList<>();
-    private static List<Vendor> assignedVendors = new ArrayList<>();
+    private final Random random;
 
     /**
      * Constructs a room with predefined enemies and NPC interactions.
@@ -33,8 +31,9 @@ public class Room {
      */
     public Room(String name, List<Enemy> possibleEnemies, FriendlyNPC friendlyNPC, boolean isVendorRoom) {
         this.name = name;
+        this.random = GameRandom.getInstance();
         this.roomEnemy = possibleEnemies != null && !possibleEnemies.isEmpty()
-                ? possibleEnemies.get(random.nextInt(possibleEnemies.size()))
+                ? possibleEnemies.get(this.random.nextInt(possibleEnemies.size()))
                 : null;
         this.friendlyNPC = friendlyNPC;
         this.isVendorRoom = isVendorRoom;
@@ -43,8 +42,7 @@ public class Room {
 
     private void continueStory() {
         System.out.println("Press Enter to continue the story ➡️");
-        Scanner scanner = new Scanner(System.in);
-        scanner.nextLine();
+        GameScanner.waitForEnter();
     }
 
     public List<Enemy> getEnemies() {
