@@ -31,6 +31,14 @@ public class Map {
         return availableNPCs.remove(index);
     }
 
+    private Vendor AddVendor() {
+        if (this.rand.nextInt(100) < 25) {
+            return new Vendor();
+        }
+
+        return null;
+    }
+
     /**
      * Creates different rooms with predefined enemies and NPCs.
      */
@@ -39,27 +47,19 @@ public class Map {
 
         // Create rooms with predefined enemies and NPCs
         rooms.add(new Room("Biological Research Lab", NPCRegistry.LAB_ENEMIES,
-                getRandomUniqueFriendlyNPC(availableNPCs), false));
+                getRandomUniqueFriendlyNPC(availableNPCs), AddVendor()));
         rooms.add(new Room("Security Department", NPCRegistry.SECURITY_ENEMIES,
-                getRandomUniqueFriendlyNPC(availableNPCs), false));
+                getRandomUniqueFriendlyNPC(availableNPCs), AddVendor()));
         rooms.add(new Room("Human Testing Facility", NPCRegistry.TESTING_ENEMIES,
-                getRandomUniqueFriendlyNPC(availableNPCs), false));
+                getRandomUniqueFriendlyNPC(availableNPCs), AddVendor()));
         rooms.add(new Room("Chemical Storage - Safe Zone", new ArrayList<>(),
-                getRandomUniqueFriendlyNPC(availableNPCs), true));
+                getRandomUniqueFriendlyNPC(availableNPCs), new Vendor()));
         rooms.add(new Room("Chemical Storage - Contaminated Zone", NPCRegistry.CHEMICAL_ENEMIES,
-                getRandomUniqueFriendlyNPC(availableNPCs), false));
+                getRandomUniqueFriendlyNPC(availableNPCs), AddVendor()));
         rooms.add(new Room("Archives", NPCRegistry.ARCHIVE_ENEMIES, getRandomUniqueFriendlyNPC(availableNPCs),
-                false));
+                AddVendor()));
         // Final battle room (LOCKED)
-        rooms.add(new Room("Complex Exit", NPCRegistry.FINAL_BOSS, null, false));
-
-        // Randomly assign a vendor to one of the rooms (excluding the final boss room)
-        int vendorRoomIndex = rand.nextInt(rooms.size() - 1);
-
-        // Replace the selected room with a new version that has a vendor
-        Room vendorRoom = rooms.get(vendorRoomIndex);
-        rooms.set(vendorRoomIndex,
-                new Room(vendorRoom.getName(), vendorRoom.getEnemies(), vendorRoom.getFriendlyNPC(), true));
+        rooms.add(new Room("Complex Exit", null, null, null));
     }
 
     /**
@@ -68,7 +68,7 @@ public class Map {
     public void startExploring(Hero player) {
         int currentRoomIndex = 0;
 
-        while (currentRoomIndex < rooms.size()) {
+        while (currentRoomIndex < rooms.size() - 1) {
             Room currentRoom = rooms.get(currentRoomIndex);
             currentRoom.enter(player);
 
@@ -101,13 +101,25 @@ public class Map {
      */
     private void checkUnlockConditions() {
         if (!complexExitUnlocked) {
-            boolean securityDepartmentCleared = rooms.get(1).isCompleted(); // Security Department
-            boolean humanTestingFacilityCleared = rooms.get(2).isCompleted(); // Human Testing Facility
+            for (int i = 0; i < rooms.size() - 1; i++) {
+                if (!rooms.get(i).isCompleted()) {
+                    return;
+                }
+            }
 
-            if (securityDepartmentCleared && humanTestingFacilityCleared) {
-                complexExitUnlocked = true;
-                System.out.println("🔓 The Complex Exit is now unlocked!");
+            System.out.println("🔓 The Complex Exit is now unlocked!");
+        }
+    }
+
+    public ArrayList<FriendlyNPC> getSurvivingNpcs() {
+        ArrayList<FriendlyNPC> survivingNpcs = new ArrayList<>();
+        for (Room room : rooms) {
+            var survivingFriendlyNPC = room.getSurvivingFriendlyNPC();
+            if (survivingFriendlyNPC != null) {
+                survivingNpcs.add(survivingFriendlyNPC);
             }
         }
+
+        return survivingNpcs;
     }
 }

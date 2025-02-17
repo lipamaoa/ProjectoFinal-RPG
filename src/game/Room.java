@@ -14,11 +14,10 @@ import java.util.Random;
  */
 public class Room {
     private final String name;
-    private final Enemy roomEnemy;
+    private final ArrayList<Enemy> roomEnemies;
     private final FriendlyNPC friendlyNPC;
     private final Vendor vendor;
     private boolean isCompleted = false;
-    private boolean isVendorRoom = false;
     private final Random random;
 
     /**
@@ -27,16 +26,21 @@ public class Room {
      * @param name            The name of the room.
      * @param possibleEnemies The list of enemies that can appear in this room.
      * @param friendlyNPC     The friendly NPC in this room (if any).
+     * @param vendor          The vendor, if present.
      */
-    public Room(String name, List<Enemy> possibleEnemies, FriendlyNPC friendlyNPC, boolean isVendorRoom) {
+    public Room(String name, List<Enemy> possibleEnemies, FriendlyNPC friendlyNPC, Vendor vendor) {
         this.name = name;
         this.random = GameRandom.getInstance();
-        this.roomEnemy = possibleEnemies != null && !possibleEnemies.isEmpty()
-                ? possibleEnemies.get(this.random.nextInt(possibleEnemies.size()))
-                : null;
+        this.roomEnemies = new ArrayList<>();
+        if (possibleEnemies != null && !possibleEnemies.isEmpty()) {
+            // At least 1 enemy
+            int numberOfEnemies = this.random.nextInt(possibleEnemies.size()) + 1;
+            for (int i = 0; i < numberOfEnemies; i++) {
+                this.roomEnemies.add(possibleEnemies.get(this.random.nextInt(possibleEnemies.size())));
+            }
+        }
         this.friendlyNPC = friendlyNPC;
-        this.isVendorRoom = isVendorRoom;
-        this.vendor = isVendorRoom ? new Vendor() : null;
+        this.vendor = vendor;
     }
 
     private void continueStory(Hero player) {
@@ -64,14 +68,6 @@ public class Room {
         }
     }
 
-    public List<Enemy> getEnemies() {
-        return roomEnemy != null ? List.of(roomEnemy) : new ArrayList<>();
-    }
-
-    public FriendlyNPC getFriendlyNPC() {
-        return friendlyNPC;
-    }
-
     /**
      * Triggers room events, including battles and NPC interactions.
      *
@@ -88,16 +84,17 @@ public class Room {
         }
 
         // Offer vendor interaction if is a vendor room
-        if (isVendorRoom) {
+        if (this.vendor != null) {
             accessVendor(player);
             continueStory(player);
         }
 
         // Trigger a battle if there are enemies in this room
-        if (this.roomEnemy != null) {
+        if (this.roomEnemies != null) {
             System.out.println("⚠️ An enemy appears!");
 
-            Battle battle = new Battle(player, this.roomEnemy);
+            Battle battle = new Battle(player, this.roomEnemies,
+                    friendlyNPC.willJoinBattle() ? new ArrayList<>(List.of(friendlyNPC)) : null);
             battle.start();
 
             // If the player dies, stop further events
@@ -131,8 +128,8 @@ public class Room {
 
             int choice = GameScanner.getInt();
             switch (choice) {
-                case 1 -> vendor.buyItems(player);
-                case 2 -> vendor.sellItems(player);
+                case 1 -> this.vendor.buyItems(player);
+                case 2 -> this.vendor.sellItems(player);
                 case 3 -> {
                     System.out.println("🚪 You leave the vendor.");
                     return;
@@ -140,10 +137,6 @@ public class Room {
                 default -> System.out.println("❌ Invalid choice! Try again.");
             }
         }
-    }
-
-    public void setVendorRoom(boolean isVendorRoom) {
-        this.isVendorRoom = isVendorRoom;
     }
 
     /**
@@ -205,7 +198,7 @@ public class Room {
         System.out.println("⚗️ You found a mysterious chemical sample.");
         System.out.println("Do you want to drink it? (1 = Yes, 2 = No)");
 
-        int choice = new java.util.Scanner(System.in).nextInt();
+        int choice = GameScanner.getInt();
         if (choice == 1) {
             int effect = random.nextInt(2);
             if (effect == 0) {
@@ -229,6 +222,14 @@ public class Room {
      */
     public boolean isCompleted() {
         return isCompleted;
+    }
+
+    public FriendlyNPC getSurvivingFriendlyNPC() {
+        if (this.friendlyNPC != null && this.friendlyNPC.willJoinBattle() && this.friendlyNPC.getCurrentHp() > 0) {
+            return this.friendlyNPC;
+        }
+
+        return null;
     }
 
     public String getName() {

@@ -1,21 +1,25 @@
 package src.game;
 
 import src.entities.Hero;
+
+import java.util.ArrayList;
+import java.util.Random;
+
 import src.entities.Enemy;
-import src.entities.PharmacologistHacker;
+import src.entities.FriendlyNPC;
 import src.items.ItemBattle;
 import src.items.ItemHero;
 import src.items.Item;
 import src.utils.AsciiArt;
-
-import java.util.Scanner;
 
 /**
  * Handles turn-based battles with room-defined enemies and NPC hacking.
  */
 public class Battle {
     private Hero player;
-    private Enemy enemy;
+    private ArrayList<Enemy> enemies;
+    private ArrayList<FriendlyNPC> friendlyNPCs;
+    private final Random random;
 
     /**
      * Constructs a battle instance with a predefined list of enemies.
@@ -23,13 +27,15 @@ public class Battle {
      * @param player The player's hero.
      * @param enemy  The enemy in this room.
      */
-    public Battle(Hero player, Enemy enemy) {
+    public Battle(Hero player, ArrayList<Enemy> enemies, ArrayList<FriendlyNPC> friendlyNPCs) {
         this.player = player;
-        this.enemy = enemy;
+        this.enemies = enemies;
+        this.friendlyNPCs = friendlyNPCs;
+        this.random = GameRandom.getInstance();
     }
 
     public Enemy getEnemy() {
-        return enemy;
+        return enemies.get(this.random.nextInt(enemies.size()));
     }
 
     public Hero getPlayer() {
@@ -41,73 +47,112 @@ public class Battle {
      */
     public void start() {
         AsciiArt.showBattleScreen();
-        System.out.println("\n⚔️ A battle begins against " + enemy.getName() + "!");
+        System.out.println("\n⚔️ A battle begins!");
 
-        while (player.getCurrentHp() > 0 && enemy.getCurrentHp() > 0) {
+        while (player.getCurrentHp() > 0 && !enemies.isEmpty()) {
             playerTurn();
-            if (enemy.getCurrentHp() > 0) {
-                enemyTurn();
-            }
+            alliesTurn();
+            enemiesTurn();
+            removeDefeatedEntities();
         }
 
         endBattle();
+    }
+
+    private void displayStatus() {
+        System.out.println("\n🔹 " + player.getName() + ": " + player.getCurrentHp() + " HP");
+        if (friendlyNPCs != null) {
+            System.out.println("🛡️ Friendly NPCs:");
+            for (FriendlyNPC ally : friendlyNPCs) {
+                System.out.println(" - " + ally.getName() + " (" + ally.getCurrentHp() + " HP)");
+            }
+        }
+        System.out.println("\n👿 Enemies:");
+        for (Enemy enemy : enemies) {
+            System.out.println(" - " + enemy.getName() + " (" + enemy.getCurrentHp() + " HP)");
+        }
     }
 
     /**
      * Handles the player's turn.
      */
     private void playerTurn() {
-        System.out.println("\n🔹 " + player.getName() + ": " + player.getCurrentHp() + " HP");
-        System.out.println("🔻 " + enemy.getName() + ": " + enemy.getCurrentHp() + " HP");
-
+        displayStatus();
         System.out.println("\nChoose an action:");
-        System.out.println("1️⃣ Attack " + enemy.getName());
+        System.out.println("1️⃣ Attack an enemy");
         System.out.println("2️⃣ Use Item");
-
-        if (player instanceof PharmacologistHacker) {
-            System.out.println("3️⃣ Hack " + enemy.getName());
-        }
 
         int choice = GameScanner.getInt();
 
         switch (choice) {
             case 1 -> attackEnemy();
             case 2 -> useItem();
-            case 3 -> {
-                if (player instanceof PharmacologistHacker) {
-                    hackEnemy();
-                } else {
-                    System.out.println("❌ Invalid choice!");
-                }
-            }
             default -> System.out.println("❌ Invalid choice! Turn skipped.");
         }
     }
 
     /**
-     * Allows the player to attack the enemy NPC.
+     * Allows the player to attack an enemy.
      */
     private void attackEnemy() {
-        if (enemy.getCurrentHp() > 0) {
-            player.attack(enemy);
+        if (enemies.isEmpty()) {
+            System.out.println("⚠️ No enemies left to attack!");
+            return;
+        }
+
+        System.out.println("\nChoose an enemy to attack:");
+        for (int i = 0; i < enemies.size(); i++) {
+            System.out
+                    .println((i + 1) + ") " + enemies.get(i).getName() + " (" + enemies.get(i).getCurrentHp() + " HP)");
+        }
+
+        int targetIndex = GameScanner.getInt() - 1;
+        if (targetIndex >= 0 && targetIndex < enemies.size()) {
+            player.attack(enemies.get(targetIndex));
         } else {
-            System.out.println("⚠️ " + enemy.getName() + " is already defeated!");
+            System.out.println("❌ Invalid target!");
         }
     }
 
     /**
-     * Allows the player to hack the enemy.
+     * Handles friendly NPCs' turn.
      */
-    private void hackEnemy() {
-        if (!(player instanceof PharmacologistHacker)) {
-            System.out.println("⚠️ Hacking is only available for PharmacologistHackers!");
+    private void alliesTurn() {
+        if (friendlyNPCs == null) {
             return;
         }
+        for (FriendlyNPC ally : friendlyNPCs) {
+            if (ally.getCurrentHp() > 0 && !enemies.isEmpty()) {
+                Enemy target = enemies.get(random.nextInt(enemies.size()));
+                ally.attack(target);
+            }
+        }
+    }
 
-        PharmacologistHacker hacker = (PharmacologistHacker) player;
-        hacker.hackEnemy(enemy, enemy);
+    /**
+     * Handles the enemies' turn.
+     */
+    private void enemiesTurn() {
+        for (Enemy enemy : enemies) {
+            if (enemy.getCurrentHp() > 0) {
+                if (random.nextBoolean() && friendlyNPCs != null && !friendlyNPCs.isEmpty()) {
+                    FriendlyNPC target = friendlyNPCs.get(random.nextInt(friendlyNPCs.size()));
+                    enemy.attack(target);
+                } else {
+                    enemy.attack(player);
+                }
+            }
+        }
+    }
 
-        System.out.println("💻 " + enemy.getName() + " is confused and attacks itself!");
+    /**
+     * Removes defeated enemies and NPCs from the battle.
+     */
+    private void removeDefeatedEntities() {
+        enemies.removeIf(enemy -> enemy.getCurrentHp() <= 0);
+        if (friendlyNPCs != null) {
+            friendlyNPCs.removeIf(ally -> ally.getCurrentHp() <= 0);
+        }
     }
 
     /**
@@ -154,14 +199,6 @@ public class Battle {
         } else {
             System.out.println("❌ Something went wrong! Could not use item.");
         }
-    }
-
-    /**
-     * Handles the enemy's turn.
-     */
-    private void enemyTurn() {
-        System.out.println("\n🔴 " + enemy.getName() + "'s turn!");
-        enemy.attack(player);
     }
 
     /**

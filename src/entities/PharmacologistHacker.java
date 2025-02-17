@@ -64,38 +64,6 @@ public class PharmacologistHacker extends Hero {
         }
     }
 
-    /**
-     * Resets the hacking ability for the next battle.
-     */
-    public void resetHackAbility() {
-        hasUsedHack = false;
-    }
-
-    /**
-     * Allows the hero to hack an enemy, forcing them to attack another NPC.
-     *
-     * @param enemy  The enemy to hack.
-     * @param target The NPC to be attacked by the hacked enemy.
-     */
-    public void hackEnemy(Enemy enemy, Enemy target) {
-        if (hasUsedHack) {
-            System.out.println("⚠️ Hacking already used in this battle.");
-            return;
-        }
-
-        System.out.println("💻 " + getName() + " attempts to hack " + enemy.getName() + "...");
-
-        if (random.nextInt(100) < 50) { // 50% success rate
-            System.out.println("✅ Hack successful! " + enemy.getName() + " will attack " + target.getName() + "!");
-            enemy.setHacked(true);
-            enemy.attack(target); // Hacked NPC attacks the chosen target
-        } else {
-            System.out.println("❌ Hack failed! " + enemy.getName() + " remains in control.");
-        }
-
-        hasUsedHack = true; // Hacking can only be used once per battle
-    }
-
     @Override
     protected void initializeInventory() {
         // // ✅ Add hero-specific items, but DO NOT initialize inventory again

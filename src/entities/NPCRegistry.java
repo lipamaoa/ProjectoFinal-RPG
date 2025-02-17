@@ -1,9 +1,7 @@
 package src.entities;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Stores predefined NPCs for reuse across different rooms.
@@ -46,35 +44,35 @@ public class NPCRegistry {
                                         "I used to work in PharmaCorp before they betrayed us...",
                                         new String[] { "PharmaCorp is hiding something deep in the lab.",
                                                         "There are secret documents in the Security Department." },
-                                        true, true, false, null),
+                                        true, true, false, 80, 10),
 
                         new FriendlyNPC("Ex-PharmaCorp Soldier",
                                         "I was part of the PharmaCorp security forces...",
                                         new String[] { "Be careful, some of the test subjects have mutated beyond control.",
                                                         "Prototype Eden-9 is unstoppable." },
-                                        false, false, true, null),
+                                        false, false, true, 150, 20),
 
                         new FriendlyNPC("Rogue Scientist",
                                         "I have hidden blueprints that might help...",
                                         new String[] { "You must find the archives.",
                                                         "Their biological weapons are incomplete but dangerous." },
-                                        false, true, false, null),
+                                        false, true, false, 75, 3),
 
                         new FriendlyNPC("Resistance Spy",
                                         "I have infiltrated PharmaCorp’s network...",
                                         new String[] { "Security clearance is required.",
                                                         "Prototype Eden-9 has a weakness, but it's classified." },
-                                        true, false, true, null),
+                                        true, false, true, 99, 15),
 
                         new FriendlyNPC("Underground Hacker",
                                         "I cracked PharmaCorp’s security once, but they caught me...",
                                         new String[] { "Their AI is unstable.",
                                                         "Find the mainframe to disable their defenses." },
-                                        false, true, false, null),
+                                        false, true, false, 80, 5),
 
                         new FriendlyNPC("Lab Assistant",
                                         "I was forced to work here... I can help you understand their research.",
                                         new String[] { "The mutation formula is in the testing facility.",
                                                         "The security commander knows the exit codes." },
-                                        false, false, true, null));
+                                        false, false, true, 60, 1));
 }

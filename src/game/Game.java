@@ -12,10 +12,6 @@ import java.util.ArrayList;
  * Main game class that handles character creation, storytelling, and game loop.
  */
 public class Game {
-    private static Hero player;
-    private static List<Enemy> enemies = new ArrayList<>();
-    private static Map gameMap;
-
     public static void main(String[] args) {
         // Set up game seed
         long gameSeed = (args.length > 0) ? parseSeed(args[0]) : System.currentTimeMillis();
@@ -31,19 +27,20 @@ public class Game {
         introduceStory();
 
         // Create Player Character
-        player = createHero();
+        var player = createHero();
 
         // Initialize Map
-        gameMap = new Map();
+        var gameMap = new Map();
         gameMap.startExploring(player);
 
         // Check if player is still alive for the final battle
         if (player.getCurrentHp() > 0) {
-            startFinalBattle();
+            var survivingNpcs = gameMap.getSurvivingNpcs();
+            startFinalBattle(player, survivingNpcs);
         }
 
         // End the game
-        endGame();
+        endGame(player);
     }
 
     private static long parseSeed(String seedStr) {
@@ -210,20 +207,26 @@ public class Game {
     /**
      * Starts the final battle against the boss.
      */
-    private static void startFinalBattle() {
+    private static void startFinalBattle(Hero player, ArrayList<FriendlyNPC> survivingNpcs) {
         AsciiArt.showBattleScreen();
         System.out.println("\n⚔️ **FINAL BATTLE BEGINS!** ⚔️");
 
-        Enemy finalBoss = new Enemy("Prototype Eden-9", 120, 20, 70, 5);
-        enemies.add(finalBoss);
-        Battle finalBattle = new Battle(player, finalBoss);
+        var finalEnemies = new ArrayList<Enemy>();
+        var random = GameRandom.getInstance();
+        var possibleEnemies = NPCRegistry.FINAL_BOSS;
+        // At least 1 enemy
+        int numberOfEnemies = random.nextInt(possibleEnemies.size()) + 1;
+        for (int i = 0; i < numberOfEnemies; i++) {
+            finalEnemies.add(possibleEnemies.get(random.nextInt(possibleEnemies.size())));
+        }
+        Battle finalBattle = new Battle(player, finalEnemies, survivingNpcs);
         finalBattle.start();
     }
 
     /**
      * Ends the game with different conclusions.
      */
-    private static void endGame() {
+    private static void endGame(Hero player) {
         if (player.getCurrentHp() > 0) {
             System.out.println("\n🏆 **You escaped the laboratory!**");
             System.out.println("But PharmaCorp's influence extends beyond these walls...");

@@ -2,35 +2,31 @@ package src.entities;
 
 import src.game.GameRandom;
 import src.game.GameScanner;
-import src.game.Mission;
 import src.items.HealthPotion;
 import src.items.HealthPotionSize;
 
 import java.util.Random;
-import java.util.Scanner;
 
 /**
  * Represents a friendly NPC that can assist the player.
  */
-public class FriendlyNPC {
-    private final String name;
+public class FriendlyNPC extends Entity {
     private final String backstory;
     private final String[] dialogues;
     private boolean canGiveItem;
     private boolean canHeal;
     private final boolean canFight;
-    private final Mission mission;
     private final Random random;
+    private boolean willJoinBattle;
 
     public FriendlyNPC(String name, String backstory, String[] dialogues, boolean canGiveItem, boolean canHeal,
-            boolean canFight, Mission mission) {
-        this.name = name;
+            boolean canFight, int maxHp, int strength) {
+        super(name, maxHp, strength);
         this.backstory = backstory;
         this.dialogues = dialogues;
         this.canGiveItem = canGiveItem;
         this.canHeal = canHeal;
         this.canFight = canFight;
-        this.mission = mission;
         this.random = GameRandom.getInstance();
     }
 
@@ -44,9 +40,6 @@ public class FriendlyNPC {
         while (true) {
             System.out.println("\n1️⃣ \"Tell me more about this place.\"");
             System.out.println("2️⃣ \"Do you have anything that can help me?\"");
-            if (mission != null && !mission.isCompleted()) {
-                System.out.println("3️⃣ \"Do you need my help with anything?\"");
-            }
             System.out.println("4️⃣ \"I have to go.\"");
             int choice = GameScanner.getInt();
 
@@ -57,11 +50,6 @@ public class FriendlyNPC {
                 case 2:
                     assist(player);
                     break;
-                case 3:
-                    if (mission != null && !mission.isCompleted()) {
-                        System.out.println("📝 New mission received: " + mission.getDescription());
-                    }
-                    break;
                 case 4:
                     System.out.println("🚶 You nod and continue your journey.");
                     return;
@@ -69,6 +57,10 @@ public class FriendlyNPC {
                     System.out.println("❌ Invalid choice!");
             }
         }
+    }
+
+    public boolean willJoinBattle() {
+        return this.willJoinBattle;
     }
 
     /**
@@ -99,16 +91,13 @@ public class FriendlyNPC {
 
         if (canFight) {
             System.out.println("⚔️ " + name + " says: \"If you need help in battle, I'll be there.\"");
-            // Future implementation: NPC joins battle
+            this.willJoinBattle = true;
         }
     }
 
-    /**
-     * Checks if the player completed a mission and rewards them.
-     */
-    public void checkMissionCompletion(Hero player, boolean completed) {
-        if (mission != null && !mission.isCompleted() && completed) {
-            mission.complete(player);
-        }
+    @Override
+    public void attack(Entity target) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'attack'");
     }
 }
