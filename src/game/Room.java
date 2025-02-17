@@ -7,7 +7,6 @@ import src.items.HealthPotionSize;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.Scanner;
 
 /**
  * Represents a room where the player can encounter battles, NPCs, and unique
@@ -40,9 +39,29 @@ public class Room {
         this.vendor = isVendorRoom ? new Vendor() : null;
     }
 
-    private void continueStory() {
-        System.out.println("Press Enter to continue the story ➡️");
-        GameScanner.waitForEnter();
+    private void continueStory(Hero player) {
+        boolean continueJourney = false;
+
+        while (!continueJourney) {
+            System.out.println("1️⃣ Hero Passport");
+            System.out.println("2️⃣ Check inventory");
+            System.out.println("Or continue the story ➡️");
+            String option = GameScanner.getString();
+
+            switch (option) {
+                case "1":
+                    player.showDetails();
+                    break;
+                case "2":
+                    player.getInventory().showInventory();
+                    break;
+
+                default:
+                    System.out.println("Our jorney continues...🥾");
+                    continueJourney = true;
+                    break;
+            }
+        }
     }
 
     public List<Enemy> getEnemies() {
@@ -60,16 +79,18 @@ public class Room {
      */
     public void enter(Hero player) {
         System.out.println("\n🚪 Entering " + name + "...");
+        continueStory(player);
 
         // Interact with NPC (if available)
         if (friendlyNPC != null) {
             friendlyNPC.interact(player);
-            continueStory();
+            continueStory(player);
         }
 
         // Offer vendor interaction if is a vendor room
         if (isVendorRoom) {
             accessVendor(player);
+            continueStory(player);
         }
 
         // Trigger a battle if there are enemies in this room
@@ -84,7 +105,7 @@ public class Room {
                 return;
             }
 
-            continueStory();
+            continueStory(player);
         }
 
         // Trigger a random event (loot, trap, special effect)
@@ -101,7 +122,6 @@ public class Room {
      */
     private void accessVendor(Hero player) {
         System.out.println("\n🛒 You have found a **vendor**!");
-        Scanner scanner = new Scanner(System.in);
 
         while (true) {
             System.out.println("\nChoose an option:");
@@ -109,7 +129,7 @@ public class Room {
             System.out.println("2️⃣ Sell Items");
             System.out.println("3️⃣ Exit Shop");
 
-            int choice = scanner.nextInt();
+            int choice = GameScanner.getInt();
             switch (choice) {
                 case 1 -> vendor.buyItems(player);
                 case 2 -> vendor.sellItems(player);
@@ -140,7 +160,7 @@ public class Room {
                 case 3 -> chemicalSurprise(player);
             }
 
-            continueStory();
+            continueStory(player);
         }
     }
 

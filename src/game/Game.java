@@ -7,7 +7,6 @@ import src.utils.AsciiArt;
 
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 /**
  * Main game class that handles character creation, storytelling, and game loop.
@@ -132,7 +131,7 @@ public class Game {
                 int maxStrength = statPoints / 5;
                 System.out.println("💪 You can allocate up to " + maxStrength + " Strength.");
                 System.out.print("Would you like to allocate all remaining points to Strength? (Y/N): ");
-                String choice = GameScanner.getString().trim();
+                String choice = GameScanner.getString();
 
                 if (choice.equalsIgnoreCase("y")) {
                     strength += maxStrength;

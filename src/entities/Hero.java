@@ -39,6 +39,7 @@ public abstract class Hero extends Entity {
         this.inventory = new Inventory();
         this.mainWeapon = ItemHeroRegistry.getStartingWeaponForHero(this); // ✅ Get weapon from registry
         this.random = GameRandom.getInstance();
+        this.initializeInventory();
     }
 
     /**
@@ -50,8 +51,6 @@ public abstract class Hero extends Entity {
         System.out.println("Level: " + level);
         System.out.println("Gold: " + gold);
         System.out.println("Weapon: " + (mainWeapon != null ? mainWeapon.getName() : "None"));
-        System.out.println("Inventory:");
-        inventory.showInventory();
     }
 
     /**

@@ -48,9 +48,7 @@ public class FriendlyNPC {
                 System.out.println("3️⃣ \"Do you need my help with anything?\"");
             }
             System.out.println("4️⃣ \"I have to go.\"");
-            int choice = 0;
-
-            GameScanner.getInt();
+            int choice = GameScanner.getInt();
 
             switch (choice) {
                 case 1:
