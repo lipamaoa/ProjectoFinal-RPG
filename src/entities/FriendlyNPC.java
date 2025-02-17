@@ -1,6 +1,7 @@
 package src.entities;
 
 import src.game.GameRandom;
+import src.game.GameScanner;
 import src.game.Mission;
 import src.items.HealthPotion;
 import src.items.HealthPotionSize;
@@ -15,11 +16,10 @@ public class FriendlyNPC {
     private final String name;
     private final String backstory;
     private final String[] dialogues;
-    private final boolean canGiveItem;
+    private boolean canGiveItem;
     private boolean canHeal;
     private final boolean canFight;
     private final Mission mission;
-    private final static Scanner scanner = new Scanner(System.in);
     private final Random random;
 
     public FriendlyNPC(String name, String backstory, String[] dialogues, boolean canGiveItem, boolean canHeal,
@@ -50,11 +50,7 @@ public class FriendlyNPC {
             System.out.println("4️⃣ \"I have to go.\"");
             int choice = 0;
 
-            if (scanner.hasNextInt()) {
-                choice = scanner.nextInt();
-            } else {
-                scanner.nextLine();
-            }
+            GameScanner.getInt();
 
             switch (choice) {
                 case 1:
@@ -92,10 +88,11 @@ public class FriendlyNPC {
         if (canGiveItem) {
             System.out.println("🎁 " + name + " hands you a small vial.");
             player.addItemToInventory(new HealthPotion(HealthPotionSize.Small));
+            this.canGiveItem = false;
         }
 
         if (canHeal) {
-            int healAmount = this.random.nextInt(30) + 20; // Between 20 and 50 HP
+            int healAmount = this.random.nextInt(30) + 20;
             player.heal(healAmount);
             System.out.println("🩹 " + name + " patches up your wounds.");
             // Heal just once
@@ -104,8 +101,8 @@ public class FriendlyNPC {
 
         if (canFight) {
             System.out.println("⚔️ " + name + " says: \"If you need help in battle, I'll be there.\"");
+            // Future implementation: NPC joins battle
         }
-        // Future implementation: NPC joins battle
     }
 
     /**

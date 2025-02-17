@@ -1,5 +1,6 @@
 package src.entities;
 
+import src.game.GameScanner;
 import src.items.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,11 +11,9 @@ import java.util.Scanner;
  */
 public class Vendor {
     private List<Item> storeInventory;
-    private Scanner scanner;
 
     public Vendor() {
         this.storeInventory = new ArrayList<>();
-        this.scanner = new Scanner(System.in);
     }
 
     /**
@@ -55,7 +54,7 @@ public class Vendor {
             System.out.println("\n💰 Your gold: " + player.getGold());
             System.out.println("Enter the number of the item to buy (or 0 to exit): ");
 
-            int choice = scanner.nextInt();
+            int choice = GameScanner.getInt();
             if (choice == 0)
                 break;
 
@@ -67,7 +66,7 @@ public class Vendor {
                 System.out.println("💰 Price: " + selectedItem.getPrice() + " gold");
                 System.out.println("Confirm purchase? (1 = Yes, 2 = No)");
 
-                int confirm = scanner.nextInt();
+                int confirm = GameScanner.getInt();
                 if (confirm == 1) {
                     if (player.getGold() >= selectedItem.getPrice()) {
                         player.spendGold(selectedItem.getPrice());
@@ -95,7 +94,7 @@ public class Vendor {
             System.out.println("\n💰 Your gold: " + player.getGold());
             System.out.println("Enter the number of the item to sell (or 0 to exit): ");
 
-            int choice = scanner.nextInt();
+            int choice = GameScanner.getInt();
             if (choice == 0)
                 break;
 

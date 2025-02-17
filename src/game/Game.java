@@ -6,7 +6,6 @@ import src.items.Weapon;
 import src.utils.AsciiArt;
 
 import java.util.List;
-import java.util.Random;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -14,7 +13,6 @@ import java.util.Scanner;
  * Main game class that handles character creation, storytelling, and game loop.
  */
 public class Game {
-    private static Scanner scanner = new Scanner(System.in);
     private static Hero player;
     private static List<Enemy> enemies = new ArrayList<>();
     private static Map gameMap;
@@ -90,7 +88,7 @@ public class Game {
 
         while (!isNameValid(playerName)) {
             System.out.print("\n📝 Enter your name: ");
-            playerName = scanner.nextLine();
+            playerName = GameScanner.getString();
         }
 
         // Choose Hero Type
@@ -99,14 +97,14 @@ public class Game {
         System.out.println("2️⃣ Bioengineer - Specializes in regeneration and biological enhancements.");
         System.out.println("3️⃣ Tactical Chemist - Uses chemical explosives and reactive combat.");
 
-        int heroChoice = getValidInput("Enter your choice ", 1, 3);
+        int heroChoice = GameScanner.getIntInRange("Enter your choice ", 1, 3);
 
         // Choose Difficulty
         System.out.println("\nChoose your difficulty:");
         System.out.println("1️⃣ Easy (300 stat points, 20 gold)");
         System.out.println("2️⃣ Hard (220 stat points, 15 gold)");
 
-        int difficultyChoice = getValidInput("Enter your choice ", 1, 2);
+        int difficultyChoice = GameScanner.getIntInRange("Enter your choice ", 1, 2);
         int statPoints = (difficultyChoice == 1) ? 300 : 220;
         int gold = (difficultyChoice == 1) ? 20 : 15;
 
@@ -125,7 +123,7 @@ public class Game {
             System.out.println("1 stat point = 1 ❤\uFE0FHP.\n5 stat point = 1 💪Strength");
 
             // Allocate HP
-            int hpPoints = getValidInput("Allocate points to HP: ", 0, statPoints);
+            int hpPoints = GameScanner.getIntInRange("Allocate points to HP: ", 0, statPoints);
             health += hpPoints;
             statPoints -= hpPoints;
 
@@ -134,13 +132,13 @@ public class Game {
                 int maxStrength = statPoints / 5;
                 System.out.println("💪 You can allocate up to " + maxStrength + " Strength.");
                 System.out.print("Would you like to allocate all remaining points to Strength? (Y/N): ");
-                String choice = scanner.nextLine().trim();
+                String choice = GameScanner.getString().trim();
 
                 if (choice.equalsIgnoreCase("y")) {
                     strength += maxStrength;
                     statPoints = 0;
                 } else if (choice.equalsIgnoreCase("n")) {
-                    int strengthPoints = getValidInput("Enter points for Strength: ", 0, maxStrength);
+                    int strengthPoints = GameScanner.getIntInRange("Enter points for Strength: ", 0, maxStrength);
                     strength += strengthPoints;
                     statPoints -= (strengthPoints * 5);
 
@@ -208,26 +206,6 @@ public class Game {
         //
         //
         // }
-    }
-
-    /**
-     * Utility function to get valid integer input within a range.
-     */
-    private static int getValidInput(String prompt, int min, int max) {
-        int value;
-        while (true) {
-            System.out.print(prompt + "(" + min + "," + max + "): ");
-            if (scanner.hasNextInt()) {
-                value = scanner.nextInt();
-                scanner.nextLine();
-                if (value >= min && value <= max) {
-                    return value;
-                }
-            } else {
-                scanner.nextLine();
-            }
-            System.out.println("❌ Invalid input. Please enter a number between " + min + " and " + max + ".");
-        }
     }
 
     /**

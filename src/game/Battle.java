@@ -16,7 +16,6 @@ import java.util.Scanner;
 public class Battle {
     private Hero player;
     private Enemy enemy;
-    private Scanner scanner;
 
     /**
      * Constructs a battle instance with a predefined list of enemies.
@@ -27,7 +26,6 @@ public class Battle {
     public Battle(Hero player, Enemy enemy) {
         this.player = player;
         this.enemy = enemy;
-        this.scanner = new Scanner(System.in);
     }
 
     public Enemy getEnemy() {
@@ -70,7 +68,7 @@ public class Battle {
             System.out.println("3️⃣ Hack " + enemy.getName());
         }
 
-        int choice = scanner.nextInt();
+        int choice = GameScanner.getInt();
 
         switch (choice) {
             case 1 -> attackEnemy();
@@ -125,7 +123,7 @@ public class Battle {
         player.getInventory().showInventory();
 
         System.out.println("\nChoose an item to use (or 0 to cancel):");
-        int itemChoice = scanner.nextInt();
+        int itemChoice = GameScanner.getInt();
 
         if (itemChoice == 0) {
             System.out.println("❌ Action canceled.");
