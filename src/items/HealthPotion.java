@@ -1,5 +1,6 @@
 package src.items;
 
+import src.entities.Bioengineer;
 import src.entities.Hero;
 
 /**
@@ -14,8 +15,14 @@ public class HealthPotion extends ItemHero {
      * @param size - Size of the health potion
      */
     public HealthPotion(HealthPotionSize size) {
-        super(getPotionName(size), "Heals for " + getPotionHealing(size) + " ❤\uFE0FHP", getPotionPrice(size));
+        super(getPotionName(size), "Heals for " + getPotionHealing(size) + " ❤\uFE0FHP", getPotionPrice(size), null);
         this.healingAmount = getPotionHealing(size);
+
+        this.effect = (Hero player) -> {
+            System.out.println(
+                    "💊 " + player.getName() + " drinks a Health Potion and recovers " + healingAmount + " HP!");
+            player.heal(healingAmount);
+        };
     }
 
     private static String getPotionName(HealthPotionSize size) {
@@ -40,17 +47,6 @@ public class HealthPotion extends ItemHero {
             case Medium -> 40;
             case Large -> 60;
         };
-    }
-
-    /**
-     * Uses the potion to heal the hero.
-     *
-     * @param player The hero consuming the potion.
-     */
-    @Override
-    public void use(Hero player) {
-        System.out.println("💊 " + player.getName() + " drinks a Health Potion and recovers " + healingAmount + " HP!");
-        player.heal(healingAmount);
     }
 
     public int getEffectValue() {

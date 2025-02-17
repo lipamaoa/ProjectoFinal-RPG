@@ -4,18 +4,25 @@ import src.entities.*;
 import src.items.HealthPotion;
 import src.items.HealthPotionSize;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Scanner;
 
 /**
- * Represents a room where the player can encounter battles, NPCs, and unique events.
+ * Represents a room where the player can encounter battles, NPCs, and unique
+ * events.
  */
 public class Room {
-    private String name;
-    private List<NPC> possibleEnemies;
-    private FriendlyNPC friendlyNPC;
+    private final String name;
+    private final Enemy roomEnemy;
+    private final FriendlyNPC friendlyNPC;
+    private final Vendor vendor;
     private boolean isCompleted = false;
+    private boolean isVendorRoom = false;
     private static final Random random = new Random();
+    private static List<FriendlyNPC> assignedFriendlyNPCs = new ArrayList<>();
+    private static List<Vendor> assignedVendors = new ArrayList<>();
 
     /**
      * Constructs a room with predefined enemies and NPC interactions.
@@ -24,10 +31,28 @@ public class Room {
      * @param possibleEnemies The list of enemies that can appear in this room.
      * @param friendlyNPC     The friendly NPC in this room (if any).
      */
-    public Room(String name, List<NPC> possibleEnemies, FriendlyNPC friendlyNPC) {
+    public Room(String name, List<Enemy> possibleEnemies, FriendlyNPC friendlyNPC, boolean isVendorRoom) {
         this.name = name;
-        this.possibleEnemies = possibleEnemies;
+        this.roomEnemy = possibleEnemies != null && !possibleEnemies.isEmpty()
+                ? possibleEnemies.get(random.nextInt(possibleEnemies.size()))
+                : null;
         this.friendlyNPC = friendlyNPC;
+        this.isVendorRoom = isVendorRoom;
+        this.vendor = isVendorRoom ? new Vendor() : null;
+    }
+
+    private void continueStory() {
+        System.out.println("Press Enter to continue the story ➡️");
+        Scanner scanner = new Scanner(System.in);
+        scanner.nextLine();
+    }
+
+    public List<Enemy> getEnemies() {
+        return roomEnemy != null ? List.of(roomEnemy) : new ArrayList<>();
+    }
+
+    public FriendlyNPC getFriendlyNPC() {
+        return friendlyNPC;
     }
 
     /**
@@ -41,21 +66,27 @@ public class Room {
         // Interact with NPC (if available)
         if (friendlyNPC != null) {
             friendlyNPC.interact(player);
+            continueStory();
+        }
+
+        // Offer vendor interaction if is a vendor room
+        if (isVendorRoom) {
+            accessVendor(player);
         }
 
         // Trigger a battle if there are enemies in this room
-        if (!possibleEnemies.isEmpty()) {
+        if (this.roomEnemy != null) {
             System.out.println("⚠️ An enemy appears!");
 
-            // Select a random enemy from the list
-            NPC enemy = selectRandomEnemy();
-            Battle battle = new Battle(player,enemy);
+            Battle battle = new Battle(player, this.roomEnemy);
             battle.start();
 
             // If the player dies, stop further events
             if (player.getCurrentHp() <= 0) {
                 return;
             }
+
+            continueStory();
         }
 
         // Trigger a random event (loot, trap, special effect)
@@ -68,12 +99,33 @@ public class Room {
     }
 
     /**
-     * Randomly selects an enemy from the list of possible enemies in this room.
-     *
-     * @return A randomly selected enemy.
+     * Allows the player to access the vendor to buy and sell items.
      */
-    private NPC selectRandomEnemy() {
-        return possibleEnemies.get(random.nextInt(possibleEnemies.size()));
+    private void accessVendor(Hero player) {
+        System.out.println("\n🛒 You have found a **vendor**!");
+        Scanner scanner = new Scanner(System.in);
+
+        while (true) {
+            System.out.println("\nChoose an option:");
+            System.out.println("1️⃣ Buy Items");
+            System.out.println("2️⃣ Sell Items");
+            System.out.println("3️⃣ Exit Shop");
+
+            int choice = scanner.nextInt();
+            switch (choice) {
+                case 1 -> vendor.buyItems(player);
+                case 2 -> vendor.sellItems(player);
+                case 3 -> {
+                    System.out.println("🚪 You leave the vendor.");
+                    return;
+                }
+                default -> System.out.println("❌ Invalid choice! Try again.");
+            }
+        }
+    }
+
+    public void setVendorRoom(boolean isVendorRoom) {
+        this.isVendorRoom = isVendorRoom;
     }
 
     /**
@@ -89,6 +141,8 @@ public class Room {
                 case 2 -> secretFile();
                 case 3 -> chemicalSurprise(player);
             }
+
+            continueStory();
         }
     }
 

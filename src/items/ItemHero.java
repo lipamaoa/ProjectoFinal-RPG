@@ -1,12 +1,14 @@
 package src.items;
 
+import java.util.function.Consumer;
+
+import src.entities.Hero;
+
 /**
- * Represents a base class for items that a hero can use or equip.
+ * Represents an item that can be used or equipped by a hero.
  */
-public abstract class ItemHero {
-    protected String name;
-    protected String description;
-    protected int price; // Cost or sell price
+public class ItemHero extends Item {
+    protected Consumer<Hero> effect;
 
     /**
      * Constructs a hero item.
@@ -15,36 +17,15 @@ public abstract class ItemHero {
      * @param description The description of what the item does.
      * @param price       The item's value (cost or selling price).
      */
-    public ItemHero(String name, String description, int price) {
-        this.name = name;
-        this.description = description;
-        this.price = price;
+    public ItemHero(String name, String description, int price, Consumer<Hero> effect) {
+        super(name, description, price);
+        this.effect = effect;
     }
 
     /**
      * Applies the item's effect when used by the hero.
      */
-    public abstract void use(src.entities.Hero player);
-
-    /**
-     * Displays item details.
-     */
-    public void showDetails() {
-        System.out.println("🛠️ Item: " + this.name);
-        System.out.println("ℹ️ " + this.description);
-        System.out.println("💰 Value: " + this.price + " gold");
-    }
-
-    // Getters
-    public String getName() {
-        return name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public int getPrice() {
-        return price;
+    public final void use(Hero player) {
+        effect.accept(player);
     }
 }

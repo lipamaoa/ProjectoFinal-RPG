@@ -15,25 +15,21 @@ public class Weapon extends ItemHero {
      * @param name        The name of the weapon.
      * @param attackPower The amount of extra damage it deals.
      * @param durability  How many uses the weapon has.
-     * @param value       The price of the weapon.
+     * @param price       The price of the weapon.
      */
-    public Weapon(String name, int attackPower, int durability, int value) {
-        super(name, "A weapon that increases attack power.", value);
+    public Weapon(String name, String description, int attackPower, int durability, int price) {
+        super(name, description, price, null);
         this.attackPower = attackPower;
         this.durability = durability;
-    }
 
-    /**
-     * Uses the weapon in battle.
-     */
-    @Override
-    public void use(Hero player) {
-        if (durability > 0) {
-            System.out.println("🔪 " + name + " is used in battle, dealing +" + attackPower + " damage!");
-            durability--;
-        } else {
-            System.out.println("❌ " + name + " is broken and cannot be used!");
-        }
+        this.effect = (Hero player) -> {
+            if (this.durability > 0) {
+                System.out.println("🔪 " + name + " is used in battle, dealing +" + attackPower + " damage!");
+                this.durability--;
+            } else {
+                System.out.println("❌ " + name + " is broken and cannot be used!");
+            }
+        };
     }
 
     // Getters

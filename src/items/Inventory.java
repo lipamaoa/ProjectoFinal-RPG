@@ -1,22 +1,36 @@
 package src.items;
 
+import src.entities.Hero;
+
 import java.util.ArrayList;
 
 /**
  * Manages the hero's inventory, including weapons and health potions.
  */
 public class Inventory {
-    private ArrayList<ItemHero> items;
+    private ArrayList<Item> items;
 
     public Inventory() {
+
         this.items = new ArrayList<>();
     }
 
     /**
+     * Gets the inventory array
+     * 
+     * @return itens array
+     */
+
+    public ArrayList<Item> getInventory() {
+        return items;
+    }
+
+    /**
      * Adds an item to the inventory.
+     * 
      * @param item The item to be added.
      */
-    public void addItem(ItemHero item) {
+    public void addItem(Item item) {
         if (item != null) {
             items.add(item);
             System.out.println("📦 Added " + item.getName() + " to inventory.");
@@ -27,9 +41,10 @@ public class Inventory {
 
     /**
      * Removes an item from the inventory.
+     * 
      * @param item The item to remove.
      */
-    public void removeItem(ItemHero item) {
+    public void removeItem(Item item) {
         if (items.contains(item)) {
             items.remove(item);
             System.out.println("🗑️ Used " + item.getName() + ".");
@@ -47,13 +62,41 @@ public class Inventory {
         } else {
             System.out.println("\n🎒 **Inventory:**");
             for (int i = 0; i < items.size(); i++) {
-                System.out.println((i + 1) + "️⃣ " + items.get(i).getName());
+                var item = items.get(i);
+                System.out.println(
+                        (i + 1) + "️⃣ " + item.getName() + (item.description != null ? " - " + item.description : ""));
             }
         }
     }
 
     /**
+     * Uses an item based on the index in the inventory.
+     *
+     * @param index The index of the item to use.
+     * @return
+     */
+    // public Item useItem(int index, Hero player) {
+    //     if (items.isEmpty()) {
+    //         System.out.println("❌ You have no items to use!");
+    //         return null;
+    //     }
+
+    //     if (index < 0 || index >= items.size()) {
+    //         System.out.println("❌ Invalid item selection!");
+    //         return null;
+    //     }
+
+    //     Item selectedItem = items.get(index);
+    //     selectedItem.use(player);
+    //     items.remove(index);
+
+    //     System.out.println("✔️ You used " + selectedItem.getName() + "!");
+    //     return selectedItem;
+    // }
+
+    /**
      * Returns the number of items in the inventory.
+     * 
      * @return The size of the inventory.
      */
     public int getSize() {
@@ -62,10 +105,11 @@ public class Inventory {
 
     /**
      * Returns the item at a specific index.
+     * 
      * @param index The index of the item.
      * @return The item at the specified index or null if invalid.
      */
-    public ItemHero getItem(int index) {
+    public Item getItem(int index) {
         if (index >= 0 && index < items.size()) {
             return items.get(index);
         }
@@ -74,10 +118,11 @@ public class Inventory {
 
     /**
      * Checks if the inventory contains any health potions.
+     * 
      * @return True if there is at least one health potion.
      */
     public boolean hasPotion() {
-        for (ItemHero item : items) {
+        for (Item item : items) {
             if (item instanceof HealthPotion) {
                 return true;
             }
@@ -87,14 +132,16 @@ public class Inventory {
 
     /**
      * Returns the first health potion found in the inventory.
+     * 
      * @return A health potion or null if none exist.
      */
     public HealthPotion getFirstPotion() {
-        for (ItemHero item : items) {
+        for (Item item : items) {
             if (item instanceof HealthPotion) {
                 return (HealthPotion) item;
             }
         }
         return null;
     }
+
 }

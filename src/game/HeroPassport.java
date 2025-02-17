@@ -26,7 +26,7 @@ public class HeroPassport {
      * Loads the hero passport template and fills in hero details.
      */
     public static String generatePassport(String playerName, String heroClass, String weapon, String weaponDetails,
-                                          int hp, int strength, int gold, String heroAbilities) {
+            int hp, int strength, int gold, String heroAbilities) {
         try {
             // Load the passport template
             String template = new String(Files.readAllBytes(Paths.get("src/game/hero_passport_template.txt")));

@@ -3,7 +3,9 @@ package src.game;
 import src.entities.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
+import java.util.Arrays;
 
 /**
  * Handles room navigation, battles, and mission progression.
@@ -12,55 +14,59 @@ public class Map {
     private List<Room> rooms;
     private Scanner scanner;
     private boolean complexExitUnlocked = false; // Locked until player progresses
+    private Random rand;
+    private static List<FriendlyNPC> assignedFriendlyNPCs = new ArrayList<>();
+    private static List<Vendor> assignedVendors = new ArrayList<>();
 
     public Map() {
         this.rooms = new ArrayList<>();
         this.scanner = new Scanner(System.in);
+        this.rand = new Random();
         initializeRooms();
+    }
+
+    /**
+     * Picks a random NPC from the list of available NPCs and removes it to ensure
+     * it can't be repeated.
+     */
+    private FriendlyNPC getRandomUniqueFriendlyNPC(List<FriendlyNPC> availableNPCs) {
+        if (availableNPCs.isEmpty()) {
+            return null; // or throw an exception if no NPCs are available
+        }
+        int index = rand.nextInt(availableNPCs.size());
+        return availableNPCs.remove(index);
     }
 
     /**
      * Creates different rooms with predefined enemies and NPCs.
      */
     private void initializeRooms() {
-        // Create predefined enemy lists for each room
-        List<NPC> labEnemies = List.of(
-                new NPC("Security Guard", 50, 8, 10, 1),
-                new NPC("Lab Mutant", 60, 10, 15, 2));
-
-        List<NPC> securityEnemies = List.of(
-                new NPC("Security Commander", 70, 12, 20, 3),
-                new NPC("Automated Drone", 80, 14, 25, 3));
-
-        List<NPC> testingEnemies = List.of(
-                new NPC("Failed Experiment", 70, 12, 20, 3),
-                new NPC("Enhanced Guard", 80, 14, 25, 3));
-
-        List<NPC> finalBoss = List.of(new NPC("Prototype Eden-9", 120, 20, 70, 5));
-
-        // Create Friendly NPCs with missions
-        FriendlyNPC drMira = new FriendlyNPC(
-                "Dr. Mira",
-                "I used to work in PharmaCorp before they betrayed us. They said they were curing diseases, but they were creating weapons...",
-                new String[] { "PharmaCorp is hiding something deep in the lab.",
-                        "There are secret documents in the Security Department." },
-                true, true, false, null 
-        );
-
-        FriendlyNPC exSoldier = new FriendlyNPC(
-                "Ex-PharmaCorp Soldier",
-                "I was part of the PharmaCorp security forces until I saw what they were doing. Now, I help those who fight back.",
-                new String[] { "Be careful, some of the test subjects have mutated beyond control.",
-                        "I have seen Prototype Eden-9... It’s unstoppable." },
-                false, false, true, null 
-        );
+        List<FriendlyNPC> availableNPCs = new ArrayList<>(NPCRegistry.FRIENDLY_NPC);
 
         // Create rooms with predefined enemies and NPCs
-        rooms.add(new Room("Biological Research Lab", labEnemies, drMira));
-        rooms.add(new Room("Security Department", securityEnemies, null));
-        rooms.add(new Room("Human Testing Facility", testingEnemies, exSoldier));
-        rooms.add(new Room("Chemical Storage", new ArrayList<>(), null)); // Vendor room, no enemies
-        rooms.add(new Room("Complex Exit", finalBoss, null)); // Final battle room (LOCKED)
+        rooms.add(new Room("Biological Research Lab", NPCRegistry.LAB_ENEMIES,
+                getRandomUniqueFriendlyNPC(availableNPCs), false));
+        rooms.add(new Room("Security Department", NPCRegistry.SECURITY_ENEMIES,
+                getRandomUniqueFriendlyNPC(availableNPCs), false));
+        rooms.add(new Room("Human Testing Facility", NPCRegistry.TESTING_ENEMIES,
+                getRandomUniqueFriendlyNPC(availableNPCs), false));
+        rooms.add(new Room("Chemical Storage - Safe Zone", new ArrayList<>(),
+                getRandomUniqueFriendlyNPC(availableNPCs), true));
+        rooms.add(new Room("Chemical Storage - Contaminated Zone", NPCRegistry.CHEMICAL_ENEMIES,
+                getRandomUniqueFriendlyNPC(availableNPCs), false));
+        rooms.add(new Room("Archives", NPCRegistry.ARCHIVE_ENEMIES, getRandomUniqueFriendlyNPC(availableNPCs),
+                false));
+        // Final battle room (LOCKED)
+        rooms.add(new Room("Complex Exit", NPCRegistry.FINAL_BOSS, null, false));
+
+        // Randomly assign a vendor to one of the rooms (excluding the final boss room)
+        Random rand = new Random();
+        int vendorRoomIndex = rand.nextInt(rooms.size() - 1);
+
+        // Replace the selected room with a new version that has a vendor
+        Room vendorRoom = rooms.get(vendorRoomIndex);
+        rooms.set(vendorRoomIndex,
+                new Room(vendorRoom.getName(), vendorRoom.getEnemies(), vendorRoom.getFriendlyNPC(), true));
     }
 
     /**
@@ -87,7 +93,7 @@ public class Map {
             for (int i = currentRoomIndex + 1; i < rooms.size(); i++) {
                 if (!complexExitUnlocked && rooms.get(i).getName().equals("Complex Exit")) {
                     System.out.println("❌ Complex Exit is locked. Explore more before proceeding.");
-                    continue; // Skip displaying locked exit
+                    continue;
                 }
                 System.out.println((i - currentRoomIndex) + "️⃣ " + rooms.get(i).getName());
             }

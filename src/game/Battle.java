@@ -1,11 +1,13 @@
 package src.game;
 
 import src.entities.Hero;
-import src.entities.NPC;
+import src.entities.Enemy;
 import src.entities.PharmacologistHacker;
+import src.items.ItemBattle;
+import src.items.ItemHero;
+import src.items.Item;
 import src.utils.AsciiArt;
-import java.util.List;
-import java.util.Random;
+
 import java.util.Scanner;
 
 /**
@@ -13,23 +15,28 @@ import java.util.Scanner;
  */
 public class Battle {
     private Hero player;
-    private NPC enemy;
+    private Enemy enemy;
     private Scanner scanner;
-    private static final Random random = new Random();
 
     /**
      * Constructs a battle instance with a predefined list of enemies.
      *
      * @param player The player's hero.
-     * @param possibleEnemies The list of enemies available in this room.
+     * @param enemy  The enemy in this room.
      */
-    public Battle(Hero player, NPC enemy) {
+    public Battle(Hero player, Enemy enemy) {
         this.player = player;
         this.enemy = enemy;
         this.scanner = new Scanner(System.in);
     }
 
-    
+    public Enemy getEnemy() {
+        return enemy;
+    }
+
+    public Hero getPlayer() {
+        return this.player;
+    }
 
     /**
      * Starts the battle loop.
@@ -109,7 +116,46 @@ public class Battle {
      * Allows the player to use an item.
      */
     private void useItem() {
-        player.usePotion();
+        if (player.getInventory().getSize() == 0) {
+            System.out.println("❌ You have no items in your inventory!");
+            return;
+        }
+
+        System.out.println("\n👜 Inventory:");
+        player.getInventory().showInventory();
+
+        System.out.println("\nChoose an item to use (or 0 to cancel):");
+        int itemChoice = scanner.nextInt();
+
+        if (itemChoice == 0) {
+            System.out.println("❌ Action canceled.");
+            return;
+        }
+
+        // Validate selection
+        if (itemChoice < 1 || itemChoice > player.getInventory().getSize()) {
+            System.out.println("❌ Invalid selection! Please choose a valid item.");
+            return;
+        }
+
+        // Retrieve selected item
+        Item selectedItem = player.getInventory().getItem(itemChoice - 1);
+
+        if (selectedItem != null) {
+            // ✅ If the item is an EMP Grenade and the player is a PharmacologistHacker,
+            // apply it to the enemy
+            if (selectedItem instanceof ItemBattle battleItem) {
+                battleItem.use(this);
+                ;
+            } else if (selectedItem instanceof ItemHero playerItem) {
+                playerItem.use(player);
+            }
+
+            player.getInventory().removeItem(selectedItem);
+            System.out.println("✔️ You used " + selectedItem.getName() + "!");
+        } else {
+            System.out.println("❌ Something went wrong! Could not use item.");
+        }
     }
 
     /**

@@ -1,10 +1,12 @@
 package src.game;
 
 import src.entities.*;
+import src.items.ItemHeroRegistry;
 import src.items.Weapon;
 import src.utils.AsciiArt;
 
 import java.util.List;
+import java.util.Random;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -14,10 +16,17 @@ import java.util.Scanner;
 public class Game {
     private static Scanner scanner = new Scanner(System.in);
     private static Hero player;
-    private static List<NPC> enemies = new ArrayList<>();
+    private static List<Enemy> enemies = new ArrayList<>();
     private static Map gameMap;
 
     public static void main(String[] args) {
+        // Set up game seed
+        long gameSeed = (args.length > 0) ? parseSeed(args[0]) : System.currentTimeMillis();
+
+        // Initialize the global random instance
+        GameRandom.initialize(gameSeed);
+        System.out.println("🎲 Game Seed: " + GameRandom.getSeed());
+
         // Display ASCII Welcome Screen
         AsciiArt.showWelcomeScreen();
 
@@ -38,6 +47,15 @@ public class Game {
 
         // End the game
         endGame();
+    }
+
+    private static long parseSeed(String seedStr) {
+        try {
+            return Long.parseLong(seedStr);
+        } catch (NumberFormatException e) {
+            System.out.println("❌ Invalid seed provided. Using random seed instead.");
+            return System.currentTimeMillis();
+        }
     }
 
     /**
@@ -62,7 +80,8 @@ public class Game {
 
     /**
      * Creates a character based on user input.
-     * Allows the player to choose hero type, difficulty, and distribute stat points.
+     * Allows the player to choose hero type, difficulty, and distribute stat
+     * points.
      *
      * @return The created hero.
      */
@@ -92,8 +111,13 @@ public class Game {
         int gold = (difficultyChoice == 1) ? 20 : 15;
 
         // Allocate Stat Points
-        int health = 0;
-        int strength = 0;
+        // Starting points
+        int health = 50;
+        int strength = 10;
+        // Remove starting points
+        statPoints -= 100;
+
+        System.out.printf("You start with %d ❤\\uFE0FHP and %d 💪Strength.", health, strength);
 
         while (statPoints > 0) {
             System.out.println("\nRemaining stat points: " + statPoints);
@@ -114,7 +138,7 @@ public class Game {
 
                 if (choice.equalsIgnoreCase("y")) {
                     strength += maxStrength;
-                    statPoints = 0; // All points used up
+                    statPoints = 0;
                 } else if (choice.equalsIgnoreCase("n")) {
                     int strengthPoints = getValidInput("Enter points for Strength: ", 0, maxStrength);
                     strength += strengthPoints;
@@ -130,13 +154,13 @@ public class Game {
         }
 
         // Assign Default Weapons and Hero Description
-        Weapon defaultWeapon;
+        Weapon startingWeapon;
         String heroDescription = "";
         String heroAbilities = "";
 
         switch (heroChoice) {
             case 1:
-                defaultWeapon = new Weapon("Toxic Dart Gun", 10, 3, 5);
+                startingWeapon = ItemHeroRegistry.HACKER_WEAPON;
                 heroDescription = "The Pharmacologist Hacker is a master of toxins and cyber warfare, using chemical compounds to debilitate enemies.";
                 heroAbilities = "🛠️ **Abilities:**\n"
                         + "- Poison Dart: Inflicts gradual damage over time.\n"
@@ -145,7 +169,7 @@ public class Game {
                 break;
 
             case 2:
-                defaultWeapon = new Weapon("Bioelectric Gloves", 12, 4, 6);
+                startingWeapon = ItemHeroRegistry.BIOENGINEER_WEAPON;
                 heroDescription = "The Bioengineer enhances their body with regenerative biotechnology, allowing them to heal and reinforce combat capabilities.";
                 heroAbilities = "🛠️ **Abilities:**\n"
                         + "- Rapid Healing: Recovers small amounts of HP over time.\n"
@@ -154,7 +178,7 @@ public class Game {
                 break;
 
             case 3:
-                defaultWeapon = new Weapon("Chemical Grenades", 14, 5, 7);
+                startingWeapon = ItemHeroRegistry.CHEMIST_WEAPON;
                 heroDescription = "The Tactical Chemist specializes in volatile explosives and reactive combat, turning the battlefield into a chemical war zone.";
                 heroAbilities = "🛠️ **Abilities:**\n"
                         + "- Explosive Trap: Places chemical bombs that detonate on impact.\n"
@@ -167,23 +191,23 @@ public class Game {
         }
 
         if (heroChoice == 1) {
-            return new PharmacologistHacker(playerName, health, strength, 1, gold, defaultWeapon);
+            return new PharmacologistHacker(playerName, health, strength, 1, gold, startingWeapon);
         } else if (heroChoice == 2) {
-            return new Bioengineer(playerName, health, strength, 1, gold, defaultWeapon);
+            return new Bioengineer(playerName, health, strength, 1, gold, startingWeapon);
         } else {
-            return new TacticalChemist(playerName, health, strength, 1, gold, defaultWeapon);
+            return new TacticalChemist(playerName, health, strength, 1, gold, startingWeapon);
         }
 
-
-// Generate and save passport
-//        String passportContent = HeroPassport.generatePassport(playerName, heroChoice, defaultWeapon, health, strength, gold, heroAbilities);
-//        if (passportContent != null) {
-//            String fileName = "hero_passport.txt";
-//            HeroPassport.saveHeroPassport(fileName, passportContent);
-//            HeroPassport.loadAndDisplayPassport(fileName);
-//
-//
-//        }
+        // Generate and save passport
+        // String passportContent = HeroPassport.generatePassport(playerName,
+        // heroChoice, defaultWeapon, health, strength, gold, heroAbilities);
+        // if (passportContent != null) {
+        // String fileName = "hero_passport.txt";
+        // HeroPassport.saveHeroPassport(fileName, passportContent);
+        // HeroPassport.loadAndDisplayPassport(fileName);
+        //
+        //
+        // }
     }
 
     /**
@@ -192,7 +216,7 @@ public class Game {
     private static int getValidInput(String prompt, int min, int max) {
         int value;
         while (true) {
-            System.out.print(prompt + "(" +min+","+max+"): ");
+            System.out.print(prompt + "(" + min + "," + max + "): ");
             if (scanner.hasNextInt()) {
                 value = scanner.nextInt();
                 scanner.nextLine();
@@ -206,7 +230,6 @@ public class Game {
         }
     }
 
-
     /**
      * Starts the final battle against the boss.
      */
@@ -214,7 +237,7 @@ public class Game {
         AsciiArt.showBattleScreen();
         System.out.println("\n⚔️ **FINAL BATTLE BEGINS!** ⚔️");
 
-        NPC finalBoss = new NPC("Prototype Eden-9", 120, 20, 70, 5);
+        Enemy finalBoss = new Enemy("Prototype Eden-9", 120, 20, 70, 5);
         enemies.add(finalBoss);
         Battle finalBattle = new Battle(player, finalBoss);
         finalBattle.start();

@@ -15,12 +15,13 @@ public class Mission {
     private int experienceReward;
 
     /**
-     * Constructs a mission with a title, description, progress requirement, and rewards.
+     * Constructs a mission with a title, description, progress requirement, and
+     * rewards.
      *
-     * @param title             The title of the mission.
-     * @param description       The description of the mission.
-     * @param goldReward        The amount of gold rewarded upon completion.
-     * @param experienceReward  The experience points rewarded upon completion.
+     * @param title            The title of the mission.
+     * @param description      The description of the mission.
+     * @param goldReward       The amount of gold rewarded upon completion.
+     * @param experienceReward The experience points rewarded upon completion.
      */
     public Mission(String title, String description, int goldReward, int experienceReward) {
         this.title = title;
@@ -37,7 +38,8 @@ public class Mission {
      * If the required progress is reached, the mission is completed.
      */
     public void updateProgress(int amount) {
-        if (isCompleted) return; // Prevent updating a completed mission
+        if (isCompleted)
+            return; // Prevent updating a completed mission
 
         progress += amount;
         if (progress >= progressRequired) {
@@ -60,7 +62,7 @@ public class Mission {
 
             if (player != null) {
                 player.collectGold(goldReward);
-                
+
             }
         }
     }

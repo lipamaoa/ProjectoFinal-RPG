@@ -1,5 +1,6 @@
 package src.entities;
 
+import src.game.GameRandom;
 import src.game.Mission;
 import src.items.HealthPotion;
 import src.items.HealthPotionSize;
@@ -19,9 +20,10 @@ public class FriendlyNPC {
     private final boolean canFight;
     private final Mission mission;
     private final static Scanner scanner = new Scanner(System.in);
-    private final static Random random = new Random();
+    private final Random random;
 
-    public FriendlyNPC(String name, String backstory, String[] dialogues, boolean canGiveItem, boolean canHeal, boolean canFight, Mission mission) {
+    public FriendlyNPC(String name, String backstory, String[] dialogues, boolean canGiveItem, boolean canHeal,
+            boolean canFight, Mission mission) {
         this.name = name;
         this.backstory = backstory;
         this.dialogues = dialogues;
@@ -29,6 +31,7 @@ public class FriendlyNPC {
         this.canHeal = canHeal;
         this.canFight = canFight;
         this.mission = mission;
+        this.random = GameRandom.getInstance();
     }
 
     /**
@@ -66,7 +69,7 @@ public class FriendlyNPC {
                     }
                     break;
                 case 4:
-                System.out.println("🚶 You nod and continue your journey.");
+                    System.out.println("🚶 You nod and continue your journey.");
                     return;
                 default:
                     System.out.println("❌ Invalid choice!");
@@ -78,7 +81,7 @@ public class FriendlyNPC {
      * Displays a random dialogue from the NPC.
      */
     private void talk() {
-        int index = random.nextInt(dialogues.length);
+        int index = this.random.nextInt(dialogues.length);
         System.out.println("💬 " + name + ": \"" + dialogues[index] + "\"");
     }
 
@@ -92,7 +95,7 @@ public class FriendlyNPC {
         }
 
         if (canHeal) {
-            int healAmount = random.nextInt(30) + 20; // Between 20 and 50 HP
+            int healAmount = this.random.nextInt(30) + 20; // Between 20 and 50 HP
             player.heal(healAmount);
             System.out.println("🩹 " + name + " patches up your wounds.");
             // Heal just once
@@ -102,10 +105,10 @@ public class FriendlyNPC {
         if (canFight) {
             System.out.println("⚔️ " + name + " says: \"If you need help in battle, I'll be there.\"");
         }
-            // Future implementation: NPC joins battle
-        }
+        // Future implementation: NPC joins battle
+    }
 
-     /**
+    /**
      * Checks if the player completed a mission and rewards them.
      */
     public void checkMissionCompletion(Hero player, boolean completed) {

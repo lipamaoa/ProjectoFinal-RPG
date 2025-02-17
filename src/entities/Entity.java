@@ -4,8 +4,7 @@ package src.entities;
  * Abstract class representing an entity in the game.
  * It serves as a base for both the player and NPCs.
  */
-
-public abstract class Entity{
+public abstract class Entity {
     protected String name;
     protected int maxHp;
     protected int currentHp;
@@ -20,78 +19,70 @@ public abstract class Entity{
 
     /**
      * Displays the entity's details
-    */
-    public void showDetails(){
+     */
+    public void showDetails() {
         System.out.println("Name: " + name);
         System.out.println("HP: " + currentHp + "/" + maxHp);
         System.out.println("Strength: " + strength);
     }
 
-
     /**
      * Applies damage to the entity
      * Ensures that HP does not drop below 0.
      */
+    public void takeDamage(int amount) {
+        this.currentHp -= amount;
 
-
-     public void takeDamage(int amount){
-        this.currentHp-=amount;
-
-        if(this.currentHp<0){
-            this.currentHp=0;
+        if (this.currentHp < 0) {
+            this.currentHp = 0;
         }
         System.out.println(name + " took " + amount + " damage. Remaining HP: " + currentHp);
-     }
+    }
 
-     /**
-      * Heals the entity for a specified amount.
-      Ensures that HP does not exceed maxHp
-      */
-
-      public void heal(int amount){
-        this.currentHp+=amount;
-        if(this.currentHp>maxHp){
-            this.currentHp=maxHp;
+    /**
+     * Heals the entity for a specified amount.
+     * Ensures that HP does not exceed maxHp
+     */
+    public void heal(int amount) {
+        this.currentHp += amount;
+        if (this.currentHp > maxHp) {
+            this.currentHp = maxHp;
         }
         System.out.println(name + " healed " + amount + " HP. Current HP: " + currentHp);
-      }
+    }
 
-      /**
-       * Getters
-       */
+    /**
+     * Getters
+     */
 
-       public String getName(){
+    public String getName() {
         return name;
-       }
+    }
 
-       public int getCurrentHp(){
+    public int getCurrentHp() {
         return currentHp;
-       }
+    }
 
-
-       public int getMaxHp(){
+    public int getMaxHp() {
         return maxHp;
-       }
+    }
 
-       public int getStrength(){
+    public int getStrength() {
         return strength;
-       }
+    }
 
+    /**
+     * Setters
+     */
 
+    public void setCurrentHp(int hp) {
+        this.currentHp = Math.max(0, Math.min(hp, maxHp)); // Ensures HP is within valid range
+    }
 
-       /**
-        * Setters
-        */
+    public void setStrength(int strength) {
+        this.strength = strength;
 
-        public void setCurrentHp(int hp){
-            this.currentHp=Math.max(0, Math.min(hp, maxHp)); //Ensures HP is within valid range
-        }
-
-        public void setStrength(int strength){
-            this.strength=strength;
-
-        }
-
+    }
 
     /**
      * Abstract method for attack behavior.
@@ -99,7 +90,4 @@ public abstract class Entity{
      */
 
     public abstract void attack(Entity target);
-
-
-   
 }

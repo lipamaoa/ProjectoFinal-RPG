@@ -2,39 +2,42 @@ package src.entities;
 
 import java.util.Random;
 
+import src.game.GameRandom;
+
 /**
- * Represents a Non-Playable Character (NPC) in the game.
  * This class is used for enemies that the player will encounter in battles.
  */
-public class NPC extends Entity {
+public class Enemy extends Entity {
     protected int gold;
     protected int attackPower;
     protected int specialAttackPower;
     protected boolean canHeal;
     private boolean isHacked = false;
-    private static Random random = new Random();
+    private int disabledTurns = 0;
+    private final Random random;
 
     /**
      * Constructs an NPC with scaled attributes based on difficulty level.
      *
-     * @param name The name of the NPC.
-     * @param baseHp The base health of the NPC.
-     * @param baseAttack The base attack power of the NPC.
-     * @param baseGold The base gold reward upon defeat.
+     * @param name            The name of the NPC.
+     * @param baseHp          The base health of the NPC.
+     * @param baseAttack      The base attack power of the NPC.
+     * @param baseGold        The base gold reward upon defeat.
      * @param difficultyLevel The difficulty scaling factor.
      */
-    public NPC(String name, int baseHp, int baseAttack, int baseGold, int difficultyLevel) {
+    public Enemy(String name, int baseHp, int baseAttack, int baseGold, int difficultyLevel) {
         super(name, scaleValue(baseHp, difficultyLevel), scaleValue(baseAttack, difficultyLevel));
         this.gold = scaleValue(baseGold, difficultyLevel);
         this.attackPower = this.strength;
         this.specialAttackPower = attackPower * 2; // Special attack is twice as strong
-        this.canHeal = random.nextBoolean(); // Some NPCs can heal
+        this.random = GameRandom.getInstance();
+        this.canHeal = this.random.nextBoolean(); // Some NPCs can heal
     }
 
     /**
      * Scales a given stat based on the difficulty level.
      *
-     * @param baseValue The base stat value.
+     * @param baseValue       The base stat value.
      * @param difficultyLevel The difficulty level (higher means stronger enemies).
      * @return The scaled value.
      */
@@ -43,9 +46,43 @@ public class NPC extends Entity {
     }
 
     /**
+     * Disables the enemy for a given number of turns (EMP Effect).
+     *
+     * @param turns The number of turns the enemy is disabled.
+     */
+    public void disable(int turns) {
+        if (isElectronic()) {
+            this.disabledTurns = turns;
+            System.out.println("⚡ " + getName() + " is hit by an EMP! Disabled for " + turns + " turns.");
+        } else {
+            System.out.println("❌ The EMP has no effect on " + getName() + "!");
+        }
+    }
+
+    /**
+     * Checks if the enemy is currently disabled (EMP effect).
+     *
+     * @return true if the enemy is disabled, false otherwise.
+     */
+    public boolean isDisabled() {
+        return disabledTurns > 0;
+    }
+
+    /**
+     * Checks if this enemy is an electronic-based entity.
+     *
+     * @return true if the enemy is a robot, AI, or drone.
+     */
+    public boolean isElectronic() {
+        String lowerCaseName = getName().toLowerCase();
+        return lowerCaseName.contains("robot") || lowerCaseName.contains("ai") || lowerCaseName.contains("drone");
+    }
+
+    /**
      * NPC chooses an action: Normal attack, Special attack, or Heal.
      *
-     * @param target The entity being attacked (can be a Hero or another NPC if hacked).
+     * @param target The entity being attacked (can be a Hero or another NPC if
+     *               hacked).
      */
     @Override
     public void attack(Entity target) {
@@ -59,7 +96,7 @@ public class NPC extends Entity {
             return;
         }
 
-        int action = random.nextInt(100);
+        int action = this.random.nextInt(100);
 
         if (action < 60) { // 60% chance for normal attack
             normalAttack(target);
@@ -70,6 +107,16 @@ public class NPC extends Entity {
         } else { // Default to normal attack if no other option is valid
             normalAttack(target);
         }
+
+        if (isDisabled()) {
+            System.out.println("⚡ " + getName() + " is disabled and cannot attack!");
+            disabledTurns--; // Reduce disable duration
+            return;
+        }
+
+        int damage = getStrength();
+        target.takeDamage(damage);
+        System.out.println("💥 " + getName() + " attacks for " + damage + " damage!");
     }
 
     /**
@@ -88,7 +135,8 @@ public class NPC extends Entity {
      * @param target The entity being attacked.
      */
     private void specialAttack(Entity target) {
-        System.out.println("💥 " + name + " unleashes a devastating special attack on " + target.getName() + " for " + specialAttackPower + " damage!");
+        System.out.println("💥 " + name + " unleashes a devastating special attack on " + target.getName() + " for "
+                + specialAttackPower + " damage!");
         target.takeDamage(specialAttackPower);
     }
 
@@ -96,7 +144,7 @@ public class NPC extends Entity {
      * NPC heals itself when its HP is low.
      */
     private void heal() {
-        int healAmount = random.nextInt(15) + 10; // Restore between 10 and 25 HP
+        int healAmount = this.random.nextInt(15) + 10; // Restore between 10 and 25 HP
         currentHp = Math.min(currentHp + healAmount, maxHp);
         System.out.println("🩹 " + name + " heals itself for " + healAmount + " HP!");
     }

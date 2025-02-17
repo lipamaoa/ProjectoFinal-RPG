@@ -2,18 +2,20 @@ package src.entities;
 
 import java.util.Random;
 
-import src.items.Weapon;
+import src.game.GameRandom;
+import src.items.*;
 
 /**
  * A hero specialized in hacking and chemical-based attacks.
  */
 public class PharmacologistHacker extends Hero {
 
-    private static final Random random = new Random();
+    private final Random random;
     private boolean hasUsedHack = false; // Can hack only once per battle
 
-  /**
-     * Constructs a Pharmacologist Hacker with user-defined stats and a default weapon.
+    /**
+     * Constructs a Pharmacologist Hacker with user-defined stats and a default
+     * weapon.
      *
      * @param name     The hero's name.
      * @param maxHp    The allocated health.
@@ -23,6 +25,7 @@ public class PharmacologistHacker extends Hero {
      */
     public PharmacologistHacker(String name, int maxHp, int strength, int level, int gold, Weapon startingWeapon) {
         super(name, maxHp, strength, level, gold, startingWeapon);
+        this.random = GameRandom.getInstance();
     }
 
     /**
@@ -32,7 +35,7 @@ public class PharmacologistHacker extends Hero {
      * @param enemy The NPC being attacked.
      */
     @Override
-    public void attack(NPC enemy) {
+    public void attack(Enemy enemy) {
         System.out.println("🧪 " + getName() + " injects a neurotoxin into " + enemy.getName() + "!");
         int initialDamage = strength + 2;
         enemy.takeDamage(initialDamage);
@@ -42,8 +45,13 @@ public class PharmacologistHacker extends Hero {
         System.out.println("☠️ " + enemy.getName() + " is poisoned and takes " + poisonDamage + " extra damage!");
         enemy.takeDamage(poisonDamage);
 
+        // Only apply the adrenaline boost if it was activated via item
+        int damage = getAttackPower(); // Uses boosted attack if active
+        enemy.takeDamage(damage);
+        System.out.println("☠️ " + enemy.getName() + " is poisoned and takes " + damage + " damage!");
+
         // 30% chance to weaken the enemy's attack power
-        if (random.nextInt(100) < 30) { 
+        if (random.nextInt(100) < 30) {
             enemy.setStrength(Math.max(1, enemy.getStrength() - 2)); // Reduce enemy strength safely
             System.out.println("💀 " + enemy.getName() + " is weakened by the toxin! Their attack power decreases.");
         }
@@ -64,37 +72,50 @@ public class PharmacologistHacker extends Hero {
     }
 
     /**
- * Allows the hero to hack an enemy, forcing them to attack another NPC.
- *
- * @param enemy  The enemy to hack.
- * @param target The NPC to be attacked by the hacked enemy.
- */
-public void hackEnemy(NPC enemy, NPC target) {
-    if (hasUsedHack) {
-        System.out.println("⚠️ Hacking already used in this battle.");
-        return;
+     * Allows the hero to hack an enemy, forcing them to attack another NPC.
+     *
+     * @param enemy  The enemy to hack.
+     * @param target The NPC to be attacked by the hacked enemy.
+     */
+    public void hackEnemy(Enemy enemy, Enemy target) {
+        if (hasUsedHack) {
+            System.out.println("⚠️ Hacking already used in this battle.");
+            return;
+        }
+
+        System.out.println("💻 " + getName() + " attempts to hack " + enemy.getName() + "...");
+
+        if (random.nextInt(100) < 50) { // 50% success rate
+            System.out.println("✅ Hack successful! " + enemy.getName() + " will attack " + target.getName() + "!");
+            enemy.setHacked(true);
+            enemy.attack(target); // Hacked NPC attacks the chosen target
+        } else {
+            System.out.println("❌ Hack failed! " + enemy.getName() + " remains in control.");
+        }
+
+        hasUsedHack = true; // Hacking can only be used once per battle
     }
-
-    System.out.println("💻 " + getName() + " attempts to hack " + enemy.getName() + "...");
-    
-    if (random.nextInt(100) < 50) { // 50% success rate
-        System.out.println("✅ Hack successful! " + enemy.getName() + " will attack " + target.getName() + "!");
-        enemy.setHacked(true);
-        enemy.attack(target); // Hacked NPC attacks the chosen target
-    } else {
-        System.out.println("❌ Hack failed! " + enemy.getName() + " remains in control.");
-    }
-
-    hasUsedHack = true; // Hacking can only be used once per battle
-}
-
 
     @Override
-    public void attack(Entity target) {
-        if (target instanceof NPC) {
-            attack((NPC) target); // Call the NPC attack method
+    protected void initializeInventory() {
+        // // ✅ Add hero-specific items, but DO NOT initialize inventory again
+        // inventory.addItem(new ItemHero("Hacking Device", "Allows hacking security systems.", 50) {
+        //     @Override
+        //     public void use(Hero player) {
+        //         System.out.println("💻 You hack a system, disabling security for a short time!");
+        //     }
+        // });
+
+        inventory.addItem(new HealthPotion(HealthPotionSize.Medium));
+    }
+
+    public void useEmpGrenade(Enemy enemy) {
+        System.out.println("💥 EMP Grenade activated! Attempting to disable " + enemy.getName() + "...");
+
+        if (enemy.isElectronic()) { // Only affects electronic enemies
+            enemy.disable(2); // Disable enemy for 2 turns
         } else {
-            System.out.println("⚠️ Bioengineer cannot attack this target!");
+            System.out.println("❌ The EMP Grenade has no effect on organic enemies!");
         }
     }
 }

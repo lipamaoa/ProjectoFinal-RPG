@@ -1,11 +1,9 @@
 package src.entities;
 
-import src.items.Weapon;
-import src.items.HealthPotion;
-import src.items.Inventory;
-import src.items.ItemHero;
+import java.util.Random;
 
-import java.util.ArrayList;
+import src.game.GameRandom;
+import src.items.*;
 
 /**
  * Abstract class representing a hero in the game.
@@ -14,29 +12,33 @@ import java.util.ArrayList;
 public abstract class Hero extends Entity {
     protected int level;
     protected int gold;
-    protected Weapon defaultWeapon;
+    protected int baseAttack;
+    protected int boostedAttack;
+    protected int boostDuration;
+    protected Weapon mainWeapon;
     protected Inventory inventory;
-
+    protected final Random random;
 
     /**
      * Constructs a hero with dynamic stats based on user selection
-     * @param name The hero's name.
-     * @param maxHp The maximum health of the hero.
-     * @param strength The hero's strength.
-     * @param level The hero's starting level.
-     * @param gold The initial gold amount.
-     * @param defaultWeapon The hero's starting  weapon.
-     * @param inventory The inventory.
+     * 
+     * @param name       The hero's name.
+     * @param maxHp      The maximum health of the hero.
+     * @param strength   The hero's strength.
+     * @param level      The hero's starting level.
+     * @param gold       The initial gold amount.
+     * @param mainWeapon The hero's starting weapon.
      */
 
     public Hero(String name, int maxHp, int strength, int level, int gold, Weapon mainWeapon) {
         super(name, maxHp, strength);
         this.level = level;
         this.gold = gold;
-        this.inventory = new Inventory(); // Initialize inventory
-        if (defaultWeapon != null) {
-            this.inventory.addItem(defaultWeapon); // Automatically add default weapon to inventory
-        }
+        this.boostedAttack = 0;
+        this.boostDuration = 0;
+        this.inventory = new Inventory();
+        this.mainWeapon = ItemHeroRegistry.getStartingWeaponForHero(this); // ✅ Get weapon from registry
+        this.random = GameRandom.getInstance();
     }
 
     /**
@@ -47,53 +49,100 @@ public abstract class Hero extends Entity {
         super.showDetails();
         System.out.println("Level: " + level);
         System.out.println("Gold: " + gold);
-        System.out.println("Weapon: " + (defaultWeapon!= null ? defaultWeapon.getName() : "None"));
+        System.out.println("Weapon: " + (mainWeapon != null ? mainWeapon.getName() : "None"));
         System.out.println("Inventory:");
         inventory.showInventory();
     }
 
     /**
+     * Implements the required attack(Entity target) method.
+     *
+     * @param target The entity being attacked.
+     */
+    @Override
+    public final void attack(Entity target) {
+        if (target instanceof Enemy) {
+            attack((Enemy) target);
+        } else {
+            System.out.println("⚠️ " + this.name + " cannot attack this target!");
+        }
+    }
+
+    /**
      * Abstract attack method that must be implemented by subclasses.
      */
-    public abstract void attack(NPC enemy);
+    public abstract void attack(Enemy enemy);
+
+    /**
+     * Boosts the hero's attack power for a limited number of turns.
+     * 
+     * @param amount   The attack boost amount.
+     * @param duration The number of turns the boost lasts.
+     */
+    public void boostAttack(int amount, int duration) {
+        System.out.println("⚡ Attack boosted by " + amount + " for " + duration + " turns!");
+        this.boostedAttack = amount;
+        this.boostDuration = duration;
+    }
+
+    /**
+     * Returns the current attack power, considering any boosts.
+     */
+    public int getAttackPower() {
+        return baseAttack + boostedAttack;
+    }
+
+    /**
+     * Decreases the boost duration after each turn.
+     */
+    public void decreaseBoostDuration() {
+        if (boostDuration > 0) {
+            boostDuration--;
+            if (boostDuration == 0) {
+                System.out.println("⚠️ Your attack boost has worn off.");
+                boostedAttack = 0;
+            }
+        }
+    }
 
     /**
      * Allows the hero to use a potion from inventory.
      */
     public void usePotion() {
-    ItemHero potion = inventory.getFirstPotion();
+        ItemHero potion = inventory.getFirstPotion();
 
-    if (potion == null) {
-        System.out.println("⚠️ No health potions available!");
-        return;
-    }
-
-    // Ensure the item is a HealthPotion before using it
-    if (potion instanceof HealthPotion) {
-        HealthPotion healthPotion = (HealthPotion) potion;
-        int healAmount = healthPotion.getEffectValue();
-
-        // Prevent overhealing
-        if (currentHp + healAmount > maxHp) {
-            healAmount = maxHp - currentHp;
+        if (potion == null) {
+            System.out.println("⚠️ No health potions available!");
+            return;
         }
 
-        heal(healAmount);
-        System.out.println("💊 Used " + potion.getName() + " and healed " + healAmount + " HP.");
-        inventory.removeItem(potion);
-    } else {
-        System.out.println("⚠️ The selected item is not a health potion!");
+        // Ensure the item is a HealthPotion before using it
+        if (potion instanceof HealthPotion) {
+            HealthPotion healthPotion = (HealthPotion) potion;
+            int healAmount = healthPotion.getEffectValue();
+
+            // Prevent overhealing
+            if (currentHp + healAmount > maxHp) {
+                healAmount = maxHp - currentHp;
+            }
+
+            heal(healAmount);
+            System.out.println("💊 Used " + potion.getName() + " and healed " + healAmount + " HP.");
+            inventory.removeItem(potion);
+        } else {
+            System.out.println("⚠️ The selected item is not a health potion!");
+        }
     }
-}
 
     /**
      * Allows the hero to equip a new weapon.
+     * 
      * @param newWeapon The weapon to equip.
      */
     public void equipWeapon(Weapon newWeapon) {
         if (newWeapon != null) {
             System.out.println("🔪 Equipped " + newWeapon.getName() + "!");
-            this.defaultWeapon = newWeapon;
+            this.mainWeapon = newWeapon;
         } else {
             System.out.println("⚠️ Cannot equip a null weapon.");
         }
@@ -102,7 +151,7 @@ public abstract class Hero extends Entity {
     /**
      * Adds an item to the hero's inventory.
      */
-    public void addItemToInventory(ItemHero item) {
+    public void addItemToInventory(Item item) {
         inventory.addItem(item);
     }
 
@@ -141,8 +190,13 @@ public abstract class Hero extends Entity {
     }
 
     public Weapon getMainWeapon() {
-        return defaultWeapon;
+        return mainWeapon;
     }
+
+    /**
+     * Each hero starts with a unique inventory based on their specialization.
+     */
+    protected abstract void initializeInventory();
 
     public Inventory getInventory() {
         return inventory;
@@ -151,7 +205,4 @@ public abstract class Hero extends Entity {
     public int getInventorySize() {
         return inventory.getSize();
     }
-
-
-   
 }
