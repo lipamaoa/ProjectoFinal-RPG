@@ -1,6 +1,5 @@
 package src.entities;
 
-import src.items.ItemHero;
 import src.items.Weapon;
 
 /**
@@ -11,10 +10,9 @@ public class TacticalChemist extends Hero {
     /**
      * Constructs a Tactical Chemist hero with base stats.
      *
-     * @param name The hero's name.
      */
-    public TacticalChemist(String name, int maxHp, int strength, int level, int gold, Weapon startingWeapon) {
-        super(name, maxHp, strength, level, gold, startingWeapon);
+    public TacticalChemist(String name, int maxHp, int strength, int gold, Weapon startingWeapon) {
+        super(name, maxHp, strength, gold, startingWeapon);
     }
 
     /**

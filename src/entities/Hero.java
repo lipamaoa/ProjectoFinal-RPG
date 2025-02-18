@@ -10,7 +10,6 @@ import src.items.*;
  * Defines common attributes and behaviors for all hero types.
  */
 public abstract class Hero extends Entity {
-    protected int level;
     protected int gold;
     protected int baseAttack;
     protected int boostedAttack;
@@ -30,9 +29,8 @@ public abstract class Hero extends Entity {
      * @param mainWeapon The hero's starting weapon.
      */
 
-    public Hero(String name, int maxHp, int strength, int level, int gold, Weapon mainWeapon) {
+    public Hero(String name, int maxHp, int strength, int gold, Weapon mainWeapon) {
         super(name, maxHp, strength);
-        this.level = level;
         this.gold = gold;
         this.boostedAttack = 0;
         this.boostDuration = 0;
@@ -48,7 +46,6 @@ public abstract class Hero extends Entity {
     @Override
     public void showDetails() {
         super.showDetails();
-        System.out.println("Level: " + level);
         System.out.println("Gold: " + gold);
         System.out.println("Weapon: " + (mainWeapon != null ? mainWeapon.getName() : "None"));
     }
@@ -180,10 +177,6 @@ public abstract class Hero extends Entity {
     }
 
     // Getters
-    public int getLevel() {
-        return level;
-    }
-
     public int getGold() {
         return gold;
     }

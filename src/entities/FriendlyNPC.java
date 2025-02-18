@@ -18,15 +18,26 @@ public class FriendlyNPC extends Entity {
     private final boolean canFight;
     private final Random random;
     private boolean willJoinBattle;
+    private boolean alreadyHelped = false;
+    private final boolean canHack;
 
-    public FriendlyNPC(String name, String backstory, String[] dialogues, boolean canGiveItem, boolean canHeal,
-            boolean canFight, int maxHp, int strength) {
+    public FriendlyNPC(
+            String name,
+            String backstory,
+            String[] dialogues,
+            boolean canGiveItem,
+            boolean canHeal,
+            boolean canFight,
+            boolean canHack,
+            int maxHp,
+            int strength) {
         super(name, maxHp, strength);
         this.backstory = backstory;
         this.dialogues = dialogues;
         this.canGiveItem = canGiveItem;
         this.canHeal = canHeal;
         this.canFight = canFight;
+        this.canHack = canHack;
         this.random = GameRandom.getInstance();
     }
 
@@ -75,29 +86,43 @@ public class FriendlyNPC extends Entity {
      * Assists the player by healing, giving items, or offering to fight.
      */
     private void assist(Hero player) {
+        if (alreadyHelped) {
+            System.out.println("I can't help you further at this moment.");
+            return;
+        }
+
         if (canGiveItem) {
             System.out.println("🎁 " + name + " hands you a small vial.");
             player.addItemToInventory(new HealthPotion(HealthPotionSize.Small));
-            this.canGiveItem = false;
         }
 
         if (canHeal) {
             int healAmount = this.random.nextInt(30) + 20;
             player.heal(healAmount);
             System.out.println("🩹 " + name + " patches up your wounds.");
-            // Heal just once
-            this.canHeal = false;
         }
 
         if (canFight) {
             System.out.println("⚔️ " + name + " says: \"If you need help in battle, I'll be there.\"");
             this.willJoinBattle = true;
         }
+
+        alreadyHelped = true;
     }
 
     @Override
     public void attack(Entity target) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'attack'");
+        if (!canFight) {
+            System.out.println("⚠️ " + name + " is not a fighter and cannot attack!");
+            return;
+        }
+
+        if (this.canHack && target.isElectronic() && target instanceof Enemy && !((Enemy) target).isHacked()) {
+            ((Enemy) target).tryToHack();
+        } else {
+            System.out.println("⚔️ " + name + " attacks " + target.getName() + " for " + strength + " damage.");
+            target.takeDamage(strength);
+        }
+
     }
 }

@@ -111,15 +111,15 @@ public class Map {
         }
     }
 
-    public ArrayList<FriendlyNPC> getSurvivingNpcs() {
-        ArrayList<FriendlyNPC> survivingNpcs = new ArrayList<>();
+    public ArrayList<Entity> getSurvivingFriends() {
+        ArrayList<Entity> survivingFriends = new ArrayList<>();
         for (Room room : rooms) {
             var survivingFriendlyNPC = room.getSurvivingFriendlyNPC();
             if (survivingFriendlyNPC != null) {
-                survivingNpcs.add(survivingFriendlyNPC);
+                survivingFriends.add(survivingFriendlyNPC);
             }
         }
 
-        return survivingNpcs;
+        return survivingFriends;
     }
 }

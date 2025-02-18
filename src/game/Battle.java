@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import src.entities.Enemy;
-import src.entities.FriendlyNPC;
+import src.entities.Entity;
 import src.items.ItemBattle;
 import src.items.ItemHero;
 import src.items.Item;
@@ -18,7 +18,7 @@ import src.utils.AsciiArt;
 public class Battle {
     private Hero player;
     private ArrayList<Enemy> enemies;
-    private ArrayList<FriendlyNPC> friendlyNPCs;
+    private ArrayList<Entity> friends;
     private final Random random;
 
     /**
@@ -27,10 +27,13 @@ public class Battle {
      * @param player The player's hero.
      * @param enemy  The enemy in this room.
      */
-    public Battle(Hero player, ArrayList<Enemy> enemies, ArrayList<FriendlyNPC> friendlyNPCs) {
+    public Battle(Hero player, ArrayList<Enemy> enemies, ArrayList<Entity> friendlyNPCs) {
         this.player = player;
         this.enemies = enemies;
-        this.friendlyNPCs = friendlyNPCs;
+        this.friends = new ArrayList<>();
+        if (friendlyNPCs != null) {
+            this.friends.addAll(friendlyNPCs);
+        }
         this.random = GameRandom.getInstance();
     }
 
@@ -60,17 +63,27 @@ public class Battle {
     }
 
     private void displayStatus() {
-        System.out.println("\n🔹 " + player.getName() + ": " + player.getCurrentHp() + " HP");
-        if (friendlyNPCs != null) {
-            System.out.println("🛡️ Friendly NPCs:");
-            for (FriendlyNPC ally : friendlyNPCs) {
-                System.out.println(" - " + ally.getName() + " (" + ally.getCurrentHp() + " HP)");
+        System.out.println("\n==============================");
+        System.out.println("🔹 HERO: " + player.getName());
+        System.out.println("❤️ HP: [" + player.getCurrentHp() + "/" + player.getMaxHp() + "]");
+        System.out.println("==============================");
+
+        if (!friends.isEmpty()) {
+            System.out.println("🛡️ FRIENDLY NPCs:");
+            for (Entity ally : friends) {
+                System.out.println(
+                        "   🤝 " + ally.getName() + " - HP: [" + ally.getCurrentHp() + "/" + ally.getMaxHp() + "]");
             }
         }
-        System.out.println("\n👿 Enemies:");
+
+        System.out.println("==============================");
+        System.out.println("👿 ENEMIES:");
         for (Enemy enemy : enemies) {
-            System.out.println(" - " + enemy.getName() + " (" + enemy.getCurrentHp() + " HP)");
+            System.out.println(
+                    (enemy.isElectronic() ? "   🤖 " : "   💀 ") + enemy.getName() + " - HP: [" + enemy.getCurrentHp()
+                            + "/" + enemy.getMaxHp() + "]");
         }
+        System.out.println("==============================\n");
     }
 
     /**
@@ -114,17 +127,47 @@ public class Battle {
         }
     }
 
+    private ArrayList<Entity> getAllies() {
+        ArrayList<Entity> allies = new ArrayList<>();
+        allies.add(player);
+        allies.addAll(friends);
+        return allies;
+    }
+
+    /**
+     * Retrieves the ally with the lowest health.
+     *
+     * @return the ally entity with the weakest health status.
+     */
+    private Entity getWeakerAlly() {
+        var allies = getAllies();
+        Entity target = allies.get(0);
+        for (Entity ally : allies) {
+            if (ally.getCurrentHp() < target.getCurrentHp()) {
+                target = ally;
+            }
+        }
+        return target;
+    }
+
     /**
      * Handles friendly NPCs' turn.
      */
     private void alliesTurn() {
-        if (friendlyNPCs == null) {
-            return;
-        }
-        for (FriendlyNPC ally : friendlyNPCs) {
-            if (ally.getCurrentHp() > 0 && !enemies.isEmpty()) {
+        for (Entity ally : friends) {
+            if (ally.getCurrentHp() <= 0) {
+                continue;
+            }
+
+            int action = random.nextInt(100);
+            // Chance to attack
+            if (action < 50 && !enemies.isEmpty()) {
                 Enemy target = enemies.get(random.nextInt(enemies.size()));
                 ally.attack(target);
+                // or heal
+            } else {
+                var target = getWeakerAlly();
+                ally.heal(target);
             }
         }
     }
@@ -135,8 +178,11 @@ public class Battle {
     private void enemiesTurn() {
         for (Enemy enemy : enemies) {
             if (enemy.getCurrentHp() > 0) {
-                if (random.nextBoolean() && friendlyNPCs != null && !friendlyNPCs.isEmpty()) {
-                    FriendlyNPC target = friendlyNPCs.get(random.nextInt(friendlyNPCs.size()));
+                if (enemy.isHacked()) {
+                    // Don't fight us if hacked
+                    continue;
+                } else if (random.nextBoolean() && !friends.isEmpty()) {
+                    Entity target = friends.get(random.nextInt(friends.size()));
                     enemy.attack(target);
                 } else {
                     enemy.attack(player);
@@ -149,10 +195,21 @@ public class Battle {
      * Removes defeated enemies and NPCs from the battle.
      */
     private void removeDefeatedEntities() {
-        enemies.removeIf(enemy -> enemy.getCurrentHp() <= 0);
-        if (friendlyNPCs != null) {
-            friendlyNPCs.removeIf(ally -> ally.getCurrentHp() <= 0);
+        // Convert hacked enemies to allies first
+        ArrayList<Enemy> hackedEnemies = new ArrayList<>();
+        for (Enemy enemy : enemies) {
+            if (enemy.isHacked()) {
+                hackedEnemies.add(enemy);
+            }
         }
+
+        for (Enemy hackedEnemy : hackedEnemies) {
+            enemies.remove(hackedEnemy);
+            friends.add(hackedEnemy);
+        }
+
+        enemies.removeIf(enemy -> enemy.getCurrentHp() <= 0);
+        friends.removeIf(ally -> ally.getCurrentHp() <= 0);
     }
 
     /**
@@ -189,7 +246,6 @@ public class Battle {
             // apply it to the enemy
             if (selectedItem instanceof ItemBattle battleItem) {
                 battleItem.use(this);
-                ;
             } else if (selectedItem instanceof ItemHero playerItem) {
                 playerItem.use(player);
             }

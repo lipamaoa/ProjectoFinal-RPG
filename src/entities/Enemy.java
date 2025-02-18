@@ -12,9 +12,10 @@ public class Enemy extends Entity {
     protected int attackPower;
     protected int specialAttackPower;
     protected boolean canHeal;
-    private boolean isHacked = false;
     private int disabledTurns = 0;
     private final Random random;
+    private final int difficultyLevel;
+    private boolean isHacked = false;
 
     /**
      * Constructs an NPC with scaled attributes based on difficulty level.
@@ -29,9 +30,10 @@ public class Enemy extends Entity {
         super(name, scaleValue(baseHp, difficultyLevel), scaleValue(baseAttack, difficultyLevel));
         this.gold = scaleValue(baseGold, difficultyLevel);
         this.attackPower = this.strength;
-        this.specialAttackPower = attackPower * 2; // Special attack is twice as strong
+        this.specialAttackPower = attackPower * 2;
         this.random = GameRandom.getInstance();
-        this.canHeal = this.random.nextBoolean(); // Some NPCs can heal
+        this.canHeal = this.random.nextBoolean();
+        this.difficultyLevel = difficultyLevel;
     }
 
     /**
@@ -60,6 +62,31 @@ public class Enemy extends Entity {
     }
 
     /**
+     * Tries to hack the enemy. The success rate decreases with higher difficulty
+     * levels.
+     *
+     * @return true if the hack is successful, false otherwise.
+     */
+    public boolean tryToHack() {
+        if (isElectronic()) {
+            System.out.println("❌ " + getName() + " cannot be hacked!");
+            return false;
+        }
+
+        int successRate = Math.max(0, 100 - (difficultyLevel * 10)); // Decrease success rate with higher difficulty
+        int roll = random.nextInt(100);
+
+        if (roll < successRate) {
+            System.out.println("✅ " + getName() + " has been successfully hacked!");
+            isHacked = true;
+            return true;
+        } else {
+            System.out.println("❌ Hacking attempt on " + getName() + " failed!");
+            return false;
+        }
+    }
+
+    /**
      * Checks if the enemy is currently disabled (EMP effect).
      *
      * @return true if the enemy is disabled, false otherwise.
@@ -69,35 +96,21 @@ public class Enemy extends Entity {
     }
 
     /**
-     * Checks if this enemy is an electronic-based entity.
-     *
-     * @return true if the enemy is a robot, AI, or drone.
-     */
-    public boolean isElectronic() {
-        String lowerCaseName = getName().toLowerCase();
-        return lowerCaseName.contains("robot") || lowerCaseName.contains("ai") || lowerCaseName.contains("drone");
-    }
-
-    /**
      * NPC chooses an action: Normal attack, Special attack, or Heal.
      *
-     * @param target The entity being attacked (can be a Hero or another NPC if
-     *               hacked).
+     * @param target The entity being attacked (can be a Hero or another NPC.
      */
     @Override
     public void attack(Entity target) {
-        if (isHacked) {
-            System.out.println("🤖 " + getName() + " is hacked and attacks " + target.getName() + "!");
-            isHacked = false; // Reset hacking after the attack
-        } else if (target instanceof Hero) {
-            System.out.println("🗡️ " + getName() + " attacks " + target.getName() + "!");
-        } else {
-            System.out.println("⚠️ " + getName() + " cannot attack this target.");
+        System.out.println("🗡️ " + getName() + " attacks " + target.getName() + "!");
+
+        if (isDisabled()) {
+            System.out.println("⚡ " + getName() + " is disabled and cannot attack!");
+            disabledTurns--; // Reduce disable duration
             return;
         }
 
         int action = this.random.nextInt(100);
-
         if (action < 60) { // 60% chance for normal attack
             normalAttack(target);
         } else if (action < 85) { // 25% chance for special attack
@@ -107,16 +120,10 @@ public class Enemy extends Entity {
         } else { // Default to normal attack if no other option is valid
             normalAttack(target);
         }
+    }
 
-        if (isDisabled()) {
-            System.out.println("⚡ " + getName() + " is disabled and cannot attack!");
-            disabledTurns--; // Reduce disable duration
-            return;
-        }
-
-        int damage = getStrength();
-        target.takeDamage(damage);
-        System.out.println("💥 " + getName() + " attacks for " + damage + " damage!");
+    public boolean isHacked() {
+        return this.isHacked;
     }
 
     /**
@@ -147,13 +154,6 @@ public class Enemy extends Entity {
         int healAmount = this.random.nextInt(15) + 10; // Restore between 10 and 25 HP
         currentHp = Math.min(currentHp + healAmount, maxHp);
         System.out.println("🩹 " + name + " heals itself for " + healAmount + " HP!");
-    }
-
-    /**
-     * Sets this NPC as hacked, allowing it to attack other NPCs.
-     */
-    public void setHacked(boolean hacked) {
-        this.isHacked = hacked;
     }
 
     /**

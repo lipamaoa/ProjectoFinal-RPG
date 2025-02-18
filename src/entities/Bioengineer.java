@@ -17,11 +17,10 @@ public class Bioengineer extends Hero {
      * @param name     The hero's name.
      * @param maxHp    The allocated health.
      * @param strength The allocated strength.
-     * @param level    The starting level.
      * @param gold     The allocated gold.
      */
-    public Bioengineer(String name, int maxHp, int strength, int level, int gold, Weapon startingWeapon) {
-        super(name, maxHp, strength, level, gold, startingWeapon);
+    public Bioengineer(String name, int maxHp, int strength, int gold, Weapon startingWeapon) {
+        super(name, maxHp, strength, gold, startingWeapon);
     }
 
     /**

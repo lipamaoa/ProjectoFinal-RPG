@@ -35,8 +35,8 @@ public class Game {
 
         // Check if player is still alive for the final battle
         if (player.getCurrentHp() > 0) {
-            var survivingNpcs = gameMap.getSurvivingNpcs();
-            startFinalBattle(player, survivingNpcs);
+            var survivingFriends = gameMap.getSurvivingFriends();
+            startFinalBattle(player, survivingFriends);
         }
 
         // End the game
@@ -185,11 +185,11 @@ public class Game {
         }
 
         if (heroChoice == 1) {
-            return new PharmacologistHacker(playerName, health, strength, 1, gold, startingWeapon);
+            return new PharmacologistHacker(playerName, health, strength, gold, startingWeapon);
         } else if (heroChoice == 2) {
-            return new Bioengineer(playerName, health, strength, 1, gold, startingWeapon);
+            return new Bioengineer(playerName, health, strength, gold, startingWeapon);
         } else {
-            return new TacticalChemist(playerName, health, strength, 1, gold, startingWeapon);
+            return new TacticalChemist(playerName, health, strength, gold, startingWeapon);
         }
 
         // Generate and save passport
@@ -207,7 +207,7 @@ public class Game {
     /**
      * Starts the final battle against the boss.
      */
-    private static void startFinalBattle(Hero player, ArrayList<FriendlyNPC> survivingNpcs) {
+    private static void startFinalBattle(Hero player, ArrayList<Entity> survivingFriends) {
         AsciiArt.showBattleScreen();
         System.out.println("\n⚔️ **FINAL BATTLE BEGINS!** ⚔️");
 
@@ -219,7 +219,7 @@ public class Game {
         for (int i = 0; i < numberOfEnemies; i++) {
             finalEnemies.add(possibleEnemies.get(random.nextInt(possibleEnemies.size())));
         }
-        Battle finalBattle = new Battle(player, finalEnemies, survivingNpcs);
+        Battle finalBattle = new Battle(player, finalEnemies, survivingFriends);
         finalBattle.start();
     }
 
