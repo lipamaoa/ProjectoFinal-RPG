@@ -1,5 +1,7 @@
 package src.entities;
 
+import src.items.HealthPotion;
+import src.items.HealthPotionSize;
 import src.items.Weapon;
 
 /**
@@ -31,27 +33,18 @@ public class TacticalChemist extends Hero {
         // 30% chance for an explosive reaction affecting all nearby NPCs
         if (random.nextInt(100) < 30) {
             System.out.println("🔥 The grenade explodes, dealing extra damage to all nearby enemies!");
-            enemy.takeDamage(5); // Extra AoE damage
+            enemy.takeDamage(5);
         }
     }
 
     @Override
     protected void initializeInventory() {
-        inventory.addItem(new Weapon("Chemical Grenade", "", 7, 12, 20));
-        // inventory.addItem(new ItemHero("Toxic Gas Bomb", "", 45) {
-        // @Override
-        // public void use(Hero player) {
-        // System.out.println("☣️ You throw a toxic gas bomb! Enemies take poison
-        // damage.");
-        // }
-        // });
-        // inventory.addItem(new ItemHero("Combat Stimulant", "", 30) {
-        // @Override
-        // public void use(Hero player) {
-        // System.out.println("💊 You inject a combat stimulant! Your agility
-        // increases.");
-        // }
-        // });
+        inventory.addItem(new HealthPotion(HealthPotionSize.Large));
+    }
+
+    @Override
+    public HeroClass getHeroClass() {
+        return HeroClass.TACTICAL_CHEMIST;
     }
 
 }

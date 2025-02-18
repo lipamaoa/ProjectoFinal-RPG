@@ -68,7 +68,7 @@ public class Enemy extends Entity {
      * @return true if the hack is successful, false otherwise.
      */
     public boolean tryToHack() {
-        if (isElectronic()) {
+        if (!isElectronic()) {
             System.out.println("❌ " + getName() + " cannot be hacked!");
             return false;
         }

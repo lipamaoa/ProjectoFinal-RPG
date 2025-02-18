@@ -1,36 +1,35 @@
 package src.items;
 
-/**
- * Represents a base abstract class for all types of items.
- */
+import java.util.Set;
+import src.entities.Hero;
+import src.entities.HeroClass;
+
 public abstract class Item {
     protected String name;
     protected String description;
     protected int price;
+    protected Set<HeroClass> allowedClasses;
 
-    /**
-     * Constructs an item.
-     *
-     * @param name        The name of the item.
-     * @param description The description of what the item does.
-     * @param price       The item's value (cost or selling price).
-     */
-    public Item(String name, String description, int price) {
+    public Item(String name, String description, int price, Set<HeroClass> allowedClasses) {
         this.name = name;
         this.description = description;
         this.price = price;
+        this.allowedClasses = allowedClasses;
     }
 
-    /**
-     * Displays item details.
-     */
+    public boolean canBeUsedBy(Hero player) {
+        return allowedClasses == null || allowedClasses.contains(player.getHeroClass());
+    }
+
     public void showDetails() {
         System.out.println("🛠️ Item: " + this.name);
         System.out.println("ℹ️ " + this.description);
         System.out.println("💰 Value: " + this.price + " gold");
+        if (allowedClasses != null) {
+            System.out.println("🎭 Usable by: " + allowedClasses);
+        }
     }
 
-    // Getters
     public String getName() {
         return name;
     }

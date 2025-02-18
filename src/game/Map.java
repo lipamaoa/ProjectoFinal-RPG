@@ -63,36 +63,70 @@ public class Map {
     }
 
     /**
-     * Allows the player to navigate between rooms.
+     * Allows the player to choose a starting room and navigate between rooms.
      */
     public void startExploring(Hero player) {
-        int currentRoomIndex = 0;
+        int currentRoomIndex = selectStartingRoom();
 
-        while (currentRoomIndex < rooms.size() - 1) {
+        while (true) {
             Room currentRoom = rooms.get(currentRoomIndex);
             currentRoom.enter(player);
 
-            // Check if the player is still alive
             if (player.getCurrentHp() <= 0) {
                 System.out.println("💀 You did not survive...");
                 break;
             }
 
-            // Unlock the Complex Exit if key rooms are explored
             checkUnlockConditions();
 
-            // Offer choices for the next room
             System.out.println("\n📍 Choose where to go next:");
-            for (int i = currentRoomIndex + 1; i < rooms.size(); i++) {
-                if (!complexExitUnlocked && rooms.get(i).getName().equals("Complex Exit")) {
+            List<Integer> validChoices = new ArrayList<>();
+
+            for (int i = 0; i < rooms.size(); i++) {
+                if (i == currentRoomIndex) {
+                    continue;
+                }
+                var room = rooms.get(i);
+
+                if (room.isCompleted()) {
+                    continue;
+                }
+
+                if (!complexExitUnlocked && room.getName().equals("Complex Exit")) {
                     System.out.println("❌ Complex Exit is locked. Explore more before proceeding.");
                     continue;
                 }
-                System.out.println((i - currentRoomIndex) + "️⃣ " + rooms.get(i).getName());
+
+                System.out.println((validChoices.size() + 1) + "️⃣ " + room.getName());
+                validChoices.add(i);
             }
 
-            int choice = GameScanner.getInt();
-            currentRoomIndex += choice;
+            int choiceIndex = GameScanner.getInt() - 1;
+            if (choiceIndex < 0 || choiceIndex >= validChoices.size()) {
+                System.out.println("⚠️ Invalid choice, try again.");
+                continue;
+            }
+
+            currentRoomIndex = validChoices.get(choiceIndex);
+        }
+    }
+
+    /**
+     * Allows the player to select a starting room.
+     */
+    private int selectStartingRoom() {
+        System.out.println("🌍 Choose your starting location:");
+        for (int i = 0; i < rooms.size() - 1; i++) {
+            System.out.println((i + 1) + "️⃣ " + rooms.get(i).getName());
+        }
+        System.out.println("❌ Complex Exit is locked.");
+
+        while (true) {
+            int choice = GameScanner.getInt() - 1;
+            if (choice >= 0 && choice < rooms.size() - 1) {
+                return choice;
+            }
+            System.out.println("⚠️ Invalid selection. Please choose a valid starting room.");
         }
     }
 

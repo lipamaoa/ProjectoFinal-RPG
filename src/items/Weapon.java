@@ -1,11 +1,13 @@
 package src.items;
 
-import src.entities.Hero;
+import java.util.Set;
+
+import src.entities.HeroClass;
 
 /**
  * Represents a weapon that a hero can equip.
  */
-public class Weapon extends ItemHero {
+public class Weapon extends Item {
     private int attackPower;
     private int durability;
 
@@ -17,19 +19,11 @@ public class Weapon extends ItemHero {
      * @param durability  How many uses the weapon has.
      * @param price       The price of the weapon.
      */
-    public Weapon(String name, String description, int attackPower, int durability, int price) {
-        super(name, description, price, null);
+    public Weapon(String name, String description, int attackPower, int durability, int price,
+            Set<HeroClass> allowedClasses) {
+        super(name, description, price, allowedClasses);
         this.attackPower = attackPower;
         this.durability = durability;
-
-        this.effect = (Hero player) -> {
-            if (this.durability > 0) {
-                System.out.println("🔪 " + name + " is used in battle, dealing +" + attackPower + " damage!");
-                this.durability--;
-            } else {
-                System.out.println("❌ " + name + " is broken and cannot be used!");
-            }
-        };
     }
 
     // Getters

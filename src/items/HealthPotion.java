@@ -1,6 +1,5 @@
 package src.items;
 
-import src.entities.Bioengineer;
 import src.entities.Hero;
 
 /**
@@ -15,7 +14,8 @@ public class HealthPotion extends ItemHero {
      * @param size - Size of the health potion
      */
     public HealthPotion(HealthPotionSize size) {
-        super(getPotionName(size), "Heals for " + getPotionHealing(size) + " ❤\uFE0FHP", getPotionPrice(size), null);
+        super(getPotionName(size), "Heals for " + getPotionHealing(size) + " ❤\uFE0FHP", getPotionPrice(size), null,
+                null);
         this.healingAmount = getPotionHealing(size);
 
         this.effect = (Hero player) -> {

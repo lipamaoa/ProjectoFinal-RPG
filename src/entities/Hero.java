@@ -35,7 +35,7 @@ public abstract class Hero extends Entity {
         this.boostedAttack = 0;
         this.boostDuration = 0;
         this.inventory = new Inventory();
-        this.mainWeapon = ItemHeroRegistry.getStartingWeaponForHero(this); // ✅ Get weapon from registry
+        this.mainWeapon = ItemRegistry.getStartingWeaponForHero(this); // ✅ Get weapon from registry
         this.random = GameRandom.getInstance();
         this.initializeInventory();
     }
@@ -197,4 +197,6 @@ public abstract class Hero extends Entity {
     public int getInventorySize() {
         return inventory.getSize();
     }
+
+    public abstract HeroClass getHeroClass();
 }

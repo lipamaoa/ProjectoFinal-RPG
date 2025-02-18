@@ -86,32 +86,11 @@ public class Bioengineer extends Hero {
      */
     @Override
     protected void initializeInventory() {
-        inventory
-                .addItem(new Weapon("Biotech Shock Gloves", "High-voltage punches that deal extra damage.", 12, 6, 10));
+        inventory.addItem(new HealthPotion(HealthPotionSize.Large));
+    }
 
-        // inventory.addItem(new ItemHero("Mutation Serum", "Temporarily enhances
-        // strength for 3 turns.", 40) {
-        // @Override
-        // public void use(Hero player) {
-        // System.out.println("🧬 Your body mutates, boosting strength for 3 turns!");
-        // player.boostAttack(5, 3);
-        // }
-        // });
-
-        // inventory.addItem(new ItemHero("Regeneration Serum", "Grants 10 HP
-        // regeneration per turn for 3 turns.", 50) {
-        // @Override
-        // public void use(Hero player) {
-        // if (player instanceof Bioengineer) {
-        // System.out.println("🩸 You inject the Regeneration Serum! HP will regenerate
-        // each turn.");
-        // ((Bioengineer) player).healOverTime(10, 3);
-        // } else {
-        // System.out.println("❌ Only a Bioengineer can use this item effectively.");
-        // }
-        // }
-        // });
-
-        inventory.addItem(new HealthPotion(HealthPotionSize.Large)); // Strong healing
+    @Override
+    public HeroClass getHeroClass() {
+        return HeroClass.BIOENGINEER;
     }
 }

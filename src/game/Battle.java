@@ -91,40 +91,55 @@ public class Battle {
      */
     private void playerTurn() {
         displayStatus();
-        System.out.println("\nChoose an action:");
-        System.out.println("1️⃣ Attack an enemy");
-        System.out.println("2️⃣ Use Item");
+        boolean turnCompleted = false;
 
-        int choice = GameScanner.getInt();
+        while (!turnCompleted) {
 
-        switch (choice) {
-            case 1 -> attackEnemy();
-            case 2 -> useItem();
-            default -> System.out.println("❌ Invalid choice! Turn skipped.");
+            System.out.println("\nChoose an action:");
+            System.out.println("1️⃣ Attack an enemy");
+            System.out.println("2️⃣ Use Item");
+
+            int choice = GameScanner.getInt();
+
+            if (choice == 1) {
+                turnCompleted = tryAttackEnemy();
+            } else if (choice == 2) {
+                turnCompleted = tryUseItem();
+            } else {
+                System.out.println("❌ Invalid choice!");
+            }
         }
     }
 
     /**
      * Allows the player to attack an enemy.
      */
-    private void attackEnemy() {
+    private boolean tryAttackEnemy() {
         if (enemies.isEmpty()) {
             System.out.println("⚠️ No enemies left to attack!");
-            return;
+            return false;
         }
 
-        System.out.println("\nChoose an enemy to attack:");
-        for (int i = 0; i < enemies.size(); i++) {
-            System.out
-                    .println((i + 1) + ") " + enemies.get(i).getName() + " (" + enemies.get(i).getCurrentHp() + " HP)");
-        }
+        if (enemies.size() > 1) {
+            System.out.println("\nChoose an enemy to attack:");
+            for (int i = 0; i < enemies.size(); i++) {
+                System.out
+                        .println((i + 1) + ") " + enemies.get(i).getName() + " (" + enemies.get(i).getCurrentHp()
+                                + " HP)");
+            }
 
-        int targetIndex = GameScanner.getInt() - 1;
-        if (targetIndex >= 0 && targetIndex < enemies.size()) {
-            player.attack(enemies.get(targetIndex));
+            int targetIndex = GameScanner.getInt() - 1;
+            if (targetIndex >= 0 && targetIndex < enemies.size()) {
+                player.attack(enemies.get(targetIndex));
+                return true;
+            } else {
+                System.out.println("❌ Invalid target!");
+            }
         } else {
-            System.out.println("❌ Invalid target!");
+            player.attack(enemies.getFirst());
         }
+
+        return false;
     }
 
     private ArrayList<Entity> getAllies() {
@@ -215,10 +230,10 @@ public class Battle {
     /**
      * Allows the player to use an item.
      */
-    private void useItem() {
+    private boolean tryUseItem() {
         if (player.getInventory().getSize() == 0) {
             System.out.println("❌ You have no items in your inventory!");
-            return;
+            return false;
         }
 
         System.out.println("\n👜 Inventory:");
@@ -229,21 +244,19 @@ public class Battle {
 
         if (itemChoice == 0) {
             System.out.println("❌ Action canceled.");
-            return;
+            return false;
         }
 
         // Validate selection
         if (itemChoice < 1 || itemChoice > player.getInventory().getSize()) {
             System.out.println("❌ Invalid selection! Please choose a valid item.");
-            return;
+            return false;
         }
 
         // Retrieve selected item
         Item selectedItem = player.getInventory().getItem(itemChoice - 1);
 
         if (selectedItem != null) {
-            // ✅ If the item is an EMP Grenade and the player is a PharmacologistHacker,
-            // apply it to the enemy
             if (selectedItem instanceof ItemBattle battleItem) {
                 battleItem.use(this);
             } else if (selectedItem instanceof ItemHero playerItem) {
@@ -252,9 +265,11 @@ public class Battle {
 
             player.getInventory().removeItem(selectedItem);
             System.out.println("✔️ You used " + selectedItem.getName() + "!");
+            return true;
         } else {
             System.out.println("❌ Something went wrong! Could not use item.");
         }
+        return false;
     }
 
     /**

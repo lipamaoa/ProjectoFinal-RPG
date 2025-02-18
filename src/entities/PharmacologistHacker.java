@@ -65,15 +65,7 @@ public class PharmacologistHacker extends Hero {
 
     @Override
     protected void initializeInventory() {
-        // // ✅ Add hero-specific items, but DO NOT initialize inventory again
-        // inventory.addItem(new ItemHero("Hacking Device", "Allows hacking security systems.", 50) {
-        //     @Override
-        //     public void use(Hero player) {
-        //         System.out.println("💻 You hack a system, disabling security for a short time!");
-        //     }
-        // });
-
-        inventory.addItem(new HealthPotion(HealthPotionSize.Medium));
+        inventory.addItem(new HealthPotion(HealthPotionSize.Large));
     }
 
     public void useEmpGrenade(Enemy enemy) {
@@ -84,5 +76,10 @@ public class PharmacologistHacker extends Hero {
         } else {
             System.out.println("❌ The EMP Grenade has no effect on organic enemies!");
         }
+    }
+
+    @Override
+    public HeroClass getHeroClass() {
+        return HeroClass.PHARMACOLOGIST_HACKER;
     }
 }

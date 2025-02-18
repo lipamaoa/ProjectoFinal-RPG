@@ -1,7 +1,7 @@
 package src.game;
 
 import src.entities.*;
-import src.items.ItemHeroRegistry;
+import src.items.ItemRegistry;
 import src.items.Weapon;
 import src.utils.AsciiArt;
 
@@ -154,7 +154,7 @@ public class Game {
 
         switch (heroChoice) {
             case 1:
-                startingWeapon = ItemHeroRegistry.HACKER_WEAPON;
+                startingWeapon = ItemRegistry.HACKER_WEAPON;
                 heroDescription = "The Pharmacologist Hacker is a master of toxins and cyber warfare, using chemical compounds to debilitate enemies.";
                 heroAbilities = "🛠️ **Abilities:**\n"
                         + "- Poison Dart: Inflicts gradual damage over time.\n"
@@ -163,7 +163,7 @@ public class Game {
                 break;
 
             case 2:
-                startingWeapon = ItemHeroRegistry.BIOENGINEER_WEAPON;
+                startingWeapon = ItemRegistry.BIOENGINEER_WEAPON;
                 heroDescription = "The Bioengineer enhances their body with regenerative biotechnology, allowing them to heal and reinforce combat capabilities.";
                 heroAbilities = "🛠️ **Abilities:**\n"
                         + "- Rapid Healing: Recovers small amounts of HP over time.\n"
@@ -172,7 +172,7 @@ public class Game {
                 break;
 
             case 3:
-                startingWeapon = ItemHeroRegistry.CHEMIST_WEAPON;
+                startingWeapon = ItemRegistry.CHEMIST_WEAPON;
                 heroDescription = "The Tactical Chemist specializes in volatile explosives and reactive combat, turning the battlefield into a chemical war zone.";
                 heroAbilities = "🛠️ **Abilities:**\n"
                         + "- Explosive Trap: Places chemical bombs that detonate on impact.\n"

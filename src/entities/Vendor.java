@@ -25,11 +25,11 @@ public class Vendor {
         System.out.println("🛒 The vendor has restocked items based on your expertise...");
 
         // Get hero-specific items from the registry
-        storeInventory.addAll(ItemHeroRegistry.getItemsForHero(player));
+        storeInventory.addAll(ItemRegistry.getItemsForHero(player));
 
         // Add common items for all hero types
-        storeInventory.addAll(ItemHeroRegistry.HEALING_ITEMS);
-        storeInventory.addAll(ItemHeroRegistry.WEAPONS);
+        storeInventory.addAll(ItemRegistry.HEALING_ITEMS);
+        storeInventory.addAll(ItemRegistry.WEAPONS);
     }
 
     /**

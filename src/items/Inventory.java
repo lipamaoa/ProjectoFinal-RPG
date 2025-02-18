@@ -63,36 +63,11 @@ public class Inventory {
             System.out.println("\n🎒 **Inventory:**");
             for (int i = 0; i < items.size(); i++) {
                 var item = items.get(i);
-                System.out.println(
-                        (i + 1) + "️⃣ " + item.getName() + (item.description != null ? " - " + item.description : ""));
+                System.out.println((i + 1) + "️⃣ ");
+                item.showDetails();
             }
         }
     }
-
-    /**
-     * Uses an item based on the index in the inventory.
-     *
-     * @param index The index of the item to use.
-     * @return
-     */
-    // public Item useItem(int index, Hero player) {
-    //     if (items.isEmpty()) {
-    //         System.out.println("❌ You have no items to use!");
-    //         return null;
-    //     }
-
-    //     if (index < 0 || index >= items.size()) {
-    //         System.out.println("❌ Invalid item selection!");
-    //         return null;
-    //     }
-
-    //     Item selectedItem = items.get(index);
-    //     selectedItem.use(player);
-    //     items.remove(index);
-
-    //     System.out.println("✔️ You used " + selectedItem.getName() + "!");
-    //     return selectedItem;
-    // }
 
     /**
      * Returns the number of items in the inventory.

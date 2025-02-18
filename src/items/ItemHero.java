@@ -1,31 +1,23 @@
 package src.items;
 
+import java.util.Set;
 import java.util.function.Consumer;
-
 import src.entities.Hero;
+import src.entities.HeroClass;
 
-/**
- * Represents an item that can be used or equipped by a hero.
- */
 public class ItemHero extends Item {
     protected Consumer<Hero> effect;
 
-    /**
-     * Constructs a hero item.
-     *
-     * @param name        The name of the item.
-     * @param description The description of what the item does.
-     * @param price       The item's value (cost or selling price).
-     */
-    public ItemHero(String name, String description, int price, Consumer<Hero> effect) {
-        super(name, description, price);
+    public ItemHero(String name, String description, int price, Set<HeroClass> allowedClasses, Consumer<Hero> effect) {
+        super(name, description, price, allowedClasses);
         this.effect = effect;
     }
 
-    /**
-     * Applies the item's effect when used by the hero.
-     */
-    public final void use(Hero player) {
-        effect.accept(player);
+    public void use(Hero player) {
+        if (canBeUsedBy(player)) {
+            effect.accept(player);
+        } else {
+            System.out.println("❌ This item cannot be used by your hero class.");
+        }
     }
 }

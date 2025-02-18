@@ -13,13 +13,12 @@ import java.util.Random;
 public class FriendlyNPC extends Entity {
     private final String backstory;
     private final String[] dialogues;
-    private boolean canGiveItem;
-    private boolean canHeal;
+    private final boolean canGiveItem;
     private final boolean canFight;
     private final Random random;
+    private final boolean canHack;
     private boolean willJoinBattle;
     private boolean alreadyHelped = false;
-    private final boolean canHack;
 
     public FriendlyNPC(
             String name,
@@ -31,11 +30,10 @@ public class FriendlyNPC extends Entity {
             boolean canHack,
             int maxHp,
             int strength) {
-        super(name, maxHp, strength);
+        super(name, maxHp, strength, canHeal);
         this.backstory = backstory;
         this.dialogues = dialogues;
         this.canGiveItem = canGiveItem;
-        this.canHeal = canHeal;
         this.canFight = canFight;
         this.canHack = canHack;
         this.random = GameRandom.getInstance();
@@ -118,6 +116,7 @@ public class FriendlyNPC extends Entity {
         }
 
         if (this.canHack && target.isElectronic() && target instanceof Enemy && !((Enemy) target).isHacked()) {
+            System.out.println("🧑‍💻 " + name + " tries to hack " + target.getName() + "!");
             ((Enemy) target).tryToHack();
         } else {
             System.out.println("⚔️ " + name + " attacks " + target.getName() + " for " + strength + " damage.");
