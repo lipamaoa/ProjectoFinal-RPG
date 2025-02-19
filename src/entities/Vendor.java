@@ -4,7 +4,6 @@ import src.game.GameScanner;
 import src.items.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 /**
  * Represents a vendor in the game where players can buy and sell items.
@@ -49,7 +48,12 @@ public class Vendor {
      * Allows the player to buy an item.
      */
     public void buyItems(Hero player) {
+
         while (true) {
+            if (this.storeInventory.isEmpty()) {
+                System.out.println("The vendor has nothing else to sell to you.");
+                break;
+            }
             showStore();
             System.out.println("\n💰 Your gold: " + player.getGold());
             System.out.println("Enter the number of the item to buy (or 0 to exit): ");
@@ -71,6 +75,7 @@ public class Vendor {
                     if (player.getGold() >= selectedItem.getPrice()) {
                         player.spendGold(selectedItem.getPrice());
                         player.addItemToInventory(selectedItem);
+                        this.storeInventory.remove(selectedItem);
                         System.out.println("✅ You purchased " + selectedItem.getName() + "!");
                     } else {
                         System.out.println("❌ Not enough gold!");
@@ -92,6 +97,7 @@ public class Vendor {
             System.out.println("\n🎒 Your Inventory:");
             player.showInventory();
             System.out.println("\n💰 Your gold: " + player.getGold());
+            System.out.println("Select an item to sell. This vendor will pay half its value.");
             System.out.println("Enter the number of the item to sell (or 0 to exit): ");
 
             int choice = GameScanner.getInt();
@@ -100,7 +106,7 @@ public class Vendor {
 
             if (choice > 0 && choice <= player.getInventorySize()) {
                 Item itemToSell = player.getInventory().getItem(choice - 1);
-                int sellPrice = itemToSell.getPrice() / 2; // Player gets half the original price
+                int sellPrice = itemToSell.getPrice() / 2;
 
                 player.collectGold(sellPrice);
                 player.getInventory().removeItem(itemToSell);

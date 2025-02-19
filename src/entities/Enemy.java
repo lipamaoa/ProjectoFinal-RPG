@@ -44,7 +44,7 @@ public class Enemy extends Entity {
      * @return The scaled value.
      */
     private static int scaleValue(int baseValue, int difficultyLevel) {
-        return baseValue + (difficultyLevel * 5); // Increases stats as difficulty increases
+        return baseValue + (difficultyLevel * 2);
     }
 
     /**

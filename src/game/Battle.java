@@ -17,6 +17,7 @@ import src.utils.AsciiArt;
  */
 public class Battle {
     private Hero player;
+    private ArrayList<Enemy> originalEnemiesList;
     private ArrayList<Enemy> enemies;
     private ArrayList<Entity> friends;
     private final Random random;
@@ -30,6 +31,8 @@ public class Battle {
     public Battle(Hero player, ArrayList<Enemy> enemies, ArrayList<Entity> friendlyNPCs) {
         this.player = player;
         this.enemies = enemies;
+        // Copy the original list so we can get their gold at the end
+        this.originalEnemiesList = new ArrayList<>(enemies);
         this.friends = new ArrayList<>();
         if (friendlyNPCs != null) {
             this.friends.addAll(friendlyNPCs);
@@ -58,6 +61,13 @@ public class Battle {
             enemiesTurn();
             removeDefeatedEntities();
         }
+
+        int goldWon = 0;
+        for (Enemy enemy : originalEnemiesList) {
+            goldWon += enemy.getGold();
+        }
+        System.out.printf("Victory! You got %d 🪙Gold from your enemies.\n", goldWon);
+        this.player.collectGold(goldWon);
 
         endBattle();
     }
@@ -117,7 +127,6 @@ public class Battle {
     private boolean tryAttackEnemy() {
         if (enemies.isEmpty()) {
             System.out.println("⚠️ No enemies left to attack!");
-            return false;
         }
 
         if (enemies.size() > 1) {
@@ -137,6 +146,7 @@ public class Battle {
             }
         } else {
             player.attack(enemies.getFirst());
+            return true;
         }
 
         return false;
@@ -236,7 +246,6 @@ public class Battle {
             return false;
         }
 
-        System.out.println("\n👜 Inventory:");
         player.getInventory().showInventory();
 
         System.out.println("\nChoose an item to use (or 0 to cancel):");

@@ -49,7 +49,7 @@ public class FriendlyNPC extends Entity {
         while (true) {
             System.out.println("\n1️⃣ \"Tell me more about this place.\"");
             System.out.println("2️⃣ \"Do you have anything that can help me?\"");
-            System.out.println("4️⃣ \"I have to go.\"");
+            System.out.println("0️⃣ \"I have to go.\"");
             int choice = GameScanner.getInt();
 
             switch (choice) {
@@ -59,7 +59,7 @@ public class FriendlyNPC extends Entity {
                 case 2:
                     assist(player);
                     break;
-                case 4:
+                case 0:
                     System.out.println("🚶 You nod and continue your journey.");
                     return;
                 default:
@@ -95,9 +95,14 @@ public class FriendlyNPC extends Entity {
         }
 
         if (canHeal) {
-            int healAmount = this.random.nextInt(30) + 20;
-            player.heal(healAmount);
-            System.out.println("🩹 " + name + " patches up your wounds.");
+            if (player.getMaxHp() > player.getCurrentHp()) {
+
+                int healAmount = this.random.nextInt(30) + 20;
+                player.heal(healAmount);
+                System.out.println("🩹 " + name + " patches up your wounds.");
+            } else {
+                System.out.println("You're already at full health. Have this 🍲 soup instead.");
+            }
         }
 
         if (canFight) {

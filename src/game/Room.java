@@ -3,6 +3,9 @@ package src.game;
 import src.entities.*;
 import src.items.HealthPotion;
 import src.items.HealthPotionSize;
+import src.items.Item;
+import src.items.ItemBattle;
+import src.items.ItemHero;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,13 +60,53 @@ public class Room {
                     player.showDetails();
                     break;
                 case "2":
-                    player.getInventory().showInventory();
+                    showInventory(player);
                     break;
 
                 default:
                     System.out.println("Our jorney continues...🥾");
                     continueJourney = true;
                     break;
+            }
+        }
+    }
+
+    private void showInventory(Hero player) {
+        while (true) {
+            System.out.println("Your 🪙gold: " + player.getGold());
+            player.showInventory();
+            if (player.getInventory().getSize() == 0) {
+                break;
+            }
+            System.out.println("\nChoose an item to use (or 0 to cancel):");
+            int itemChoice = GameScanner.getInt();
+
+            if (itemChoice == 0) {
+                System.out.println("❌ Action canceled.");
+                break;
+            }
+
+            // Validate selection
+            if (itemChoice < 1 || itemChoice > player.getInventory().getSize()) {
+                System.out.println("❌ Invalid selection! Please choose a valid item.");
+                break;
+            }
+
+            // Retrieve selected item
+            Item selectedItem = player.getInventory().getItem(itemChoice - 1);
+
+            if (selectedItem != null) {
+                if (selectedItem instanceof ItemHero playerItem) {
+                    playerItem.use(player);
+                } else {
+                    System.out.println("❌ You can't use this at the moment.");
+                }
+
+                player.getInventory().removeItem(selectedItem);
+                System.out.println("✔️ You used " + selectedItem.getName() + "!");
+                break;
+            } else {
+                System.out.println("❌ Something went wrong! Could not use item.");
             }
         }
     }
@@ -90,9 +133,7 @@ public class Room {
         }
 
         // Trigger a battle if there are enemies in this room
-        if (this.roomEnemies != null) {
-            System.out.println("⚠️ An enemy appears!");
-
+        if (this.roomEnemies.size() > 0) {
             Battle battle = new Battle(player, this.roomEnemies,
                     friendlyNPC.willJoinBattle() ? new ArrayList<>(List.of(friendlyNPC)) : null);
             battle.start();
@@ -119,18 +160,19 @@ public class Room {
      */
     private void accessVendor(Hero player) {
         System.out.println("\n🛒 You have found a **vendor**!");
+        this.vendor.generateStoreInventory(player);
 
         while (true) {
             System.out.println("\nChoose an option:");
             System.out.println("1️⃣ Buy Items");
             System.out.println("2️⃣ Sell Items");
-            System.out.println("3️⃣ Exit Shop");
+            System.out.println("0️⃣ Exit Shop");
 
             int choice = GameScanner.getInt();
             switch (choice) {
                 case 1 -> this.vendor.buyItems(player);
                 case 2 -> this.vendor.sellItems(player);
-                case 3 -> {
+                case 0 -> {
                     System.out.println("🚪 You leave the vendor.");
                     return;
                 }
