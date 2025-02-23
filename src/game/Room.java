@@ -6,8 +6,10 @@ import src.items.HealthPotionSize;
 import src.items.Item;
 import src.items.ItemBattle;
 import src.items.ItemHero;
+import src.items.Weapon;
 import src.status.Burning;
 import src.status.Poisoned;
+import src.status.Regeneration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,13 +76,12 @@ public class Room {
                     break;
             }
         }
-
-        player.processStatuses();
     }
 
     private void showInventory(Hero player) {
         while (true) {
             System.out.println("Your 🪙gold: " + player.getGold());
+            System.out.println("Your HP: " + player.getCurrentHp() + "/" + player.getMaxHp());
             player.showInventory();
             if (player.getInventory().getSize() == 0) {
                 break;
@@ -105,8 +106,15 @@ public class Room {
             if (selectedItem != null) {
                 if (selectedItem instanceof ItemHero playerItem) {
                     playerItem.use(player);
+                } else if (selectedItem instanceof Weapon weapon) {
+                    Weapon currentWeapon = player.getEquipedWeapon();
+                    player.equipWeapon(weapon);
+                    if (currentWeapon != null) {
+                        player.addItemToInventory(currentWeapon);
+                    }
                 } else {
                     System.out.println("❌ You can't use this at the moment.");
+                    return;
                 }
 
                 player.getInventory().removeItem(selectedItem);
@@ -191,18 +199,26 @@ public class Room {
      * Triggers a random event in the room (50% chance).
      */
     private void triggerRandomEvent(Hero player) {
-        if (random.nextInt(100) < 50) { // 50% chance of an event
-            int eventType = random.nextInt(4); // Select a random event
+        if (random.nextInt(100) < 50) {
+            int eventType = random.nextInt(5);
 
             switch (eventType) {
                 case 0 -> treasureChest(player);
                 case 1 -> fireTrap(player);
-                case 2 -> secretFile();
+                case 2 -> secretFile(player);
                 case 3 -> chemicalSurprise(player);
+                case 4 -> healingFountain(player);
             }
 
             continueStory(player);
         }
+    }
+
+    private void healingFountain(Hero player) {
+        System.out.println("🌊 You found a healing fountain!");
+        player.removeNegativeStatuses();
+        player.heal(25);
+        System.out.println("💧 You feel refreshed and healed for 25 HP!");
     }
 
     /**
@@ -232,9 +248,13 @@ public class Room {
     /**
      * The player finds secret files revealing PharmaCorp's illegal experiments.
      */
-    private void secretFile() {
+    private void secretFile(Hero player) {
         System.out.println("📜 You discovered a hidden document!");
         System.out.println("It contains classified information about PharmaCorp's unethical projects...");
+        player.addItemToInventory(new ItemHero("Secret File", "📜 Classified document", 75, null, (Hero p) -> {
+            System.out.println(
+                    "You read the secret file and learn about PharmaCorp's illegal experiments. Could probably have sold it for a good price.");
+        }));
     }
 
     /**
@@ -252,7 +272,7 @@ public class Room {
                 player.heal(hpBoost);
                 System.out.println("💊 The chemical healed you for " + hpBoost + " HP!");
             } else {
-                System.out.println("💀 The chemical was toxic! You are poisened.");
+                System.out.println("💀 The chemical was toxic! You are poisoned.");
                 player.applyStatus(new Poisoned(5, 5));
             }
         } else {

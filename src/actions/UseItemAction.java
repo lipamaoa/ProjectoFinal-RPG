@@ -9,6 +9,7 @@ import src.game.GameScanner;
 import src.items.Item;
 import src.items.ItemBattle;
 import src.items.ItemHero;
+import src.items.Weapon;
 
 public class UseItemAction extends BattleAction {
     public UseItemAction(Entity actor) {
@@ -54,6 +55,15 @@ public class UseItemAction extends BattleAction {
                 battleItem.use(battle);
             } else if (selectedItem instanceof ItemHero playerItem) {
                 playerItem.use(player);
+            } else if (selectedItem instanceof Weapon weapon) {
+                Weapon currentWeapon = player.getEquipedWeapon();
+                player.equipWeapon(weapon);
+                if (currentWeapon != null) {
+                    player.addItemToInventory(currentWeapon);
+                }
+            } else {
+                System.out.println("❌ You can't use this at the moment.");
+                return false;
             }
 
             player.getInventory().removeItem(selectedItem);

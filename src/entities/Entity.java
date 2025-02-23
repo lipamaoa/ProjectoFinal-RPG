@@ -11,7 +11,9 @@ import src.actions.HealAction;
 import src.game.GameRandom;
 import src.items.Inventory;
 import src.items.Weapon;
+import src.status.AttackBoost;
 import src.status.EndOfTurnStatus;
+import src.status.TimedStatus;
 
 /**
  * Abstract class representing an entity in the game.
@@ -35,7 +37,7 @@ public abstract class Entity {
     protected List<BattleAction> availableActions;
     protected Weapon equipedWeapon = null;
     protected Inventory inventory;
-    protected List<EndOfTurnStatus> statuses;
+    protected List<TimedStatus> statuses;
     private int disabledTurns = 0;
 
     public Entity(String name, int maxHp, int strength, boolean canHeal) {
@@ -47,7 +49,7 @@ public abstract class Entity {
         this.random = GameRandom.getInstance();
         this.availableActions = new ArrayList<BattleAction>();
         this.inventory = new Inventory();
-        this.statuses = new ArrayList<EndOfTurnStatus>();
+        this.statuses = new ArrayList<TimedStatus>();
 
         // Consider all can attack
         this.availableActions.add(new AttackAction(this));
@@ -96,21 +98,11 @@ public abstract class Entity {
         this.equipedWeapon = weapon;
     }
 
-    public void applyStatus(EndOfTurnStatus newStatus) {
-        for (EndOfTurnStatus status : statuses) {
-            if (status.getName().equals(newStatus.getName())) {
-                if (status.isPermanent()) {
-                    System.out.println(name + " is already affected by " + newStatus.getName() + "!");
-                    return;
-                }
-
-                status.prolong(newStatus.getRemainingTurns());
-                System.out.println(name + "'s " + newStatus.getName() + " effect is prolonged!");
-                return;
-            }
-        }
+    public void applyStatus(TimedStatus newStatus) {
         statuses.add(newStatus);
-        System.out.println(name + " is now affected by " + newStatus.getName() + "!");
+        if (!newStatus.isPermanent()) {
+            System.out.println(name + " is now affected by " + newStatus.getName() + "!");
+        }
     }
 
     /**
@@ -130,7 +122,13 @@ public abstract class Entity {
     }
 
     public int getStrength() {
-        return strength;
+        int totalBoost = 0;
+        for (TimedStatus status : statuses) {
+            if (status instanceof AttackBoost attackBoost) {
+                totalBoost += attackBoost.getStrengthBoost();
+            }
+        }
+        return strength + totalBoost;
     }
 
     public Weapon getEquipedWeapon() {
@@ -169,7 +167,9 @@ public abstract class Entity {
 
     public void processStatuses() {
         this.statuses.forEach(status -> {
-            status.applyEffect(this);
+            if (status instanceof EndOfTurnStatus endOfTurnStatus) {
+                endOfTurnStatus.applyEffect(this);
+            }
             status.tick();
         });
 

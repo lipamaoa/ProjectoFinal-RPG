@@ -15,10 +15,9 @@ public class Weapon extends Item {
      *
      * @param name        The name of the weapon.
      * @param attackPower The amount of extra damage it deals.
-     * @param durability  How many uses the weapon has.
      * @param price       The price of the weapon.
      */
-    public Weapon(String name, String description, int attackPower, int durability, int price,
+    public Weapon(String name, String description, int attackPower, int price,
             Set<HeroClass> allowedClasses) {
         super(name, description, price, allowedClasses);
         this.attackPower = attackPower;

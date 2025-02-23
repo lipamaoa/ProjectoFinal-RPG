@@ -6,7 +6,7 @@ public class Burning extends EndOfTurnStatus {
     private int damagePerTurn;
 
     public Burning(int duration, int damage) {
-        super("🔥Burning", duration);
+        super("🔥Burning", duration, true);
         this.damagePerTurn = damage;
     }
 

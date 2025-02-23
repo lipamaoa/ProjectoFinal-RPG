@@ -1,48 +1,21 @@
 package src.status;
 
-import java.util.Random;
-
 import src.entities.Entity;
-import src.game.GameRandom;
 
-public abstract class EndOfTurnStatus {
-    protected String name;
-    // -1 for passive effects
-    protected int remainingTurns;
-    protected final Random random;
+public abstract class EndOfTurnStatus extends TimedStatus {
+    protected boolean isNegative = false;
 
     public EndOfTurnStatus(String name, int duration) {
-        this.name = name;
-        this.remainingTurns = duration;
-        this.random = GameRandom.getInstance();
+        super(name, duration);
     }
 
-    public String getName() {
-        return name;
+    public EndOfTurnStatus(String name, int duration, boolean isNegative) {
+        super(name, duration);
+        this.isNegative = isNegative;
     }
 
-    public boolean isExpired() {
-        return remainingTurns == 0;
-    }
-
-    public boolean isPermanent() {
-        return remainingTurns == -1;
-    }
-
-    public int getRemainingTurns() {
-        return remainingTurns;
-    }
-
-    public void prolong(int turns) {
-        if (!isPermanent()) {
-            this.remainingTurns += turns;
-        }
-    }
-
-    public void tick() {
-        if (remainingTurns > 0) {
-            remainingTurns--;
-        }
+    public boolean isNegative() {
+        return isNegative;
     }
 
     public abstract void applyEffect(Entity entity);

@@ -269,6 +269,10 @@ public class Battle {
         return tempEnemies;
     }
 
+    public List<Entity> getEnemies() {
+        return getAliveEnemies();
+    }
+
     public List<Entity> getEnemies(Entity actor) {
         if (this.enemies.contains(actor)) {
             return getAliveAllies();

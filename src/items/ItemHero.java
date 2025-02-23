@@ -14,6 +14,11 @@ public class ItemHero extends Item {
     }
 
     public void use(Hero player) {
+        if (this.effect == null) {
+            System.out.println("❌ This item cannot be used.");
+            return;
+        }
+
         if (canBeUsedBy(player)) {
             effect.accept(player);
         } else {

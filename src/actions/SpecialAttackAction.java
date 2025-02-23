@@ -5,10 +5,10 @@ import src.game.Battle;
 
 import java.util.List;
 
-public class AttackAction extends BattleAction {
+public class SpecialAttackAction extends BattleAction {
 
-    public AttackAction(Entity actor) {
-        super("Attack", actor);
+    public SpecialAttackAction(Entity actor) {
+        super("Special Attack", actor);
     }
 
     @Override
@@ -19,22 +19,23 @@ public class AttackAction extends BattleAction {
 
         var equippedWeapon = actor.getEquipedWeapon();
 
-        // Randomized strength contribution (80% - 100% of base)
+        // Randomized strength contribution (100% - 120% of base)
         int strength = actor.getStrength();
-        int strengthContribution = (int) (strength * (0.8 + (random.nextDouble() * 0.2)));
+        int strengthContribution = (int) (strength * (1 + (random.nextDouble() * 0.2)));
 
-        // Randomized weapon damage contribution (90% - 110% of base)
+        // Randomized weapon damage contribution (100% - 150% of base)
         int weaponDamage = equippedWeapon != null ? equippedWeapon.getAttackPower() : 0;
-        int weaponContribution = (int) (weaponDamage * (0.9 + (random.nextDouble() * 0.2)));
+        int weaponContribution = (int) (weaponDamage * (1 + (random.nextDouble() * 0.5)));
 
         // Total randomized damage
         int totalDamage = strengthContribution + weaponContribution;
-
         target.takeDamage(totalDamage);
-        System.out
-                .println(actor.getName() + " attacks " + target.getName() + " with " + totalDamage
-                        + " total damage!");
 
+        System.out.println(actor.getName() + " releases a devastating attack on " + target.getName() + " with "
+                + totalDamage + " total damage!🙀");
+
+        // Disable action for 5 turns
+        this.disable(5);
         return true;
     }
 

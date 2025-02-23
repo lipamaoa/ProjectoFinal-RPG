@@ -2,9 +2,11 @@ package src.entities;
 
 import java.util.Random;
 
+import src.actions.SpecialAttackAction;
 import src.actions.UseItemAction;
 import src.game.GameRandom;
 import src.items.*;
+import src.status.EndOfTurnStatus;
 
 /**
  * Abstract class representing a hero in the game.
@@ -30,6 +32,7 @@ public abstract class Hero extends Entity {
         this.random = GameRandom.getInstance();
         this.initializeInventory();
         this.availableActions.add(new UseItemAction(this));
+        this.availableActions.add(new SpecialAttackAction(this));
         this.equipedWeapon = ItemRegistry.getStartingWeaponForHero(this);
     }
 
@@ -99,4 +102,16 @@ public abstract class Hero extends Entity {
     }
 
     public abstract HeroClass getHeroClass();
+
+    public boolean removeNegativeStatuses() {
+        var numberOfStatuses = statuses.size();
+        statuses.removeIf(status -> {
+            if (status instanceof EndOfTurnStatus && ((EndOfTurnStatus) status).isNegative()) {
+                System.out.println(name + " is freed from " + status.getName() + "!");
+                return true;
+            }
+            return false;
+        });
+        return numberOfStatuses != statuses.size();
+    }
 }

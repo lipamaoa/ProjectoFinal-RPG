@@ -2,18 +2,15 @@ package src.actions;
 
 import src.entities.Entity;
 import src.game.Battle;
-import src.game.GameRandom;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class HackAction extends BattleAction {
-    private Random random;
+    private static final int SUCCESS_RATE = 33;
 
     public HackAction(Entity actor) {
         super("Hack", actor);
-        this.random = GameRandom.getInstance();
     }
 
     @Override
@@ -28,11 +25,9 @@ public class HackAction extends BattleAction {
             return false;
         }
 
-        // TODO: Use entity level to reduce success rate
-        int successRate = Math.max(0, 100);
         int roll = random.nextInt(100);
 
-        if (roll < successRate) {
+        if (roll < SUCCESS_RATE) {
             System.out.println("✅ " + this.actor.getName() + " has been able to hack " + target.getName() + "!");
             battle.moveToAllies(target);
             // Disable the target for 1 turn

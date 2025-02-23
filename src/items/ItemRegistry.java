@@ -5,6 +5,9 @@ import java.util.Set;
 import java.util.Arrays;
 import src.entities.*;
 import src.game.Battle;
+import src.status.AttackBoost;
+import src.status.Burning;
+import src.status.Regeneration;
 
 public class ItemRegistry {
     // 🔹 **Healing Items (For all hero types)**
@@ -15,56 +18,73 @@ public class ItemRegistry {
 
     // 🔹 **Weapons**
     public static final List<Weapon> WEAPONS = Arrays.asList(
-            new Weapon("Chemical Blade", "A sharp blade coated with deadly toxins.", 15, 8, 12, null),
-            new Weapon("Toxic Dart Gun", "Shoots poison darts that weaken enemies.", 20, 10, 15, null),
-            new Weapon("Cryo Injector", "Freezes enemies, slowing them down.", 18, 7, 14, null));
+            new Weapon("Chemical Blade", "A sharp blade coated with deadly toxins.", 15, 50, null),
+            new Weapon("Toxic Dart Gun", "Shoots poison darts that weaken enemies.", 20, 60, null),
+            new Weapon("Cryo Injector", "Freezes enemies, slowing them down.", 18, 55, null));
 
     public static final List<Item> BIOENGINEER_ITEMS = Arrays.asList(
             new HealthPotion(HealthPotionSize.Medium),
             new HealthPotion(HealthPotionSize.Large),
-            new ItemHero("Regeneration Serum", "Regenerates HP over time (+10 HP per turn for 3 turns).", 50,
+            new ItemHero("Regeneration Serum", "Regenerates HP over time (+30 HP per turn for 3 turns).", 50,
                     Set.of(HeroClass.BIOENGINEER), (Hero player) -> {
                         System.out.println("🩸 You inject the Regeneration Serum! HP will regenerate each turn.");
-                        // ((Bioengineer) player).healOverTime(25, 3);
+                        player.applyStatus(new Regeneration(3, 30));
                     }));
 
     public static final List<Item> HACKER_ITEMS = Arrays.asList(
             new ItemBattle("EMP Grenade", "Disables enemy technology for 2 turns.", 40,
                     Set.of(HeroClass.PHARMACOLOGIST_HACKER), (Battle battle) -> {
-                        var player = battle.getPlayer();
-                        // Enemy currentEnemy = battle.getEnemy();
-                        // if (currentEnemy != null) {
-                        // System.out.println("💥 You throw an EMP Grenade! Electronic enemies are
-                        // stunned.");
-                        // ((PharmacologistHacker) player).useEmpGrenade(currentEnemy);
-                        // } else {
-                        // System.out.println("⚠️ No enemy present to use the EMP Grenade!");
-                        // }
-                    }),
-            new ItemHero("Advanced Hacking Tool", "Bypasses high-security systems.", 60,
-                    Set.of(HeroClass.PHARMACOLOGIST_HACKER),
-                    (Hero player) -> System.out.println("💻 You bypass a high-security system!")));
+                        var enemies = battle.getEnemies();
+                        boolean hasElectronicEnemies = false;
+                        for (Entity entity : enemies) {
+                            if (entity.isElectronic()) {
+                                entity.disable(2);
+                                hasElectronicEnemies = true;
+                            }
+                        }
+                        if (hasElectronicEnemies) {
+                            System.out.println("💥 You throw an EMP Grenade! Electronic enemies are stunned.");
+                        } else {
+                            System.out.println("⚠️ No enemy was affected by the EMP Grenade!");
+                        }
+                    }));
 
     public static final List<Item> CHEMIST_ITEMS = Arrays.asList(
-            new ItemHero("Explosive Charge", "A strong explosive useful for breaking doors or attacking.", 55,
+            new ItemBattle("Explosive Charge", "A strong explosive useful for breaking doors or attacking.", 55,
                     Set.of(HeroClass.TACTICAL_CHEMIST),
-                    (Hero player) -> System.out.println("💣 You plant an explosive charge!")),
-            new ItemHero("Chemical Booster", "Your next attack is twice as strong.", 40,
+                    (Battle battle) -> {
+                        System.out.println("💣 You plant an explosive charge!");
+                        var enemies = battle.getEnemies();
+                        for (Entity entity : enemies) {
+                            entity.takeDamage(30);
+                            System.out.println("💥 " + entity.getName() + " takes 30 damage!");
+                        }
+                    }),
+            new ItemBattle("Fire Bomb", "Throws a fire bomb that burns enemies for 3 turns.", 45,
+                    Set.of(HeroClass.TACTICAL_CHEMIST), (Battle battle) -> {
+                        System.out.println("🔥 You throw a Fire Bomb");
+                        var enemies = battle.getEnemies();
+                        for (Entity entity : enemies) {
+                            entity.applyStatus(new Burning(3, 15));
+                            System.out.println("🔥 " + entity.getName() + " is burning!");
+                        }
+                    }),
+            new ItemHero("Chemical Booster", "Your next attacks are stronger.", 40,
                     Set.of(HeroClass.TACTICAL_CHEMIST), (Hero player) -> {
-                        System.out.println("☣️ Your next attack is twice as strong!");
-                        // player.boostAttack(10, 1);
+                        System.out.println("☣️ Your next attacks are stronger!");
+                        player.applyStatus(new AttackBoost(3, 15));
                     }));
 
     public static final Weapon HACKER_WEAPON = new Weapon(
-            "Tranquilizer Dart Gun", "A hacking tool that also weakens enemies.", 10, 5, 10,
+            "Tranquilizer Dart Gun", "A hacking tool that also weakens enemies.", 10, 25,
             Set.of(HeroClass.PHARMACOLOGIST_HACKER));
 
     public static final Weapon BIOENGINEER_WEAPON = new Weapon(
-            "Biotech Shock Gloves", "Electrifies enemies with biotech pulses.", 12, 6, 10,
+            "Biotech Shock Gloves", "Electrifies enemies with biotech pulses.", 12, 26,
             Set.of(HeroClass.BIOENGINEER));
 
     public static final Weapon CHEMIST_WEAPON = new Weapon(
-            "Chemical Grenade Launcher", "Launches explosive chemical vials.", 15, 7, 12,
+            "Chemical Grenade Launcher", "Launches explosive chemical vials.", 15, 30,
             Set.of(HeroClass.TACTICAL_CHEMIST));
 
     public static Weapon getStartingWeaponForHero(Hero player) {

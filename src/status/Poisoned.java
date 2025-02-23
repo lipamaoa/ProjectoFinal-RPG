@@ -6,7 +6,7 @@ public class Poisoned extends EndOfTurnStatus {
     private int damagePerTurn;
 
     public Poisoned(int duration, int damage) {
-        super("☠️Poison", duration);
+        super("☠️Poison", duration, true);
         this.damagePerTurn = damage;
     }
 

@@ -2,11 +2,15 @@ package src.actions;
 
 import src.entities.Entity;
 import src.game.Battle;
+import src.game.GameRandom;
+
 import java.util.List;
+import java.util.Random;
 
 public abstract class BattleAction {
-    protected String name;
-    protected Entity actor;
+    protected final String name;
+    protected final Entity actor;
+    protected final Random random;
     private int disabledTurns = 0;
 
     public BattleAction(String name, Entity actor) {
@@ -16,6 +20,8 @@ public abstract class BattleAction {
         if (actor == null) {
             throw new IllegalArgumentException("Actor cannot be null.");
         }
+
+        this.random = GameRandom.getInstance();
     }
 
     public String getName() {

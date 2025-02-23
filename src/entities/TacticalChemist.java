@@ -1,5 +1,6 @@
 package src.entities;
 
+import src.actions.IncendiaryStrikeAction;
 import src.items.HealthPotion;
 import src.items.HealthPotionSize;
 
@@ -14,6 +15,7 @@ public class TacticalChemist extends Hero {
      */
     public TacticalChemist(String name, int maxHp, int strength, int gold) {
         super(name, maxHp, strength, gold);
+        this.availableActions.add(new IncendiaryStrikeAction(this));
     }
 
     @Override
@@ -26,4 +28,10 @@ public class TacticalChemist extends Hero {
         return HeroClass.TACTICAL_CHEMIST;
     }
 
+    @Override
+    public void takeDamage(int damage) {
+        // Tactical Chemists take 5% less damage from all sources
+        int reducedDamage = (int) (damage * 0.95);
+        super.takeDamage(reducedDamage);
+    }
 }

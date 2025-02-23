@@ -95,6 +95,10 @@ public class FriendlyNPC extends Entity {
         }
 
         if (canHeal) {
+            var removedNegative = player.removeNegativeStatuses();
+            if (removedNegative) {
+                System.out.println("✨ " + name + " cleanses you of harmful effects.");
+            }
             if (player.getMaxHp() > player.getCurrentHp()) {
 
                 int healAmount = this.random.nextInt(30) + 20;
