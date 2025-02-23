@@ -190,11 +190,16 @@ public class Battle {
             }
 
             List<BattleAction> actions = entity.getAvailableActions();
-            if (!actions.isEmpty()) {
-                // TODO: Right now we're just picking a random action and target.
-                // We can implement a more advanced AI here.
+            // TODO: Right now we're just picking a random action and target.
+            // We can implement a more advanced AI here.
+            while (true) {
+
                 BattleAction action = actions.get(this.random.nextInt(actions.size()));
                 List<Entity> targets = action.getValidTargets(this);
+                if (targets.isEmpty()) {
+                    // No valid targets for this action, try another one
+                    continue;
+                }
                 Entity selectedTarget = null;
                 // Always try to attack or heal the weakest target
                 for (Entity target : targets) {
@@ -204,6 +209,7 @@ public class Battle {
                 }
 
                 action.execute(this, selectedTarget);
+                break;
             }
         }
     }

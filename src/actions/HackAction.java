@@ -38,11 +38,14 @@ public class HackAction extends BattleAction {
             // Disable the target for 1 turn
             System.out.println(target.getName() + " won't be able to attack this turn.");
             target.disable(1);
+
+            // Disable action for 5 turns
+            this.disable(5);
         } else {
             System.out.println("❌ " + this.actor.getName() + " failed to hack " + target.getName() + "!");
+            this.disable(1);
         }
-        // Disable action for 3 turns
-        this.disable(3);
+
         return true;
     }
 

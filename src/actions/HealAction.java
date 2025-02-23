@@ -4,6 +4,7 @@ import src.entities.Entity;
 import src.game.Battle;
 import src.game.GameRandom;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -33,6 +34,9 @@ public class HealAction extends BattleAction {
 
     @Override
     public List<Entity> getValidTargets(Battle battle) {
-        return battle.getAllies(this.actor);
+        var alliesThatNeedHealth = new ArrayList<>(battle.getAllies(this.actor));
+
+        alliesThatNeedHealth.removeIf(entity -> entity.getCurrentHp() == entity.getMaxHp());
+        return alliesThatNeedHealth;
     }
 }

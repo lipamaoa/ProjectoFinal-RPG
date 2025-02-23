@@ -2,7 +2,6 @@ package src.entities;
 
 import src.items.HealthPotion;
 import src.items.HealthPotionSize;
-import src.items.Weapon;
 
 /**
  * A hero specialized in chemical explosives and reactive combat.

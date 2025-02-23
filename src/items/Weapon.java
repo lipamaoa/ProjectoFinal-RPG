@@ -9,7 +9,6 @@ import src.entities.HeroClass;
  */
 public class Weapon extends Item {
     private int attackPower;
-    private int durability;
 
     /**
      * Constructs a weapon.
@@ -23,15 +22,10 @@ public class Weapon extends Item {
             Set<HeroClass> allowedClasses) {
         super(name, description, price, allowedClasses);
         this.attackPower = attackPower;
-        this.durability = durability;
     }
 
     // Getters
     public int getAttackPower() {
         return attackPower;
-    }
-
-    public int getDurability() {
-        return durability;
     }
 }

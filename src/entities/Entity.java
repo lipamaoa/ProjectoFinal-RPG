@@ -9,6 +9,8 @@ import src.actions.AttackAction;
 import src.actions.BattleAction;
 import src.actions.HealAction;
 import src.game.GameRandom;
+import src.items.Inventory;
+import src.items.Weapon;
 
 /**
  * Abstract class representing an entity in the game.
@@ -30,6 +32,8 @@ public abstract class Entity {
     protected int currentHp;
     protected int strength;
     protected List<BattleAction> availableActions;
+    protected Weapon equipedWeapon = null;
+    protected Inventory inventory;
     private int disabledTurns = 0;
 
     public Entity(String name, int maxHp, int strength, boolean canHeal) {
@@ -40,6 +44,7 @@ public abstract class Entity {
         this.canHeal = canHeal;
         this.random = GameRandom.getInstance();
         this.availableActions = new ArrayList<BattleAction>();
+        this.inventory = new Inventory();
 
         // Consider all can attack
         this.availableActions.add(new AttackAction(this));
@@ -84,6 +89,10 @@ public abstract class Entity {
         }
     }
 
+    public void equipWeapon(Weapon weapon) {
+        this.equipedWeapon = weapon;
+    }
+
     /**
      * Getters
      */
@@ -102,6 +111,10 @@ public abstract class Entity {
 
     public int getStrength() {
         return strength;
+    }
+
+    public Weapon getEquipedWeapon() {
+        return equipedWeapon;
     }
 
     public List<BattleAction> getAvailableActions() {

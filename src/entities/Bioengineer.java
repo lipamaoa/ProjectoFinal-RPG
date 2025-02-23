@@ -1,23 +1,16 @@
 package src.entities;
 
+import src.actions.HealAction;
 import src.items.HealthPotion;
 import src.items.HealthPotionSize;
-import src.items.Weapon;
 
 /**
  * A hero specialized in bioengineering and self-healing.
  */
 public class Bioengineer extends Hero {
-    /**
-     * Constructs a Bioengineer with user-defined stats and a default weapon.
-     *
-     * @param name     The hero's name.
-     * @param maxHp    The allocated health.
-     * @param strength The allocated strength.
-     * @param gold     The allocated gold.
-     */
     public Bioengineer(String name, int maxHp, int strength, int gold) {
         super(name, maxHp, strength, gold);
+        this.availableActions.add(new HealAction(this));
     }
 
     @Override

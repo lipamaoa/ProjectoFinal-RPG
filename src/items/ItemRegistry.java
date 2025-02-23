@@ -52,7 +52,7 @@ public class ItemRegistry {
             new ItemHero("Chemical Booster", "Your next attack is twice as strong.", 40,
                     Set.of(HeroClass.TACTICAL_CHEMIST), (Hero player) -> {
                         System.out.println("☣️ Your next attack is twice as strong!");
-                        player.boostAttack(10, 1);
+                        // player.boostAttack(10, 1);
                     }));
 
     public static final Weapon HACKER_WEAPON = new Weapon(

@@ -20,8 +20,10 @@ public class HealthPotion extends ItemHero {
 
         this.effect = (Hero player) -> {
             System.out.println(
-                    "💊 " + player.getName() + " drinks a Health Potion and recovers " + healingAmount + " HP!");
+                    "💊 " + player.getName() + " drinks " + getPotionName(size) + " and recovers " + healingAmount
+                            + " HP!");
             player.heal(healingAmount);
+            System.out.println("💊 " + player.getName() + " now has " + player.getCurrentHp() + " HP now.");
         };
     }
 

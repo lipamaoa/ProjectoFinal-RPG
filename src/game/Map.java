@@ -132,7 +132,7 @@ public class Map {
      * Unlocks the Complex Exit once the player has completed key rooms.
      */
     private void checkUnlockConditions() {
-        for (int i = 0; i < rooms.size() - 1; i++) {
+        for (int i = 0; i < rooms.size(); i++) {
             if (!rooms.get(i).isCompleted()) {
                 return;
             }
