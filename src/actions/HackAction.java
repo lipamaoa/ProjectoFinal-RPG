@@ -41,6 +41,8 @@ public class HackAction extends BattleAction {
         } else {
             System.out.println("❌ " + this.actor.getName() + " failed to hack " + target.getName() + "!");
         }
+        // Disable action for 3 turns
+        this.disable(3);
         return true;
     }
 

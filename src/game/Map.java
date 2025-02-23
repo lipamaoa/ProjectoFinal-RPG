@@ -54,12 +54,12 @@ public class Map {
                 getRandomUniqueFriendlyNPC(availableNPCs), AddVendor()));
         rooms.add(new Room("Chemical Storage - Safe Zone", new ArrayList<>(),
                 getRandomUniqueFriendlyNPC(availableNPCs), new Vendor()));
-        rooms.add(new Room("Chemical Storage - Contaminated Zone", NPCRegistry.CHEMICAL_ENEMIES,
+        rooms.add(new Room("Chemical Storage - Contaminated Zone",
+                NPCRegistry.CHEMICAL_ENEMIES,
                 getRandomUniqueFriendlyNPC(availableNPCs), AddVendor()));
-        rooms.add(new Room("Archives", NPCRegistry.ARCHIVE_ENEMIES, getRandomUniqueFriendlyNPC(availableNPCs),
+        rooms.add(new Room("Archives", NPCRegistry.ARCHIVE_ENEMIES,
+                getRandomUniqueFriendlyNPC(availableNPCs),
                 AddVendor()));
-        // Final battle room (LOCKED)
-        rooms.add(new Room("Complex Exit", null, null, null));
     }
 
     /**
@@ -77,6 +77,10 @@ public class Map {
             }
 
             checkUnlockConditions();
+            if (this.complexExitUnlocked) {
+                System.out.println("🔓 The Complex Exit is now unlocked!");
+                break;
+            }
 
             System.out.println("\n📍 Choose where to go next:");
             List<Integer> validChoices = new ArrayList<>();
@@ -88,11 +92,6 @@ public class Map {
                 var room = rooms.get(i);
 
                 if (room.isCompleted()) {
-                    continue;
-                }
-
-                if (!complexExitUnlocked && room.getName().equals("Complex Exit")) {
-                    System.out.println("❌ Complex Exit is locked. Explore more before proceeding.");
                     continue;
                 }
 
@@ -115,14 +114,14 @@ public class Map {
      */
     private int selectStartingRoom() {
         System.out.println("🌍 Choose your starting location:");
-        for (int i = 0; i < rooms.size() - 1; i++) {
+        for (int i = 0; i < rooms.size(); i++) {
             System.out.println((i + 1) + "️⃣ " + rooms.get(i).getName());
         }
         System.out.println("❌ Complex Exit is locked.");
 
         while (true) {
             int choice = GameScanner.getInt() - 1;
-            if (choice >= 0 && choice < rooms.size() - 1) {
+            if (choice >= 0 && choice < rooms.size()) {
                 return choice;
             }
             System.out.println("⚠️ Invalid selection. Please choose a valid starting room.");
@@ -133,15 +132,13 @@ public class Map {
      * Unlocks the Complex Exit once the player has completed key rooms.
      */
     private void checkUnlockConditions() {
-        if (!complexExitUnlocked) {
-            for (int i = 0; i < rooms.size() - 1; i++) {
-                if (!rooms.get(i).isCompleted()) {
-                    return;
-                }
+        for (int i = 0; i < rooms.size() - 1; i++) {
+            if (!rooms.get(i).isCompleted()) {
+                return;
             }
-
-            System.out.println("🔓 The Complex Exit is now unlocked!");
         }
+
+        this.complexExitUnlocked = true;
     }
 
     public ArrayList<Entity> getSurvivingFriends() {

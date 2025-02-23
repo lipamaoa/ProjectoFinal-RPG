@@ -7,6 +7,7 @@ import java.util.List;
 public abstract class BattleAction {
     protected String name;
     protected Entity actor;
+    private int disabledTurns = 0;
 
     public BattleAction(String name, Entity actor) {
         this.actor = actor;
@@ -34,4 +35,18 @@ public abstract class BattleAction {
      * Defines what entities can be targeted by this action.
      */
     public abstract List<Entity> getValidTargets(Battle battle);
+
+    public boolean isDisabled() {
+        return disabledTurns > 0;
+    }
+
+    public void disable(int turns) {
+        disabledTurns = turns;
+    }
+
+    public void endTurn() {
+        if (disabledTurns > 0) {
+            disabledTurns--;
+        }
+    };
 }

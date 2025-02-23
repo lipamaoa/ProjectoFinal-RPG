@@ -105,7 +105,15 @@ public abstract class Entity {
     }
 
     public List<BattleAction> getAvailableActions() {
-        return availableActions;
+        ArrayList<BattleAction> notDisabledActions = new ArrayList<>();
+
+        for (BattleAction action : availableActions) {
+            if (!action.isDisabled()) {
+                notDisabledActions.add(action);
+            }
+        }
+
+        return notDisabledActions;
     }
 
     /**
@@ -139,6 +147,10 @@ public abstract class Entity {
             } else {
                 System.out.println("⚡ " + getName() + " is disabled for " + disabledTurns + " more turns.");
             }
+        }
+
+        for (BattleAction action : availableActions) {
+            action.endTurn();
         }
     }
 }

@@ -26,6 +26,8 @@ public class HealAction extends BattleAction {
         target.heal(healAmount);
         System.out.println(actor.getName() + " heals " + target.getName() + " for " + healAmount + " HP! "
                 + target.getName() + " now has " + target.getCurrentHp() + " HP.");
+        // Disable action for 2 turns
+        this.disable(2);
         return true;
     }
 
