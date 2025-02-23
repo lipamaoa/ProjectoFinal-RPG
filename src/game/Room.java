@@ -35,11 +35,14 @@ public class Room {
         this.name = name;
         this.random = GameRandom.getInstance();
         this.roomEnemies = new ArrayList<>();
+
+        // Randomly select enemies to appear in the room
         if (possibleEnemies != null && !possibleEnemies.isEmpty()) {
+            this.roomEnemies.addAll(possibleEnemies);
             // At least 1 enemy
             int numberOfEnemies = this.random.nextInt(possibleEnemies.size()) + 1;
-            for (int i = 0; i < numberOfEnemies; i++) {
-                this.roomEnemies.add(possibleEnemies.get(this.random.nextInt(possibleEnemies.size())));
+            while (this.roomEnemies.size() > numberOfEnemies) {
+                this.roomEnemies.remove(this.random.nextInt(this.roomEnemies.size()));
             }
         }
         this.friendlyNPC = friendlyNPC;
@@ -103,7 +106,6 @@ public class Room {
                 }
 
                 player.getInventory().removeItem(selectedItem);
-                System.out.println("✔️ You used " + selectedItem.getName() + "!");
                 break;
             } else {
                 System.out.println("❌ Something went wrong! Could not use item.");

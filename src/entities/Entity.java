@@ -1,9 +1,13 @@
 package src.entities;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+import src.actions.AttackAction;
+import src.actions.BattleAction;
+import src.actions.HealAction;
 import src.game.GameRandom;
 
 /**
@@ -20,11 +24,13 @@ public abstract class Entity {
             "engineered");
 
     protected final String name;
-    protected final boolean canHeal;
+    protected boolean canHeal;
     protected Random random;
     protected int maxHp;
     protected int currentHp;
     protected int strength;
+    protected List<BattleAction> availableActions;
+    private int disabledTurns = 0;
 
     public Entity(String name, int maxHp, int strength, boolean canHeal) {
         this.name = name;
@@ -33,6 +39,13 @@ public abstract class Entity {
         this.strength = strength;
         this.canHeal = canHeal;
         this.random = GameRandom.getInstance();
+        this.availableActions = new ArrayList<BattleAction>();
+
+        // Consider all can attack
+        this.availableActions.add(new AttackAction(this));
+        if (canHeal) {
+            this.availableActions.add(new HealAction(this));
+        }
     }
 
     public Entity(String name, int maxHp, int strength) {
@@ -58,7 +71,6 @@ public abstract class Entity {
         if (this.currentHp < 0) {
             this.currentHp = 0;
         }
-        System.out.println(name + " took " + amount + " damage. Remaining HP: " + currentHp);
     }
 
     /**
@@ -70,17 +82,6 @@ public abstract class Entity {
         if (this.currentHp > maxHp) {
             this.currentHp = maxHp;
         }
-        System.out.println(name + " healed " + amount + " HP. Current HP: " + currentHp);
-    }
-
-    public void heal(Entity target) {
-        if (!this.canHeal) {
-            return;
-        }
-
-        int healAmount = this.random.nextInt(strength) + 15;
-        System.out.println("🩹 " + name + " heals " + target.getName() + " for " + healAmount + " HP!");
-        target.heal(healAmount);
     }
 
     /**
@@ -103,6 +104,10 @@ public abstract class Entity {
         return strength;
     }
 
+    public List<BattleAction> getAvailableActions() {
+        return availableActions;
+    }
+
     /**
      * Checks if this is an electronic-based entity.
      *
@@ -113,23 +118,27 @@ public abstract class Entity {
         return ELECTRONIC_KEYWORDS.stream().anyMatch(lowerCaseName::contains);
     }
 
-    /**
-     * Setters
-     */
-
-    public void setCurrentHp(int hp) {
-        this.currentHp = Math.max(0, Math.min(hp, maxHp)); // Ensures HP is within valid range
+    public void disable(int i) {
+        this.disabledTurns += i;
     }
 
-    public void setStrength(int strength) {
-        this.strength = strength;
-
+    public boolean isDisabled() {
+        return disabledTurns > 0;
     }
 
-    /**
-     * Abstract method for attack behavior.
-     * Must be implemented by subclasses (Hero and NPC).
-     */
+    public void endTurn() {
+        if (currentHp == 0) {
+            System.out.println("💀 " + getName() + " is knocked out!");
+            return;
+        }
 
-    public abstract void attack(Entity target);
+        if (isDisabled()) {
+            disabledTurns--;
+            if (disabledTurns == 0) {
+                System.out.println("⚡ " + getName() + " is no longer disabled!");
+            } else {
+                System.out.println("⚡ " + getName() + " is disabled for " + disabledTurns + " more turns.");
+            }
+        }
+    }
 }

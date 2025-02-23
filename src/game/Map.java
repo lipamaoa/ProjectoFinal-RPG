@@ -73,7 +73,6 @@ public class Map {
             currentRoom.enter(player);
 
             if (player.getCurrentHp() <= 0) {
-                System.out.println("💀 You did not survive...");
                 break;
             }
 

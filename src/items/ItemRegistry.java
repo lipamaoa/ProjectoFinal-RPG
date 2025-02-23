@@ -25,20 +25,21 @@ public class ItemRegistry {
             new ItemHero("Regeneration Serum", "Regenerates HP over time (+10 HP per turn for 3 turns).", 50,
                     Set.of(HeroClass.BIOENGINEER), (Hero player) -> {
                         System.out.println("🩸 You inject the Regeneration Serum! HP will regenerate each turn.");
-                        ((Bioengineer) player).healOverTime(25, 3);
+                        // ((Bioengineer) player).healOverTime(25, 3);
                     }));
 
     public static final List<Item> HACKER_ITEMS = Arrays.asList(
             new ItemBattle("EMP Grenade", "Disables enemy technology for 2 turns.", 40,
                     Set.of(HeroClass.PHARMACOLOGIST_HACKER), (Battle battle) -> {
                         var player = battle.getPlayer();
-                        Enemy currentEnemy = battle.getEnemy();
-                        if (currentEnemy != null) {
-                            System.out.println("💥 You throw an EMP Grenade! Electronic enemies are stunned.");
-                            ((PharmacologistHacker) player).useEmpGrenade(currentEnemy);
-                        } else {
-                            System.out.println("⚠️ No enemy present to use the EMP Grenade!");
-                        }
+                        // Enemy currentEnemy = battle.getEnemy();
+                        // if (currentEnemy != null) {
+                        // System.out.println("💥 You throw an EMP Grenade! Electronic enemies are
+                        // stunned.");
+                        // ((PharmacologistHacker) player).useEmpGrenade(currentEnemy);
+                        // } else {
+                        // System.out.println("⚠️ No enemy present to use the EMP Grenade!");
+                        // }
                     }),
             new ItemHero("Advanced Hacking Tool", "Bypasses high-security systems.", 60,
                     Set.of(HeroClass.PHARMACOLOGIST_HACKER),

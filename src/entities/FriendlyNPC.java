@@ -1,5 +1,6 @@
 package src.entities;
 
+import src.actions.HackAction;
 import src.game.GameRandom;
 import src.game.GameScanner;
 import src.items.HealthPotion;
@@ -16,7 +17,6 @@ public class FriendlyNPC extends Entity {
     private final boolean canGiveItem;
     private final boolean canFight;
     private final Random random;
-    private final boolean canHack;
     private boolean willJoinBattle;
     private boolean alreadyHelped = false;
 
@@ -35,8 +35,8 @@ public class FriendlyNPC extends Entity {
         this.dialogues = dialogues;
         this.canGiveItem = canGiveItem;
         this.canFight = canFight;
-        this.canHack = canHack;
         this.random = GameRandom.getInstance();
+        this.availableActions.add(new HackAction(this));
     }
 
     /**
@@ -111,22 +111,5 @@ public class FriendlyNPC extends Entity {
         }
 
         alreadyHelped = true;
-    }
-
-    @Override
-    public void attack(Entity target) {
-        if (!canFight) {
-            System.out.println("⚠️ " + name + " is not a fighter and cannot attack!");
-            return;
-        }
-
-        if (this.canHack && target.isElectronic() && target instanceof Enemy && !((Enemy) target).isHacked()) {
-            System.out.println("🧑‍💻 " + name + " tries to hack " + target.getName() + "!");
-            ((Enemy) target).tryToHack();
-        } else {
-            System.out.println("⚔️ " + name + " attacks " + target.getName() + " for " + strength + " damage.");
-            target.takeDamage(strength);
-        }
-
     }
 }

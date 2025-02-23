@@ -185,11 +185,11 @@ public class Game {
         }
 
         if (heroChoice == 1) {
-            return new PharmacologistHacker(playerName, health, strength, gold, startingWeapon);
+            return new PharmacologistHacker(playerName, health, strength, gold);
         } else if (heroChoice == 2) {
-            return new Bioengineer(playerName, health, strength, gold, startingWeapon);
+            return new Bioengineer(playerName, health, strength, gold);
         } else {
-            return new TacticalChemist(playerName, health, strength, gold, startingWeapon);
+            return new TacticalChemist(playerName, health, strength, gold);
         }
 
         // Generate and save passport

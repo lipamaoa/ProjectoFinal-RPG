@@ -2,6 +2,7 @@ package src.entities;
 
 import java.util.Random;
 
+import src.actions.UseItemAction;
 import src.game.GameRandom;
 import src.items.*;
 
@@ -21,15 +22,14 @@ public abstract class Hero extends Entity {
     /**
      * Constructs a hero with dynamic stats based on user selection
      * 
-     * @param name       The hero's name.
-     * @param maxHp      The maximum health of the hero.
-     * @param strength   The hero's strength.
-     * @param level      The hero's starting level.
-     * @param gold       The initial gold amount.
-     * @param mainWeapon The hero's starting weapon.
+     * @param name     The hero's name.
+     * @param maxHp    The maximum health of the hero.
+     * @param strength The hero's strength.
+     * @param level    The hero's starting level.
+     * @param gold     The initial gold amount.
      */
 
-    public Hero(String name, int maxHp, int strength, int gold, Weapon mainWeapon) {
+    public Hero(String name, int maxHp, int strength, int gold) {
         super(name, maxHp, strength);
         this.gold = gold;
         this.boostedAttack = 0;
@@ -38,6 +38,7 @@ public abstract class Hero extends Entity {
         this.mainWeapon = ItemRegistry.getStartingWeaponForHero(this); // ✅ Get weapon from registry
         this.random = GameRandom.getInstance();
         this.initializeInventory();
+        this.availableActions.add(new UseItemAction(this));
     }
 
     /**
@@ -49,25 +50,6 @@ public abstract class Hero extends Entity {
         System.out.println("Gold: " + gold);
         System.out.println("Weapon: " + (mainWeapon != null ? mainWeapon.getName() : "None"));
     }
-
-    /**
-     * Implements the required attack(Entity target) method.
-     *
-     * @param target The entity being attacked.
-     */
-    @Override
-    public final void attack(Entity target) {
-        if (target instanceof Enemy) {
-            attack((Enemy) target);
-        } else {
-            System.out.println("⚠️ " + this.name + " cannot attack this target!");
-        }
-    }
-
-    /**
-     * Abstract attack method that must be implemented by subclasses.
-     */
-    public abstract void attack(Enemy enemy);
 
     /**
      * Boosts the hero's attack power for a limited number of turns.
