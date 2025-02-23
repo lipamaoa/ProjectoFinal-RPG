@@ -18,9 +18,10 @@ public class ItemRegistry {
 
     // 🔹 **Weapons**
     public static final List<Weapon> WEAPONS = Arrays.asList(
-            new Weapon("Chemical Blade", "A sharp blade coated with deadly toxins.", 15, 50, null),
-            new Weapon("Toxic Dart Gun", "Shoots poison darts that weaken enemies.", 20, 60, null),
-            new Weapon("Cryo Injector", "Freezes enemies, slowing them down.", 18, 55, null));
+            // TODO: These weapons could apply status effects or have special abilities.
+            new Weapon("Chemical Blade", "A sharp blade coated with deadly toxins.", 24, 50, null),
+            new Weapon("Toxic Dart Gun", "Shoots poison darts that weaken enemies.", 27, 60, null),
+            new Weapon("Cryo Injector", "Freezes enemies, slowing them down.", 25, 55, null));
 
     public static final List<Item> BIOENGINEER_ITEMS = Arrays.asList(
             new HealthPotion(HealthPotionSize.Medium),

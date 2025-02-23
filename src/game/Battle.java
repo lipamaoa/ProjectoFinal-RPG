@@ -193,10 +193,9 @@ public class Battle {
             // TODO: Right now we're just picking a random action and target.
             // We can implement a more advanced AI here.
             while (true) {
-
                 BattleAction action = actions.get(this.random.nextInt(actions.size()));
                 List<Entity> targets = action.getValidTargets(this);
-                if (targets.isEmpty()) {
+                if (targets == null || targets.isEmpty()) {
                     // No valid targets for this action, try another one
                     continue;
                 }
