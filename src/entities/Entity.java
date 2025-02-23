@@ -11,6 +11,7 @@ import src.actions.HealAction;
 import src.game.GameRandom;
 import src.items.Inventory;
 import src.items.Weapon;
+import src.status.EndOfTurnStatus;
 
 /**
  * Abstract class representing an entity in the game.
@@ -34,6 +35,7 @@ public abstract class Entity {
     protected List<BattleAction> availableActions;
     protected Weapon equipedWeapon = null;
     protected Inventory inventory;
+    protected List<EndOfTurnStatus> statuses;
     private int disabledTurns = 0;
 
     public Entity(String name, int maxHp, int strength, boolean canHeal) {
@@ -45,6 +47,7 @@ public abstract class Entity {
         this.random = GameRandom.getInstance();
         this.availableActions = new ArrayList<BattleAction>();
         this.inventory = new Inventory();
+        this.statuses = new ArrayList<EndOfTurnStatus>();
 
         // Consider all can attack
         this.availableActions.add(new AttackAction(this));
@@ -91,6 +94,23 @@ public abstract class Entity {
 
     public void equipWeapon(Weapon weapon) {
         this.equipedWeapon = weapon;
+    }
+
+    public void applyStatus(EndOfTurnStatus newStatus) {
+        for (EndOfTurnStatus status : statuses) {
+            if (status.getName().equals(newStatus.getName())) {
+                if (status.isPermanent()) {
+                    System.out.println(name + " is already affected by " + newStatus.getName() + "!");
+                    return;
+                }
+
+                status.prolong(newStatus.getRemainingTurns());
+                System.out.println(name + "'s " + newStatus.getName() + " effect is prolonged!");
+                return;
+            }
+        }
+        statuses.add(newStatus);
+        System.out.println(name + " is now affected by " + newStatus.getName() + "!");
     }
 
     /**
@@ -147,11 +167,28 @@ public abstract class Entity {
         return disabledTurns > 0;
     }
 
+    public void processStatuses() {
+        this.statuses.forEach(status -> {
+            status.applyEffect(this);
+            status.tick();
+        });
+
+        this.statuses.removeIf(status -> {
+            if (status.isExpired()) {
+                System.out.println(name + "'s " + status.getName() + " effect has ended.");
+                return true;
+            }
+            return false;
+        });
+    }
+
     public void endTurn() {
         if (currentHp == 0) {
             System.out.println("💀 " + getName() + " is knocked out!");
             return;
         }
+
+        this.processStatuses();
 
         if (isDisabled()) {
             disabledTurns--;

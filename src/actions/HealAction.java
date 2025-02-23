@@ -20,6 +20,7 @@ public class HealAction extends BattleAction {
     @Override
     public boolean execute(Battle battle, Entity target) {
         if (target == null) {
+            System.out.println("❌ No target selected for healing!");
             return false;
         }
 

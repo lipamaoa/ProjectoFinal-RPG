@@ -6,6 +6,8 @@ import src.items.HealthPotionSize;
 import src.items.Item;
 import src.items.ItemBattle;
 import src.items.ItemHero;
+import src.status.Burning;
+import src.status.Poisoned;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,6 +74,8 @@ public class Room {
                     break;
             }
         }
+
+        player.processStatuses();
     }
 
     private void showInventory(Hero player) {
@@ -192,7 +196,7 @@ public class Room {
 
             switch (eventType) {
                 case 0 -> treasureChest(player);
-                case 1 -> trap(player);
+                case 1 -> fireTrap(player);
                 case 2 -> secretFile();
                 case 3 -> chemicalSurprise(player);
             }
@@ -218,13 +222,11 @@ public class Room {
     }
 
     /**
-     * The player steps on a trap and loses health.
+     * The player steps on a fire trap.
      */
-    private void trap(Hero player) {
-        System.out.println("☠️ You stepped on a trap!");
-        int damage = random.nextInt(15) + 5; // Between 5 and 20 damage
-        player.takeDamage(damage);
-        System.out.println("💀 You lost " + damage + " HP.");
+    private void fireTrap(Hero player) {
+        System.out.println("☠️ You stepped on a 🔥 fire trap! You are burning.");
+        player.applyStatus(new Burning(3, 15));
     }
 
     /**
@@ -246,13 +248,12 @@ public class Room {
         if (choice == 1) {
             int effect = random.nextInt(2);
             if (effect == 0) {
-                int hpBoost = random.nextInt(15) + 5; // Gain between 5 and 20 HP
+                int hpBoost = random.nextInt(15) + 5;
                 player.heal(hpBoost);
                 System.out.println("💊 The chemical healed you for " + hpBoost + " HP!");
             } else {
-                int damage = random.nextInt(10) + 5; // Lose between 5 and 15 HP
-                player.takeDamage(damage);
-                System.out.println("💀 The chemical was toxic! You lost " + damage + " HP.");
+                System.out.println("💀 The chemical was toxic! You are poisened.");
+                player.applyStatus(new Poisoned(5, 5));
             }
         } else {
             System.out.println("⚠️ You ignored the chemical.");

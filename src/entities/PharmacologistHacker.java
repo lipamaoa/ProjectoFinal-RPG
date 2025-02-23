@@ -27,16 +27,6 @@ public class PharmacologistHacker extends Hero {
         inventory.addItem(new HealthPotion(HealthPotionSize.Large));
     }
 
-    public void useEmpGrenade(Enemy enemy) {
-        System.out.println("💥 EMP Grenade activated! Attempting to disable " + enemy.getName() + "...");
-
-        if (enemy.isElectronic()) { // Only affects electronic enemies
-            enemy.disable(2); // Disable enemy for 2 turns
-        } else {
-            System.out.println("❌ The EMP Grenade has no effect on organic enemies!");
-        }
-    }
-
     @Override
     public HeroClass getHeroClass() {
         return HeroClass.PHARMACOLOGIST_HACKER;

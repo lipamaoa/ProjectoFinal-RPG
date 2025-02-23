@@ -5,7 +5,6 @@ import src.items.ItemRegistry;
 import src.items.Weapon;
 import src.utils.AsciiArt;
 
-import java.util.List;
 import java.util.ArrayList;
 
 /**
@@ -57,7 +56,7 @@ public class Game {
      */
     private static void introduceStory() {
         System.out.println("\n📝 **Prologue**:");
-        System.out.println("You were one of PharmaCorp’s top scientists, working on Project Eden-9.");
+        System.out.println("You were one of PharmaCorp's top scientists, working on Project Eden-9.");
         System.out.println("But when you discovered the unethical experiments they were running...");
         System.out.println("...you knew you had to escape.");
         System.out.println("With enemies on your trail and a maze-like lab to navigate,");
@@ -118,6 +117,9 @@ public class Game {
             System.out.println("Points can be allocated between HP and Strength.");
             System.out.println("1 stat point = 1 ❤\uFE0FHP.\n5 stat point = 1 💪Strength");
 
+            System.out.printf("\nCurrent Stats: HP [%s] Strength [%s]\n",
+                    "❤".repeat(health / 10), "💪".repeat(strength / 2));
+
             // Allocate HP
             int hpPoints = GameScanner.getIntInRange("Allocate points to HP: ", 0, statPoints);
             health += hpPoints;
@@ -147,43 +149,6 @@ public class Game {
             }
         }
 
-        // Assign Default Weapons and Hero Description
-        Weapon startingWeapon;
-        String heroDescription = "";
-        String heroAbilities = "";
-
-        switch (heroChoice) {
-            case 1:
-                startingWeapon = ItemRegistry.HACKER_WEAPON;
-                heroDescription = "The Pharmacologist Hacker is a master of toxins and cyber warfare, using chemical compounds to debilitate enemies.";
-                heroAbilities = "🛠️ **Abilities:**\n"
-                        + "- Poison Dart: Inflicts gradual damage over time.\n"
-                        + "- Hacking Boost: Can disable enemy defenses.\n"
-                        + "- Chemical Overload: Amplifies toxin effects for massive damage.";
-                break;
-
-            case 2:
-                startingWeapon = ItemRegistry.BIOENGINEER_WEAPON;
-                heroDescription = "The Bioengineer enhances their body with regenerative biotechnology, allowing them to heal and reinforce combat capabilities.";
-                heroAbilities = "🛠️ **Abilities:**\n"
-                        + "- Rapid Healing: Recovers small amounts of HP over time.\n"
-                        + "- Bioelectric Shock: Deals electric damage to enemies.\n"
-                        + "- Adrenaline Surge: Temporarily boosts speed and strength.";
-                break;
-
-            case 3:
-                startingWeapon = ItemRegistry.CHEMIST_WEAPON;
-                heroDescription = "The Tactical Chemist specializes in volatile explosives and reactive combat, turning the battlefield into a chemical war zone.";
-                heroAbilities = "🛠️ **Abilities:**\n"
-                        + "- Explosive Trap: Places chemical bombs that detonate on impact.\n"
-                        + "- Reactive Armor: Absorbs a portion of incoming damage.\n"
-                        + "- Incendiary Strike: Deals fire damage over an area.";
-                break;
-
-            default:
-                return null;
-        }
-
         if (heroChoice == 1) {
             return new PharmacologistHacker(playerName, health, strength, gold);
         } else if (heroChoice == 2) {
@@ -191,17 +156,6 @@ public class Game {
         } else {
             return new TacticalChemist(playerName, health, strength, gold);
         }
-
-        // Generate and save passport
-        // String passportContent = HeroPassport.generatePassport(playerName,
-        // heroChoice, defaultWeapon, health, strength, gold, heroAbilities);
-        // if (passportContent != null) {
-        // String fileName = "hero_passport.txt";
-        // HeroPassport.saveHeroPassport(fileName, passportContent);
-        // HeroPassport.loadAndDisplayPassport(fileName);
-        //
-        //
-        // }
     }
 
     /**
