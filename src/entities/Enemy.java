@@ -2,8 +2,6 @@ package src.entities;
 
 import src.game.GameRandom;
 
-import java.util.Random;
-
 /**
  * This class is used for enemies that the player will encounter in battles.
  */
