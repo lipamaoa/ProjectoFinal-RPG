@@ -1,10 +1,5 @@
 package src.entities;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
-
 import src.actions.AttackAction;
 import src.actions.BattleAction;
 import src.actions.HealAction;
@@ -14,6 +9,11 @@ import src.items.Weapon;
 import src.status.AttackBoost;
 import src.status.EndOfTurnStatus;
 import src.status.TimedStatus;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 /**
  * Abstract class representing an entity in the game.
@@ -78,12 +78,36 @@ public abstract class Entity {
     }
 
     /**
-     * Displays the entity's details.
+     * Displays the entity's details, including current statuses.
      */
     public void showDetails() {
-        System.out.println("Name: " + name);
-        System.out.println("HP: " + currentHp + "/" + maxHp);
-        System.out.println("Strength: " + strength);
+        System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        System.out.println("********** Your Passport ************");
+        System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        System.out.printf(" 🏷️  Name: %s\n", name);
+        System.out.printf(" ❤  HP: %d / %d\n", currentHp, maxHp);
+        System.out.printf(" 💪 Strength: %d\n", getStrength());
+
+        if (!this.statuses.isEmpty()) {
+            System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+            System.out.println("📜 **Current Status Effects:**");
+
+            for (TimedStatus status : statuses) {
+                if (status instanceof AttackBoost attackBoost) {
+                    System.out.printf(" 🔥 %s (+%d Strength) [%d turns left]\n",
+                            attackBoost.getName(),
+                            attackBoost.getStrengthBoost(),
+                            attackBoost.getRemainingTurns());
+                } else if (status instanceof EndOfTurnStatus endOfTurnStatus && !endOfTurnStatus.isPermanent()) {
+                    System.out.printf(" 🕒 %s [%d turns left]\n",
+                            status.getName(),
+                            status.getRemainingTurns());
+                } else {
+                    System.out.printf(" ✨ %s (Permanent)\n", status.getName());
+                }
+            }
+            System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        }
     }
 
     /**
@@ -238,7 +262,7 @@ public abstract class Entity {
             status.tick();
         });
 
-        this.statuses.removeIf(status -> status.isExpired());
+        this.statuses.removeIf(TimedStatus::isExpired);
     }
 
     /**

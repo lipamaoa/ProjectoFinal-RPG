@@ -10,30 +10,51 @@ The game begins **at the moment of your escape attempt**. You must explore diffe
 
 ---
 
+## 🎮 Gameplay Features
+
+ ☑️ Turn-Based Combat: Choose strategic actions like attacking, hacking, healing, or using battle items.
+
+ ☑️ Hero Classes: Select from unique hero types, each with distinct abilities and weapons.
+
+ ☑️ Status Effects: Burning, poison, and regeneration impact battles dynamically.
+
+ ☑️ NPC Interactions: Engage with friendly NPCs who may assist in battle or provide valuable information.
+
+ ☑️ Dynamic Inventory System: Manage weapons, potions, and tactical items for survival.
+
+ ☑️ Multiple Endings: Your choices determine how the story unfolds.
+
+---
+
 ## 🦸‍♀️ Hero Types (Playable Classes)
 
 1️⃣ **Pharmacologist Hacker** 💉💻  
-   - Expert in chemical manipulation and security hacking.  
-   - **Special Skills:**  
-     - Create antidotes for poison effects.  
-     - Hack doors and security systems.  
-     - Launch toxins that weaken enemies.  
+     
+   - **Abilities:**  
+     - Hacking security systems,
+     - Launching toxins,
+     - Disabling electronic enemies. 
+
    - **Main Weapon:** Tranquilizer dart gun.
 
 2️⃣ **Bioengineer** 🧬🔬  
    - Master of genetic engineering and survival in hostile environments.  
-   - **Special Skills:**  
-     - Create temporary mutations (boosting strength/agility).  
-     - Regenerate wounds through bio-stimulation.  
-     - Manipulate enemy DNA to weaken them.  
+
+   - **Abilities:**  
+     - Self-healing,
+     - Genetic enhancements,
+     - DNA-based enemy weakening. 
+
    - **Main Weapon:** Biotechnological shock gloves.
 
 3️⃣ **Tactical Chemist** ☣️🛠️  
    - Specialist in explosives and reactive compounds.  
-   - **Special Skills:**  
+
+   - **Abilities:**  
      - Create toxic gas bombs.  
      - Use chemical reactions to enhance the body.  
      - Break doors with explosives.  
+
    - **Main Weapon:** Chemical grenades.
 
 ---
@@ -57,6 +78,20 @@ The game begins **at the moment of your escape attempt**. You must explore diffe
 
 ---
 
+## ⚔️ Battle System
+
+- Attack Actions: Choose between normal and special attacks based on weapon and status effects.
+
+- Healing & Potions: Restore health using health potions or hero abilities.
+
+- Hacking: Disable enemies and security measures for strategic advantages.
+
+- Status Effects: Apply burning, poison, or regeneration effects to shift the battle outcome.
+
+- Turn-Based Mechanics: Plan each move wisely for survival.
+
+---
+
 ## 🏭 Game Locations / Levels
 
 1️⃣ **Biological Research Sector** 🧪🌡️  
@@ -76,29 +111,29 @@ The game begins **at the moment of your escape attempt**. You must explore diffe
 
 ---
 
-## ⚗️ Items and Upgrades
+## 🛠️ Inventory & Items
 
-- **Stimulant Serum** → Temporarily increases speed.  
-- **Experimental Antidote** → Cures poison and adverse mutations.  
-- **Neurotoxin Grenade** → Weakens enemies for a short time.  
-- **Neural Implant** → Enhances hacking ability.  
-- **Surgical Knife** → Useful for close combat.  
+- Weapons: Equip powerful weapons to increase damage.
+- 
+- Battle Items: Tactical tools like neurotoxins and explosives.
+
+- Health Potions: Restore HP to survive longer battles.
+
+- Key Items: Collect critical files and security passes to advance.
 
 ---
 
-## 🛡️ Battles and Game Progression
+## 🏛️ Locations & Levels
 
-Combat is **turn-based**, where each attack offers strategic choices:
+ 1️⃣ Biological Research Lab: Learn the origins of PharmaCorp’s twisted experiments.
 
-**Attack Options:**
-1️⃣ **Normal Attack** → Uses the main weapon for base damage.  
-2️⃣ **Special Attack** → Uses chemical compounds for a stronger attack (limited usage).  
-3️⃣ **Hacking** → In tech-heavy areas, you can disable enemies instead of fighting.  
-4️⃣ **Use Consumables** → Chemical potions, antidotes, or smoke bombs.  
+ 2️⃣ Security Department: Hack or fight your way through high-level security forces.
 
-**Character Progression:**  
-- Each **victory** grants **XP** to upgrade stats like **health, strength, intelligence, and defense**.  
-- The hero can learn **new chemical formulas** to improve strategy.  
+ 3️⃣ Human Testing Facility: Encounter failed test subjects and make difficult choices.
+
+ 4️⃣ Chemical Storage: Gather ingredients to craft new battle enhancements.
+
+ 5️⃣ Final Boss Battle: Face Prototype Eden-9, the ultimate PharmaCorp creation.
 
 ---
 
@@ -117,15 +152,32 @@ Combat is **turn-based**, where each attack offers strategic choices:
 
 ---
 
-## 🔥 Why This RPG is Engaging
+## 🚀 How to Play
 
-✅ **Mixes suspense and action** — You must think fast to survive.  
-✅ **Combines science with adventure** — Making it both educational and thrilling.  
-✅ **Multiple endings** — Enhances replayability.  
-✅ **Choices impact the story** — Do you free prisoners or leave them? Fight or hack systems?  
+ 1️⃣ Choose a Hero: Select your hero class with unique skills and weapons.
+
+ 2️⃣ Explore Rooms: Move through different PharmaCorp sectors, unlocking doors and uncovering secrets.
+
+ 3️⃣ Interact with NPCs: Gain allies or information through dialogue choices.
+
+ 4️⃣ Engage in Battles: Use strategic turn-based combat to defeat enemies and bosses.
+
+ 5️⃣ Manage Inventory: Equip weapons, use health potions, and craft useful items.
+
+ 6️⃣ Unravel the Story: Make choices that impact your survival and determine the ending.
 
 ---
 
+## 🎖️ Why Play Laboratory of Chaos?
+
+✅ Strategic Combat – Plan attacks, manage inventory, and apply battle effects.
+
+✅ Engaging Storyline – A sci-fi thriller with deep lore and immersive world-building.
+
+✅ Replayability – Multiple endings and hero classes encourage different playthroughs.
+
+✅ Choices Matter – Your decisions influence allies, battles, and the final outcome.
+
 ## 🚀 Ready to Escape PharmaCorp?
 Prepare your formulas, strategize your escape, and unveil the secrets hidden deep within the laboratory! 🏭💊
-
+Good luck escaping PharmaCorp! 🔬⚔️

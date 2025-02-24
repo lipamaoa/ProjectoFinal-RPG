@@ -22,7 +22,6 @@ public abstract class Hero extends Entity {
      * @param name     The hero's name.
      * @param maxHp    The maximum health of the hero.
      * @param strength The hero's strength.
-     * @param level    The hero's starting level.
      * @param gold     The initial gold amount.
      */
 
@@ -42,13 +41,16 @@ public abstract class Hero extends Entity {
     @Override
     public void showDetails() {
         super.showDetails();
-        System.out.println("Gold: " + gold);
+        System.out.printf(" 💰 Gold: %d\n", gold);
+
         if (this.equipedWeapon != null) {
-            System.out.println("Weapon: " + this.equipedWeapon.getName());
-            System.out.println("Weapon Damage: " + this.equipedWeapon.getAttackPower());
+            System.out.printf(" 🗡️  Weapon: %s\n", this.equipedWeapon.getName());
+            System.out.printf(" ⚔️  Weapon Damage: %d\n", this.equipedWeapon.getAttackPower());
         } else {
-            System.out.println("Weapon: None");
+            System.out.println(" 🛑 Weapon: None");
         }
+
+        System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
     }
 
      /**

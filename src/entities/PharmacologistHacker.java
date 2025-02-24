@@ -22,11 +22,19 @@ public class PharmacologistHacker extends Hero {
         this.availableActions.add(new HackAction(this));
     }
 
+    /**
+     * Initializes the Pharmacologist Hacker’s unique inventory.
+     */
     @Override
     protected void initializeInventory() {
         inventory.addItem(new HealthPotion(HealthPotionSize.Large));
     }
 
+    /**
+     * Retrieves the hero class type of the Pharmacologist Hacker.
+     *
+     * @return The hero class type as PHARMACOLOGIST_HACKER.
+     */
     @Override
     public HeroClass getHeroClass() {
         return HeroClass.PHARMACOLOGIST_HACKER;

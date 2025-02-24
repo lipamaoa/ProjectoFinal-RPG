@@ -1,34 +1,34 @@
 package src.game;
 
+import src.actions.BattleAction;
+import src.entities.Enemy;
+import src.entities.Entity;
 import src.entities.Hero;
+import src.utils.AsciiArt;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import src.actions.BattleAction;
-import src.entities.Enemy;
-import src.entities.Entity;
-import src.items.ItemBattle;
-import src.items.ItemHero;
-import src.items.Item;
-import src.utils.AsciiArt;
+import static src.utils.AsciiArt.showVictoryScreen;
 
 /**
  * Handles turn-based battles with room-defined enemies and allies.
  */
 public class Battle {
-    private Hero player;
-    private ArrayList<Enemy> originalEnemiesList;
-    private ArrayList<Entity> enemies;
-    private ArrayList<Entity> allies;
+    private final Hero player;
+    private final ArrayList<Enemy> originalEnemiesList;
+    private final ArrayList<Entity> enemies;
+    private final ArrayList<Entity> allies;
     private final Random random;
+    private int goldWon = 0;
 
     /**
      * Constructs a battle instance with a predefined list of enemies.
      *
      * @param player The player's hero.
-     * @param enemy  The enemy in this room.
+     * @param enemies The list of enemies in this room.
+     * @param friendlyNPCs The list of friendly NPCs assisting the player.
      */
     public Battle(Hero player, ArrayList<Enemy> enemies, ArrayList<Entity> friendlyNPCs) {
         this.player = player;
@@ -42,10 +42,20 @@ public class Battle {
         this.random = GameRandom.getInstance();
     }
 
+    /**
+     * Retrieves the player hero.
+     *
+     * @return The hero participating in the battle.
+     */
     public Hero getPlayer() {
         return this.player;
     }
 
+    /**
+     * Checks if the combat has ended.
+     *
+     * @return True if the battle is over, false otherwise.
+     */
     public boolean combatEnded() {
         if (player.getCurrentHp() <= 0) {
             return true;
@@ -69,32 +79,39 @@ public class Battle {
      */
     public void start() {
         AsciiArt.showBattleScreen();
-        System.out.println("\n⚔️ A battle begins!");
 
-        while (combatEnded() == false) {
+
+        while (!combatEnded()) {
             playerTurn();
             alliesTurn();
             enemiesTurn();
             doEndOfTurnEffects();
         }
 
+
+
         if (player.getCurrentHp() > 0) {
-            int goldWon = 0;
+
             for (Enemy enemy : originalEnemiesList) {
                 goldWon += enemy.getGold();
             }
-            System.out.printf("Victory! You got %d 🪙Gold from your enemies.\n", goldWon);
+
             this.player.collectGold(goldWon);
         }
+
+
 
         endBattle();
     }
 
+    /**
+     * Displays the current battle status.
+     */
     private void displayStatus() {
-        System.out.println("\n==============================");
+        System.out.println("=====================================================");
         System.out.println("🔹 HERO: " + player.getName());
         System.out.println("❤️ HP: [" + player.getCurrentHp() + "/" + player.getMaxHp() + "]");
-        System.out.println("==============================");
+        System.out.println("=====================================================");
 
         if (!allies.isEmpty()) {
             System.out.println("🛡️ FRIENDLY NPCs:");
@@ -104,14 +121,13 @@ public class Battle {
             }
         }
 
-        System.out.println("==============================");
+        System.out.println("=====================================================");
         System.out.println("👿 ENEMIES:");
         for (Entity enemy : enemies) {
             System.out.println(
                     (enemy.isElectronic() ? "   🤖 " : "   💀 ") + enemy.getName() + " - HP: [" + enemy.getCurrentHp()
                             + "/" + enemy.getMaxHp() + "]");
         }
-        System.out.println("==============================\n");
     }
 
     /**
@@ -125,14 +141,19 @@ public class Battle {
             List<BattleAction> actions = player.getAvailableActions();
 
             // Step 1: Let the player pick an action
-            System.out.println("\nChoose an action:");
+            System.out.println("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+            System.out.println(" ⚔️  **CHOOSE YOUR ACTION**");
+            System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+
             for (int i = 0; i < actions.size(); i++) {
                 System.out.println((i + 1) + ") " + actions.get(i).getName());
             }
 
+            System.out.print("\n➡️  Enter your choice: ");
+
             int actionChoice = GameScanner.getInt() - 1;
             if (actionChoice < 0 || actionChoice >= actions.size()) {
-                System.out.println("❌ Invalid choice!");
+                System.out.println("❌ Invalid choice! Please select a valid action.");
                 continue;
             }
 
@@ -144,13 +165,15 @@ public class Battle {
 
             if (validTargets != null && !validTargets.isEmpty()) {
                 if (validTargets.size() == 1) {
-                    target = validTargets.get(0);
+                    target = validTargets.getFirst();
                 } else {
-                    System.out.println("\nChoose a target:");
+                    System.out.println("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+                    System.out.println(" 🎯  **CHOOSE YOUR TARGET**");
+                    System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
                     for (int i = 0; i < validTargets.size(); i++) {
                         System.out.println((i + 1) + ") " + validTargets.get(i).getName());
                     }
-
+                    System.out.print("\n➡️  Enter your target: ");
                     int targetChoice = GameScanner.getInt() - 1;
                     if (targetChoice >= 0 && targetChoice < validTargets.size()) {
                         target = validTargets.get(targetChoice);
@@ -166,6 +189,12 @@ public class Battle {
         }
     }
 
+    /**
+     * Retrieves a list of alive allies, including the player.
+     *
+     * @return A list of active allies.
+     */
+
     private ArrayList<Entity> getAliveAllies() {
         ArrayList<Entity> tempAllies = new ArrayList<>();
         tempAllies.add(player);
@@ -180,6 +209,11 @@ public class Battle {
         return tempAllies;
     }
 
+    /**
+     * Handles the turn logic for all entities in the given list.
+     *
+     * @param entities The list of entities whose turn should be processed.
+     */
     private void entitiesTurn(List<Entity> entities) {
         for (Entity entity : entities) {
             if (combatEnded()) {
@@ -252,12 +286,18 @@ public class Battle {
      */
     private void endBattle() {
         if (player.getCurrentHp() > 0) {
-            System.out.println("🎉 " + player.getName() + " won the battle!");
-        } else {
-            System.out.println("💀 " + player.getName() + " was defeated...");
+            showVictoryScreen(player.getName());
+            System.out.printf(" 💰 You looted %d🪙 Gold from your fallen enemies!\n", goldWon);
+            System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
+
         }
     }
 
+    /**
+     * Retrieves a list of alive enemies.
+     *
+     * @return A list of enemy entities that are still alive.
+     */
     private List<Entity> getAliveEnemies() {
         ArrayList<Entity> tempEnemies = new ArrayList<>();
         for (Entity entity : this.enemies) {
@@ -268,10 +308,22 @@ public class Battle {
         return tempEnemies;
     }
 
+    /**
+     * Retrieves all alive enemies.
+     *
+     * @return A list of active enemy entities.
+     */
     public List<Entity> getEnemies() {
         return getAliveEnemies();
     }
 
+
+    /**
+     * Retrieves the list of enemies or allies based on the given actor.
+     *
+     * @param actor The entity for which to determine enemy entities.
+     * @return A list of entities considered enemies to the actor.
+     */
     public List<Entity> getEnemies(Entity actor) {
         if (this.enemies.contains(actor)) {
             return getAliveAllies();
@@ -280,6 +332,12 @@ public class Battle {
         }
     }
 
+    /**
+     * Retrieves the list of allies based on the given actor.
+     *
+     * @param actor The entity for which to determine allied entities.
+     * @return A list of entities considered allies to the actor.
+     */
     public List<Entity> getAllies(Entity actor) {
         if (this.enemies.contains(actor)) {
             return getAliveEnemies();
@@ -287,6 +345,12 @@ public class Battle {
             return getAliveAllies();
         }
     }
+
+    /**
+     * Moves a target entity from the enemy list to the ally list.
+     *
+     * @param target The entity to be converted from an enemy to an ally.
+     */
 
     public void moveToAllies(Entity target) {
         if (this.enemies.contains(target)) {

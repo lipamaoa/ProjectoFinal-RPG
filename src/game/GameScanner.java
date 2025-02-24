@@ -35,7 +35,9 @@ public class GameScanner {
      * @return A valid integer within the specified range.
      */
     public static int getIntInRange(String prompt, int min, int max) {
-        System.out.print(prompt + "(" + min + "," + max + "): ");
+        if (!prompt.isEmpty()) {
+            System.out.print(prompt + "(" + min + "," + max + "): ");
+        }
         while (true) {
             int value = getInt();
             if (value >= min && value <= max) {

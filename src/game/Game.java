@@ -1,11 +1,13 @@
 package src.game;
 
 import src.entities.*;
-import src.items.ItemRegistry;
-import src.items.Weapon;
 import src.utils.AsciiArt;
+import src.utils.Audio;
 
 import java.util.ArrayList;
+
+import static src.utils.AsciiArt.escapeTheLabScreen;
+import static src.utils.AsciiArt.showDefeatScreen;
 
 /**
  * Main game class that handles character creation, storytelling, and game loop.
@@ -42,6 +44,12 @@ public class Game {
         endGame(player);
     }
 
+    /**
+     * Parses the game seed from command-line arguments.
+     *
+     * @param seedStr The seed provided as a string.
+     * @return The parsed seed as a long value.
+     */
     private static long parseSeed(String seedStr) {
         try {
             return Long.parseLong(seedStr);
@@ -55,20 +63,36 @@ public class Game {
      * Displays the introduction story.
      */
     private static void introduceStory() {
-        System.out.println("\n📝 **Prologue**:");
-        System.out.println("You were one of PharmaCorp's top scientists, working on Project Eden-9.");
-        System.out.println("But when you discovered the unethical experiments they were running...");
-        System.out.println("...you knew you had to escape.");
-        System.out.println("With enemies on your trail and a maze-like lab to navigate,");
-        System.out.println("your survival depends on your wits, skills, and the choices you make.\n");
+        Audio.playMusic("src/utils/AudioFiles/intro.wav");
+
+        System.out.println("┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓");
+        System.out.println("                             📝 ** P R O L O G U E **");
+        System.out.println("┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫");
+        System.out.println("  🔬 You were one of PharmaCorp's top scientists, working on the classified");
+        System.out.println("     Project Eden-9.");
+        System.out.println("  ⚠️  But behind the closed doors of the facility, dark secrets lurked...");
+        System.out.println("  💉  Unethical experiments. Human trials gone wrong. A truth too dangerous");
+        System.out.println("     to ignore.");
+        System.out.println("  🛑  The moment you uncovered the reality, you became a liability.");
+        System.out.println("  🏃  Now, with security forces closing in and a labyrinthine lab to escape,");
+        System.out.println("  🔎  Your survival depends on your intelligence, resourcefulness, and the");
+        System.out.println("     choices you make.");
+        System.out.println("┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫");
+        System.out.println("  🔦 The truth is out there. But will you live long enough to expose it?");
+        System.out.println("┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\n");
+
     }
 
-    private static boolean isNameValid(String name) {
-        if (name.length() < 3 || name.length() > 12) {
-            return false;
-        }
 
-        return true;
+        /**
+         * Checks if the given name is valid based on length constraints.
+         *
+         * @param name The player's input name.
+         * @return True if the name is valid, otherwise false.
+         */
+
+    private static boolean isNameValid(String name) {
+        return name.length() >= 3 && name.length() <= 12;
     }
 
     /**
@@ -82,22 +106,40 @@ public class Game {
         String playerName = "";
 
         while (!isNameValid(playerName)) {
-            System.out.print("\n📝 Enter your name: ");
+            System.out.print("\uD83E\uDDD1\u200D\uD83D\uDD2C Enter your name: ");
             playerName = GameScanner.getString();
         }
 
+
         // Choose Hero Type
-        System.out.println("\n" + playerName + ", choose your hero type:");
-        System.out.println("1️⃣ Pharmacologist Hacker - Expert in hacking and toxins.");
-        System.out.println("2️⃣ Bioengineer - Specializes in regeneration and biological enhancements.");
-        System.out.println("3️⃣ Tactical Chemist - Uses chemical explosives and reactive combat.");
+        System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        System.out.printf("  🦸 %s, choose your hero type:\n", playerName);
+        System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        System.out.println("  1️⃣ Pharmacologist Hacker  🧪");
+        System.out.println("     🕵️ A cyber-genius skilled in hacking secure systems.");
+        System.out.println("     ☠️ Masters deadly toxins and biochemical warfare.\n");
+        System.out.println("  2️⃣ Bioengineer  🔬");
+        System.out.println("     🏥 A scientist who enhances the human body.");
+        System.out.println("     🌱 Can regenerate quickly and modify biology for survival.\n");
+        System.out.println("  3️⃣ Tactical Chemist  💣");
+        System.out.println("     🎯 A demolitions expert using precision chemical explosives.");
+        System.out.println("     ⚡ Masters reactive combat and volatile concoctions.\n");
 
         int heroChoice = GameScanner.getIntInRange("Enter your choice ", 1, 3);
 
+
         // Choose Difficulty
-        System.out.println("\nChoose your difficulty:");
-        System.out.println("1️⃣ Easy (300 stat points, 20 gold)");
-        System.out.println("2️⃣ Hard (220 stat points, 15 gold)");
+        System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        System.out.println("               🎮 Choose Your Difficulty:");
+        System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        System.out.println("1️⃣ Easy  🟢");
+        System.out.println("   ✅ 300 Stat Points");
+        System.out.println("   💰 20 Gold");
+        System.out.println("   🛡️ A safer start, but danger still lurks...");
+        System.out.println("\n2️⃣ Hard  🔴");
+        System.out.println("   ⚠️ 220 Stat Points");
+        System.out.println("   💰 15 Gold");
+        System.out.println("   ☠️ A true challenge for the brave!\n");
 
         int difficultyChoice = GameScanner.getIntInRange("Enter your choice ", 1, 2);
         int statPoints = (difficultyChoice == 1) ? 300 : 220;
@@ -110,33 +152,39 @@ public class Game {
         // Remove starting points
         statPoints -= 100;
 
-        System.out.printf("You start with %d ❤\\uFE0FHP and %d 💪Strength.", health, strength);
+        System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        System.out.printf("🎮 You start with: %d 💗 HP  |  %d 💪 Strength\n", health, strength);
+        System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
 
         while (statPoints > 0) {
-            System.out.println("\nRemaining stat points: " + statPoints);
-            System.out.println("Points can be allocated between HP and Strength.");
-            System.out.println("1 stat point = 1 ❤\uFE0FHP.\n5 stat point = 1 💪Strength");
-
-            System.out.printf("\nCurrent Stats: HP [%s] Strength [%s]\n",
-                    "❤".repeat(health / 10), "💪".repeat(strength / 2));
+            System.out.println("🔹 Remaining stat points: " + statPoints);
+            System.out.println("📌 Points can be allocated between HP and Strength.");
+            System.out.println("   ⚡ 1 stat point = 1 💗 HP");
+            System.out.println("   🔥 5 stat points = 1 💪 Strength");
 
             // Allocate HP
-            int hpPoints = GameScanner.getIntInRange("Allocate points to HP: ", 0, statPoints);
+            int hpPoints = GameScanner.getIntInRange("\n➡️ Allocate points to HP: ", 0, statPoints);
             health += hpPoints;
             statPoints -= hpPoints;
+
+            System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+            System.out.println("📊 Current Stats:");
+            System.out.printf("   ❤ HP: %d   💪 Strength: %d\n", health, strength);
+            System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
 
             // Allocate Strength (5 points per Strength)
             if (statPoints > 0) {
                 int maxStrength = statPoints / 5;
                 System.out.println("💪 You can allocate up to " + maxStrength + " Strength.");
-                System.out.print("Would you like to allocate all remaining points to Strength? (Y/N): ");
+                System.out.println("   (1 Strength = 5 stat points)\n");
+                System.out.print("🔸 Would you like to allocate all remaining points to Strength? (Y/N): ");
                 String choice = GameScanner.getString();
 
                 if (choice.equalsIgnoreCase("y")) {
                     strength += maxStrength;
                     statPoints = 0;
                 } else if (choice.equalsIgnoreCase("n")) {
-                    int strengthPoints = GameScanner.getIntInRange("Enter points for Strength: ", 0, maxStrength);
+                    int strengthPoints = GameScanner.getIntInRange(" ➡️ Enter points for Strength: ", 0, maxStrength);
                     strength += strengthPoints;
                     statPoints -= (strengthPoints * 5);
 
@@ -147,23 +195,45 @@ public class Game {
                     System.out.println("❌ Invalid choice. Please enter Y or N.");
                 }
             }
+
         }
 
+        Hero hero;
+        String heroType;
+
         if (heroChoice == 1) {
-            return new PharmacologistHacker(playerName, health, strength, gold);
+            hero = new PharmacologistHacker(playerName, health, strength, gold);
+            heroType = "🧪 Pharmacologist Hacker";
         } else if (heroChoice == 2) {
-            return new Bioengineer(playerName, health, strength, gold);
+            hero = new Bioengineer(playerName, health, strength, gold);
+            heroType = "🔬 Bioengineer";
         } else {
-            return new TacticalChemist(playerName, health, strength, gold);
+            hero = new TacticalChemist(playerName, health, strength, gold);
+            heroType = "💣 Tactical Chemist";
         }
+
+        // Character Passport
+        System.out.println("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        System.out.println(                "🎫 **CHARACTER PASSPORT** 🎫"           );
+        System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        System.out.printf("\uD83E\uDDD1\u200D\uD83D\uDD2C Name: %s\n", playerName);
+        System.out.printf("🏷️ Class: %s\n", heroType);
+        System.out.printf("💗 HP: %d\n", health);
+        System.out.printf("💪 Strength: %d\n", strength);
+        System.out.printf("💰 Gold: %d\n", gold);
+        System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+
+        return hero;
     }
 
     /**
      * Starts the final battle against the boss.
+     *
+     * @param player The hero character.
+     * @param survivingFriends Allies that survived up to the final battle.
      */
     private static void startFinalBattle(Hero player, ArrayList<Entity> survivingFriends) {
-        AsciiArt.showBattleScreen();
-        System.out.println("\n⚔️ **FINAL BATTLE BEGINS!** ⚔️");
+        AsciiArt.showFinalBattleScreen();
 
         var finalEnemies = new ArrayList<Enemy>();
         var random = GameRandom.getInstance();
@@ -178,18 +248,21 @@ public class Game {
     }
 
     /**
-     * Ends the game with different conclusions.
+     * Ends the game with different conclusions based on the player's survival.
+     *
+     * @param player The hero character.
      */
     private static void endGame(Hero player) {
+        System.out.println("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+
         if (player.getCurrentHp() > 0) {
-            System.out.println("\n🏆 **You escaped the laboratory!**");
-            System.out.println("But PharmaCorp's influence extends beyond these walls...");
-            System.out.println("Will you expose their secrets or go into hiding?");
+            escapeTheLabScreen();
         } else {
-            System.out.println("\n💀 **You did not survive...**");
-            System.out.println("Your research and discoveries will remain buried within PharmaCorp.");
+            showDefeatScreen();
         }
 
-        System.out.println("\n🎮 **Game Over! Thanks for playing.**");
+        System.out.println("\n🎮  **GAME OVER! THANKS FOR PLAYING.**");
+        System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
     }
+
 }

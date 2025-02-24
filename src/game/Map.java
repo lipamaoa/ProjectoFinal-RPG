@@ -9,9 +9,13 @@ import java.util.Random;
  * Handles room navigation, battles, and mission progression.
  */
 public class Map {
-    private List<Room> rooms;
+    private final List<Room> rooms;
     private boolean complexExitUnlocked = false;
     private final Random rand;
+
+    /**
+     * Constructs the game map and initializes rooms.
+     */
 
     public Map() {
         this.rooms = new ArrayList<>();
@@ -22,6 +26,9 @@ public class Map {
     /**
      * Picks a random NPC from the list of available NPCs and removes it to ensure
      * it can't be repeated.
+     *
+     * @param availableNPCs The list of NPCs to select from.
+     * @return A randomly selected friendly NPC or null if none are available.
      */
     private FriendlyNPC getRandomUniqueFriendlyNPC(List<FriendlyNPC> availableNPCs) {
         if (availableNPCs.isEmpty()) {
@@ -31,6 +38,11 @@ public class Map {
         return availableNPCs.remove(index);
     }
 
+    /**
+     * Randomly decides whether a vendor should be present in a room.
+     *
+     * @return A Vendor instance if spawned, otherwise null.
+     */
     private Vendor AddVendor() {
         if (this.rand.nextInt(100) < 25) {
             return new Vendor();
@@ -63,7 +75,10 @@ public class Map {
     }
 
     /**
-     * Allows the player to choose a starting room and navigate between rooms.
+     * Starts the game exploration by allowing the player to select a starting room
+     * and navigate between rooms.
+     *
+     * @param player The hero navigating the rooms.
      */
     public void startExploring(Hero player) {
         int currentRoomIndex = selectStartingRoom();
@@ -99,11 +114,7 @@ public class Map {
                 validChoices.add(i);
             }
 
-            int choiceIndex = GameScanner.getInt() - 1;
-            if (choiceIndex < 0 || choiceIndex >= validChoices.size()) {
-                System.out.println("⚠️ Invalid choice, try again.");
-                continue;
-            }
+            int choiceIndex = GameScanner.getIntInRange("", 1,validChoices.size()) -1;
 
             currentRoomIndex = validChoices.get(choiceIndex);
         }
@@ -111,15 +122,20 @@ public class Map {
 
     /**
      * Allows the player to select a starting room.
+     *
+     * @return The index of the selected room.
      */
     private int selectStartingRoom() {
-        System.out.println("🌍 Choose your starting location:");
+        System.out.println("\n🌍  **CHOOSE YOUR STARTING LOCATION**");
+        System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+
         for (int i = 0; i < rooms.size(); i++) {
             System.out.println((i + 1) + "️⃣ " + rooms.get(i).getName());
         }
-        System.out.println("❌ Complex Exit is locked.");
+        System.out.println("\n🔒  ❌ Complex Exit is locked.\n");
 
         while (true) {
+            System.out.print("➡️  Enter your choice: ");
             int choice = GameScanner.getInt() - 1;
             if (choice >= 0 && choice < rooms.size()) {
                 return choice;
@@ -132,8 +148,8 @@ public class Map {
      * Unlocks the Complex Exit once the player has completed key rooms.
      */
     private void checkUnlockConditions() {
-        for (int i = 0; i < rooms.size(); i++) {
-            if (!rooms.get(i).isCompleted()) {
+        for (Room room : rooms) {
+            if (!room.isCompleted()) {
                 return;
             }
         }
@@ -141,6 +157,11 @@ public class Map {
         this.complexExitUnlocked = true;
     }
 
+    /**
+     * Retrieves the list of surviving friendly NPCs from completed rooms.
+     *
+     * @return A list of friendly NPCs that survived.
+     */
     public ArrayList<Entity> getSurvivingFriends() {
         ArrayList<Entity> survivingFriends = new ArrayList<>();
         for (Room room : rooms) {

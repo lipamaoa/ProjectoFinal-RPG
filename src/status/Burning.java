@@ -2,14 +2,29 @@ package src.status;
 
 import src.entities.Entity;
 
+/**
+ * Represents a status effect that causes an entity to take burn damage at the end of each turn.
+ */
 public class Burning extends EndOfTurnStatus {
-    private int damagePerTurn;
+    private final int damagePerTurn;
+
+    /**
+     * Constructs a Burning status effect.
+     *
+     * @param duration The number of turns the effect lasts.
+     * @param damage The amount of damage inflicted per turn.
+     */
 
     public Burning(int duration, int damage) {
         super("🔥Burning", duration, true);
         this.damagePerTurn = damage;
     }
 
+    /**
+     * Applies the burning effect by dealing damage to the entity at the end of each turn.
+     *
+     * @param entity The entity affected by the burning status.
+     */
     @Override
     public void applyEffect(Entity entity) {
         var adjustedDamage = (int) (damagePerTurn * (0.8 + (random.nextDouble() * 0.2)));

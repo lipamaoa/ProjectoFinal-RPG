@@ -11,13 +11,18 @@ import java.util.List;
 public class Vendor {
     private final List<Item> storeInventory;
 
+    /**
+     * Constructs a Vendor with an empty inventory.
+     */
+
     public Vendor() {
         this.storeInventory = new ArrayList<>();
     }
 
     /**
-     * Generates store inventory dynamically from `ItemHeroRegistry` based on player
-     * type.
+     * Generates store inventory dynamically from `ItemRegistry` based on player type.
+     *
+     * @param player The player whose class determines the inventory items.
      */
     public void generateStoreInventory(Hero player) {
         storeInventory.clear();
@@ -46,6 +51,8 @@ public class Vendor {
 
     /**
      * Allows the player to buy an item.
+     *
+     * @param player The player attempting to buy an item.
      */
     public void buyItems(Hero player) {
 
@@ -91,10 +98,11 @@ public class Vendor {
 
     /**
      * Allows the player to sell an item.
+     *
+     * @param player The player attempting to sell an item.
      */
     public void sellItems(Hero player) {
         while (true) {
-            System.out.println("\n🎒 Your Inventory:");
             player.showInventory();
             System.out.println("\n💰 Your gold: " + player.getGold());
             System.out.println("Select an item to sell. This vendor will pay half its value.");

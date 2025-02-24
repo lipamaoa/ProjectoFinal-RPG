@@ -14,7 +14,7 @@ public class HealthPotion extends ItemHero {
      * @param size - Size of the health potion
      */
     public HealthPotion(HealthPotionSize size) {
-        super(getPotionName(size), "Heals for " + getPotionHealing(size) + " ❤\uFE0FHP", getPotionPrice(size), null,
+        super(getPotionName(size), "Heals for " + getPotionHealing(size) + " ❤️HP", getPotionPrice(size), null,
                 null);
         this.healingAmount = getPotionHealing(size);
 
@@ -27,6 +27,12 @@ public class HealthPotion extends ItemHero {
         };
     }
 
+    /**
+     * Retrieves the name of the potion based on its size.
+     *
+     * @param size The size of the potion.
+     * @return The corresponding name of the potion.
+     */
     private static String getPotionName(HealthPotionSize size) {
         return switch (size) {
             case Small -> "Small Health Potion";
@@ -34,6 +40,13 @@ public class HealthPotion extends ItemHero {
             case Large -> "Large Health Potion";
         };
     }
+
+    /**
+     * Determines the amount of HP restored based on potion size.
+     *
+     * @param size The size of the potion.
+     * @return The healing value.
+     */
 
     private static int getPotionHealing(HealthPotionSize size) {
         return switch (size) {
@@ -43,6 +56,12 @@ public class HealthPotion extends ItemHero {
         };
     }
 
+    /**
+     * Determines the price of the potion based on its size.
+     *
+     * @param size The size of the potion.
+     * @return The price of the potion.
+     */
     private static int getPotionPrice(HealthPotionSize size) {
         return switch (size) {
             case Small -> 25;
@@ -50,6 +69,12 @@ public class HealthPotion extends ItemHero {
             case Large -> 60;
         };
     }
+
+    /**
+     * Retrieves the healing effect value of the potion.
+     *
+     * @return The amount of HP the potion restores.
+     */
 
     public int getEffectValue() {
         return healingAmount;

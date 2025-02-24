@@ -6,11 +6,28 @@ import src.game.Battle;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents a healing action that can be performed on allies during battle.
+ */
 public class HealAction extends BattleAction {
+
+    /**
+     * Constructs a HealAction for a given entity.
+     *
+     * @param actor The entity performing the heal.
+     */
 
     public HealAction(Entity actor) {
         super("Heal", actor);
     }
+
+    /**
+     * Executes the healing action on a target entity.
+     *
+     * @param battle The current battle instance.
+     * @param target The target entity being healed.
+     * @return True if the healing action was executed, otherwise false.
+     */
 
     @Override
     public boolean execute(Battle battle, Entity target) {
@@ -27,6 +44,13 @@ public class HealAction extends BattleAction {
         this.disable(2);
         return true;
     }
+
+    /**
+     * Retrieves valid healable targets from the battle.
+     *
+     * @param battle The current battle instance.
+     * @return A list of allies that need healing.
+     */
 
     @Override
     public List<Entity> getValidTargets(Battle battle) {

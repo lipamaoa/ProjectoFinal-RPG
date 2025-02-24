@@ -10,6 +10,7 @@ import java.util.Random;
 
 /**
  * Represents a friendly NPC that can assist the player.
+ * This NPC can provide information, items, healing, or even join battles.
  */
 public class FriendlyNPC extends Entity {
     private final String backstory;
@@ -19,6 +20,20 @@ public class FriendlyNPC extends Entity {
     private final Random random;
     private boolean willJoinBattle;
     private boolean alreadyHelped = false;
+
+    /**
+     * Constructs a FriendlyNPC with specific attributes.
+     *
+     * @param name        The NPC's name.
+     * @param backstory   The NPC's backstory.
+     * @param dialogues   A list of dialogues the NPC can say.
+     * @param canGiveItem Whether the NPC can give items.
+     * @param canHeal     Whether the NPC can heal the player.
+     * @param canFight    Whether the NPC can join battles.
+     * @param canHack     Whether the NPC has hacking abilities.
+     * @param maxHp       The NPC's maximum health.
+     * @param strength    The NPC's strength.
+     */
 
     public FriendlyNPC(
             String name,
@@ -36,11 +51,16 @@ public class FriendlyNPC extends Entity {
         this.canGiveItem = canGiveItem;
         this.canFight = canFight;
         this.random = GameRandom.getInstance();
-        this.availableActions.add(new HackAction(this));
+
+        if (canHack) {
+            this.availableActions.add(new HackAction(this));
+        }
     }
 
     /**
      * Interacts with the player, offering different choices.
+     *
+     * @param player The player interacting with the NPC.
      */
     public void interact(Hero player) {
         System.out.println("\n👤 You meet " + name + "!");
@@ -60,13 +80,19 @@ public class FriendlyNPC extends Entity {
                     assist(player);
                     break;
                 case 0:
-                    System.out.println("🚶 You nod and continue your journey.");
+                    System.out.println("🚶 You nod and continue your journey.\n");
                     return;
                 default:
                     System.out.println("❌ Invalid choice!");
             }
         }
     }
+
+    /**
+     * Checks if the NPC will join the battle.
+     *
+     * @return true if the NPC will join the battle, false otherwise.
+     */
 
     public boolean willJoinBattle() {
         return this.willJoinBattle;
@@ -82,6 +108,8 @@ public class FriendlyNPC extends Entity {
 
     /**
      * Assists the player by healing, giving items, or offering to fight.
+     *
+     * @param player The player receiving assistance.
      */
     private void assist(Hero player) {
         if (alreadyHelped) {
@@ -105,7 +133,7 @@ public class FriendlyNPC extends Entity {
                 player.heal(healAmount);
                 System.out.println("🩹 " + name + " patches up your wounds.");
             } else {
-                System.out.println("You're already at full health. Have this 🍲 soup instead.");
+                System.out.println("🍲 You're already at full health. Have this soup instead.");
             }
         }
 

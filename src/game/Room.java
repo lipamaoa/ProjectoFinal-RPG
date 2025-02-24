@@ -1,15 +1,12 @@
 package src.game;
 
-import src.entities.*;
-import src.items.HealthPotion;
-import src.items.HealthPotionSize;
-import src.items.Item;
-import src.items.ItemBattle;
-import src.items.ItemHero;
-import src.items.Weapon;
+import src.entities.Enemy;
+import src.entities.FriendlyNPC;
+import src.entities.Hero;
+import src.entities.Vendor;
+import src.items.*;
 import src.status.Burning;
 import src.status.Poisoned;
-import src.status.Regeneration;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,26 +68,32 @@ public class Room {
                     break;
 
                 default:
-                    System.out.println("Our jorney continues...🥾");
+                    System.out.println("\n\uD83C\uDF0D OUR JOURNEY CONTINUES...🥾");
                     continueJourney = true;
                     break;
             }
         }
+
+        // Continue processing any affecting statuses
+        player.processStatuses();
     }
 
     private void showInventory(Hero player) {
         while (true) {
-            System.out.println("Your 🪙gold: " + player.getGold());
-            System.out.println("Your HP: " + player.getCurrentHp() + "/" + player.getMaxHp());
+            System.out.println("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+            System.out.printf(" 💰 Gold: %d  |  ❤ HP: %d/%d\n", player.getGold(), player.getCurrentHp(), player.getMaxHp());
+            System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+
             player.showInventory();
             if (player.getInventory().getSize() == 0) {
+                System.out.println("📦 Your inventory is empty.");
                 break;
             }
-            System.out.println("\nChoose an item to use (or 0 to cancel):");
+            System.out.println("\n🎒 Choose an item to use (or 0 to cancel): ");
             int itemChoice = GameScanner.getInt();
 
             if (itemChoice == 0) {
-                System.out.println("❌ Action canceled.");
+                System.out.println("❌ Action canceled.\n");
                 break;
             }
 
@@ -126,30 +129,34 @@ public class Room {
     }
 
     /**
-     * Triggers room events, including battles and NPC interactions.
+     * Handles interactions and actions available in the room.
      *
-     * @param player The player's hero.
+     * @param player The hero exploring the room.
      */
     public void enter(Hero player) {
-        System.out.println("\n🚪 Entering " + name + "...");
+        System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        System.out.println("🚪 Entering " + name + "...");
+        System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
         continueStory(player);
 
         // Interact with NPC (if available)
         if (friendlyNPC != null) {
+            System.out.printf("\n🗣️  You encounter **%s**.\n", friendlyNPC.getName());
             friendlyNPC.interact(player);
             continueStory(player);
         }
 
         // Offer vendor interaction if is a vendor room
         if (this.vendor != null) {
+            System.out.printf("\n🛒  A vendor is present in **%s**.\n", name);
             accessVendor(player);
             continueStory(player);
         }
 
         // Trigger a battle if there are enemies in this room
-        if (this.roomEnemies.size() > 0) {
+        if (!this.roomEnemies.isEmpty()) {
             Battle battle = new Battle(player, this.roomEnemies,
-                    friendlyNPC.willJoinBattle() ? new ArrayList<>(List.of(friendlyNPC)) : null);
+                    friendlyNPC != null && friendlyNPC.willJoinBattle() ? new ArrayList<>(List.of(friendlyNPC)) : null);
             battle.start();
 
             // If the player dies, stop further events
@@ -170,10 +177,11 @@ public class Room {
     }
 
     /**
-     * Allows the player to access the vendor to buy and sell items.
+     * Allows the player to interact with the vendor.
+     *
+     * @param player The hero interacting with the vendor.
      */
     private void accessVendor(Hero player) {
-        System.out.println("\n🛒 You have found a **vendor**!");
         this.vendor.generateStoreInventory(player);
 
         while (true) {
@@ -187,7 +195,7 @@ public class Room {
                 case 1 -> this.vendor.buyItems(player);
                 case 2 -> this.vendor.sellItems(player);
                 case 0 -> {
-                    System.out.println("🚪 You leave the vendor.");
+                    System.out.println("🚪 You leave the vendor.\n");
                     return;
                 }
                 default -> System.out.println("❌ Invalid choice! Try again.");
@@ -215,10 +223,10 @@ public class Room {
     }
 
     private void healingFountain(Hero player) {
-        System.out.println("🌊 You found a healing fountain!");
+        System.out.println("\n🌊 You found a healing fountain!");
         player.removeNegativeStatuses();
         player.heal(25);
-        System.out.println("💧 You feel refreshed and healed for 25 HP!");
+        System.out.println("💧 You feel refreshed and healed for 25 HP!\n");
     }
 
     /**
@@ -251,10 +259,8 @@ public class Room {
     private void secretFile(Hero player) {
         System.out.println("📜 You discovered a hidden document!");
         System.out.println("It contains classified information about PharmaCorp's unethical projects...");
-        player.addItemToInventory(new ItemHero("Secret File", "📜 Classified document", 75, null, (Hero p) -> {
-            System.out.println(
-                    "You read the secret file and learn about PharmaCorp's illegal experiments. Could probably have sold it for a good price.");
-        }));
+        player.addItemToInventory(new ItemHero("Secret File", "📜 Classified document", 75, null, (Hero p) -> System.out.println(
+                "You read the secret file and learn about PharmaCorp's illegal experiments. Could probably have sold it for a good price.")));
     }
 
     /**
@@ -289,6 +295,11 @@ public class Room {
         return isCompleted;
     }
 
+    /**
+     * Retrieves the surviving friendly NPC, if any.
+     *
+     * @return The surviving friendly NPC or null if none exist.
+     */
     public FriendlyNPC getSurvivingFriendlyNPC() {
         if (this.friendlyNPC != null && this.friendlyNPC.willJoinBattle() && this.friendlyNPC.getCurrentHp() > 0) {
             return this.friendlyNPC;
@@ -296,7 +307,11 @@ public class Room {
 
         return null;
     }
-
+    /**
+     * Retrieves the name of the room.
+     *
+     * @return The room's name.
+     */
     public String getName() {
         return name;
     }

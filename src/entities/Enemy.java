@@ -1,8 +1,8 @@
 package src.entities;
 
-import java.util.Random;
-
 import src.game.GameRandom;
+
+import java.util.Random;
 
 /**
  * This class is used for enemies that the player will encounter in battles.
@@ -11,7 +11,6 @@ public class Enemy extends Entity {
     protected int gold;
     protected int attackPower;
     protected int specialAttackPower;
-    private final Random random;
 
     /**
      * Constructs an NPC with scaled attributes based on difficulty level.
@@ -27,9 +26,8 @@ public class Enemy extends Entity {
         this.gold = scaleValue(baseGold, difficultyLevel);
         this.attackPower = this.strength;
         this.specialAttackPower = attackPower * 2;
-        this.random = GameRandom.getInstance();
         // 50% chance of being able to heal
-        this.canHeal = this.random.nextBoolean();
+        this.canHeal = GameRandom.getInstance().nextBoolean();
     }
 
     /**
@@ -46,7 +44,7 @@ public class Enemy extends Entity {
     /**
      * Gets the gold reward given when this NPC is defeated.
      *
-     * @return The amount of gold.
+     * @return The amount of gold awarded to the player.
      */
     public int getGold() {
         return gold;

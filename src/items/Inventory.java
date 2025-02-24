@@ -1,24 +1,25 @@
 package src.items;
 
-import src.entities.Hero;
-
 import java.util.ArrayList;
 
 /**
  * Manages the hero's inventory, including weapons and health potions.
  */
 public class Inventory {
-    private ArrayList<Item> items;
+    private final ArrayList<Item> items;
 
+    /**
+     * Constructs an empty inventory.
+     */
     public Inventory() {
 
         this.items = new ArrayList<>();
     }
 
     /**
-     * Gets the inventory array
-     * 
-     * @return itens array
+     * Gets the inventory list.
+     *
+     * @return The list of items in the inventory.
      */
 
     public ArrayList<Item> getInventory() {
@@ -57,10 +58,11 @@ public class Inventory {
      * Displays all items currently in the inventory.
      */
     public void showInventory() {
+        System.out.println(" \n 🎒 **INVENTORY**");
+        System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
         if (items.isEmpty()) {
-            System.out.println("🎒 Inventory is empty.");
+            System.out.println(" 📦 Empty - You have no items.");
         } else {
-            System.out.println("\n🎒 **Inventory:**");
             for (int i = 0; i < items.size(); i++) {
                 var item = items.get(i);
                 System.out.println((i + 1) + "️⃣ ");
