@@ -51,8 +51,10 @@ public abstract class Hero extends Entity {
         }
     }
 
-    /**
+     /**
      * Adds an item to the hero's inventory.
+     *
+     * @param item The item to be added.
      */
     public void addItemToInventory(Item item) {
         inventory.addItem(item);
@@ -67,6 +69,8 @@ public abstract class Hero extends Entity {
 
     /**
      * Allows the hero to spend gold if they have enough.
+     *
+     * @param amount The amount of gold to be spent.
      */
     public void spendGold(int amount) {
         if (gold >= amount) {
@@ -76,14 +80,20 @@ public abstract class Hero extends Entity {
         }
     }
 
-    /**
+     /**
      * Adds gold to the hero's balance.
+     *
+     * @param amount The amount of gold to be added.
      */
     public void collectGold(int amount) {
         gold += amount;
     }
 
-    // Getters
+    /**
+     * Gets the amount of gold the hero has.
+     *
+     * @return The hero's gold amount.
+     */
     public int getGold() {
         return gold;
     }
@@ -93,15 +103,38 @@ public abstract class Hero extends Entity {
      */
     protected abstract void initializeInventory();
 
+     /**
+     * Gets the hero's inventory.
+     *
+     * @return The inventory of the hero.
+     */
+
     public Inventory getInventory() {
         return inventory;
     }
 
+     /**
+     * Gets the size of the hero's inventory.
+     *
+     * @return The inventory size.
+     */
     public int getInventorySize() {
         return inventory.getSize();
     }
 
+     /**
+     * Gets the class type of the hero.
+     *
+     * @return The hero's class type.
+     */
+
     public abstract HeroClass getHeroClass();
+
+     /**
+     * Removes negative status effects from the hero.
+     *
+     * @return true if any negative statuses were removed, false otherwise.
+     */
 
     public boolean removeNegativeStatuses() {
         var numberOfStatuses = statuses.size();

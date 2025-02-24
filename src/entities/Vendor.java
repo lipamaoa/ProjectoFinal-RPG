@@ -9,7 +9,7 @@ import java.util.List;
  * Represents a vendor in the game where players can buy and sell items.
  */
 public class Vendor {
-    private List<Item> storeInventory;
+    private final List<Item> storeInventory;
 
     public Vendor() {
         this.storeInventory = new ArrayList<>();
