@@ -2,6 +2,7 @@ package src.actions;
 
 import src.entities.Entity;
 import src.game.Battle;
+import src.items.Weapon;
 
 import java.util.List;
 
@@ -34,7 +35,7 @@ public class SpecialAttackAction extends BattleAction {
             return false;
         }
 
-        var equippedWeapon = actor.getEquipedWeapon();
+        Weapon equippedWeapon = actor.getEquipedWeapon();
 
         // Randomized strength contribution (100% - 120% of base)
         int strength = actor.getStrength();

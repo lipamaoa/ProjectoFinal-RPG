@@ -1,13 +1,16 @@
 package src.items;
 
-import java.util.List;
-import java.util.Set;
-import java.util.Arrays;
-import src.entities.*;
+import src.entities.Entity;
+import src.entities.Hero;
+import src.entities.HeroClass;
 import src.game.Battle;
 import src.status.AttackBoost;
 import src.status.Burning;
 import src.status.Regeneration;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 
 public class ItemRegistry {
     // 🔹 **Healing Items (For all hero types)**
@@ -35,7 +38,7 @@ public class ItemRegistry {
     public static final List<Item> HACKER_ITEMS = Arrays.asList(
             new ItemBattle("EMP Grenade", "Disables enemy technology for 2 turns.", 40,
                     Set.of(HeroClass.PHARMACOLOGIST_HACKER), (Battle battle) -> {
-                        var enemies = battle.getEnemies();
+                        List<Entity> enemies = battle.getEnemies();
                         boolean hasElectronicEnemies = false;
                         for (Entity entity : enemies) {
                             if (entity.isElectronic()) {
@@ -55,7 +58,7 @@ public class ItemRegistry {
                     Set.of(HeroClass.TACTICAL_CHEMIST),
                     (Battle battle) -> {
                         System.out.println("💣 You plant an explosive charge!");
-                        var enemies = battle.getEnemies();
+                        List<Entity> enemies = battle.getEnemies();
                         for (Entity entity : enemies) {
                             entity.takeDamage(30);
                             System.out.println("💥 " + entity.getName() + " takes 30 damage!");
@@ -64,7 +67,7 @@ public class ItemRegistry {
             new ItemBattle("Fire Bomb", "Throws a fire bomb that burns enemies for 3 turns.", 45,
                     Set.of(HeroClass.TACTICAL_CHEMIST), (Battle battle) -> {
                         System.out.println("🔥 You throw a Fire Bomb");
-                        var enemies = battle.getEnemies();
+                List<Entity>enemies = battle.getEnemies();
                         for (Entity entity : enemies) {
                             entity.applyStatus(new Burning(3, 15));
                             System.out.println("🔥 " + entity.getName() + " is burning!");

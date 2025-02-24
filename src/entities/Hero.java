@@ -1,12 +1,14 @@
 package src.entities;
 
-import java.util.Random;
-
 import src.actions.SpecialAttackAction;
 import src.actions.UseItemAction;
 import src.game.GameRandom;
-import src.items.*;
+import src.items.Inventory;
+import src.items.Item;
+import src.items.ItemRegistry;
 import src.status.EndOfTurnStatus;
+
+import java.util.Random;
 
 /**
  * Abstract class representing a hero in the game.
@@ -139,7 +141,7 @@ public abstract class Hero extends Entity {
      */
 
     public boolean removeNegativeStatuses() {
-        var numberOfStatuses = statuses.size();
+        int numberOfStatuses = statuses.size();
         statuses.removeIf(status -> {
             if (status instanceof EndOfTurnStatus && ((EndOfTurnStatus) status).isNegative()) {
                 System.out.println(name + " is freed from " + status.getName() + "!");

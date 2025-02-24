@@ -4,13 +4,13 @@ import src.actions.BattleAction;
 import src.entities.Enemy;
 import src.entities.Entity;
 import src.entities.Hero;
-import src.utils.AsciiArt;
+import src.utils.ConsoleScreens;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import static src.utils.AsciiArt.showVictoryScreen;
+import static src.utils.ConsoleScreens.showVictoryScreen;
 
 /**
  * Handles turn-based battles with room-defined enemies and allies.
@@ -78,7 +78,7 @@ public class Battle {
      * Starts the battle loop.
      */
     public void start() {
-        AsciiArt.showBattleScreen();
+        ConsoleScreens.showBattleScreen();
 
 
         while (!combatEnded()) {
@@ -252,7 +252,7 @@ public class Battle {
      */
     private void alliesTurn() {
         // Copy the initial list of allies as the list may change during the turn
-        var initialAllies = new ArrayList<>(allies);
+        ArrayList<Entity> initialAllies = new ArrayList<>(allies);
         entitiesTurn(initialAllies);
     }
 
@@ -261,7 +261,7 @@ public class Battle {
      */
     private void enemiesTurn() {
         // Copy the initial list of enemies as the list may change during the turn
-        var initialEnemies = new ArrayList<>(enemies);
+        ArrayList<Entity> initialEnemies = new ArrayList<>(enemies);
         entitiesTurn(initialEnemies);
     }
 

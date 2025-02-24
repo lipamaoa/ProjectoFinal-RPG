@@ -70,7 +70,7 @@ public class HackAction extends BattleAction {
 
     @Override
     public List<Entity> getValidTargets(Battle battle) {
-        var enemies = battle.getEnemies(this.actor);
+        List<Entity> enemies = battle.getEnemies(this.actor);
 
         List<Entity> validTargets = new ArrayList<>();
 

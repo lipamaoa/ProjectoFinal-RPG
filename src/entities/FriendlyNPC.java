@@ -123,7 +123,7 @@ public class FriendlyNPC extends Entity {
         }
 
         if (canHeal) {
-            var removedNegative = player.removeNegativeStatuses();
+            boolean removedNegative = player.removeNegativeStatuses();
             if (removedNegative) {
                 System.out.println("✨ " + name + " cleanses you of harmful effects.");
             }

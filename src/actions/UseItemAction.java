@@ -25,7 +25,7 @@ public class UseItemAction extends BattleAction {
     public UseItemAction(Entity actor) {
         super("Use Item", actor);
 
-        var isHero = actor instanceof Hero;
+        boolean isHero = actor instanceof Hero;
         if (!isHero) {
             // Limit to heroes for now, but this could be expanded.
             throw new IllegalArgumentException("Only heroes can use items.");
@@ -42,7 +42,7 @@ public class UseItemAction extends BattleAction {
 
     @Override
     public boolean execute(Battle battle, Entity target) {
-        var player = (Hero) actor;
+        Hero player = (Hero) actor;
 
         if (player.getInventory().getSize() == 0) {
             System.out.println("❌ You have no items in your inventory!");

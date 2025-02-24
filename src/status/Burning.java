@@ -27,7 +27,7 @@ public class Burning extends EndOfTurnStatus {
      */
     @Override
     public void applyEffect(Entity entity) {
-        var adjustedDamage = (int) (damagePerTurn * (0.8 + (random.nextDouble() * 0.2)));
+        int adjustedDamage = (int) (damagePerTurn * (0.8 + (random.nextDouble() * 0.2)));
         entity.takeDamage(adjustedDamage);
         System.out.println(entity.getName() + " takes " + adjustedDamage + " 🔥burn damage!");
     }

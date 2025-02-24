@@ -104,7 +104,7 @@ public class Map {
                 if (i == currentRoomIndex) {
                     continue;
                 }
-                var room = rooms.get(i);
+                Room room = rooms.get(i);
 
                 if (room.isCompleted()) {
                     continue;
@@ -165,7 +165,7 @@ public class Map {
     public ArrayList<Entity> getSurvivingFriends() {
         ArrayList<Entity> survivingFriends = new ArrayList<>();
         for (Room room : rooms) {
-            var survivingFriendlyNPC = room.getSurvivingFriendlyNPC();
+            FriendlyNPC survivingFriendlyNPC = room.getSurvivingFriendlyNPC();
             if (survivingFriendlyNPC != null) {
                 survivingFriends.add(survivingFriendlyNPC);
             }

@@ -3,7 +3,7 @@ package src.utils;
 /**
  * Stores ASCII art for the game's interface.
  */
-public class AsciiArt {
+public class ConsoleScreens {
 
     public static void showWelcomeScreen() {
         System.out.println("\n");

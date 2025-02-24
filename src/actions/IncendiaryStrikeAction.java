@@ -1,10 +1,10 @@
 package src.actions;
 
-import java.util.List;
-
 import src.entities.Entity;
 import src.game.Battle;
 import src.status.Burning;
+
+import java.util.List;
 
 /**
  * Represents an incendiary strike action that applies a burning status effect to all enemies.
@@ -31,7 +31,7 @@ public class IncendiaryStrikeAction extends BattleAction {
 
     @Override
     public boolean execute(Battle battle, Entity target) {
-        var enemies = battle.getEnemies(this.actor);
+        List<Entity> enemies = battle.getEnemies(this.actor);
 
         System.out.println(this.actor.getName() + " unleashes a fiery attack on all enemies!");
         for (Entity entity : enemies) {

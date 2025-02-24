@@ -54,7 +54,7 @@ public class HealAction extends BattleAction {
 
     @Override
     public List<Entity> getValidTargets(Battle battle) {
-        var alliesThatNeedHealth = new ArrayList<>(battle.getAllies(this.actor));
+        ArrayList<Entity> alliesThatNeedHealth = new ArrayList<>(battle.getAllies(this.actor));
 
         alliesThatNeedHealth.removeIf(entity -> entity.getCurrentHp() == entity.getMaxHp());
         return alliesThatNeedHealth;

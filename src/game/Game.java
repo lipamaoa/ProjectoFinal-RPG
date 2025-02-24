@@ -1,13 +1,15 @@
 package src.game;
 
 import src.entities.*;
-import src.utils.AsciiArt;
+import src.utils.ConsoleScreens;
 import src.utils.Audio;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
-import static src.utils.AsciiArt.escapeTheLabScreen;
-import static src.utils.AsciiArt.showDefeatScreen;
+import static src.utils.ConsoleScreens.escapeTheLabScreen;
+import static src.utils.ConsoleScreens.showDefeatScreen;
 
 /**
  * Main game class that handles character creation, storytelling, and game loop.
@@ -22,21 +24,21 @@ public class Game {
         System.out.println("🎲 Game Seed: " + GameRandom.getSeed());
 
         // Display ASCII Welcome Screen
-        AsciiArt.showWelcomeScreen();
+        ConsoleScreens.showWelcomeScreen();
 
         // Story Introduction
         introduceStory();
 
         // Create Player Character
-        var player = createHero();
+        Hero player = createHero();
 
         // Initialize Map
-        var gameMap = new Map();
+        Map gameMap = new Map();
         gameMap.startExploring(player);
 
         // Check if player is still alive for the final battle
         if (player.getCurrentHp() > 0) {
-            var survivingFriends = gameMap.getSurvivingFriends();
+            ArrayList<Entity> survivingFriends = gameMap.getSurvivingFriends();
             startFinalBattle(player, survivingFriends);
         }
 
@@ -233,11 +235,11 @@ public class Game {
      * @param survivingFriends Allies that survived up to the final battle.
      */
     private static void startFinalBattle(Hero player, ArrayList<Entity> survivingFriends) {
-        AsciiArt.showFinalBattleScreen();
+        ConsoleScreens.showFinalBattleScreen();
 
-        var finalEnemies = new ArrayList<Enemy>();
-        var random = GameRandom.getInstance();
-        var possibleEnemies = NPCRegistry.FINAL_BOSS;
+        ArrayList<Enemy>finalEnemies = new ArrayList<Enemy>();
+        Random random = GameRandom.getInstance();
+        List<Enemy> possibleEnemies = NPCRegistry.FINAL_BOSS;
         // At least 1 enemy
         int numberOfEnemies = random.nextInt(possibleEnemies.size()) + 1;
         for (int i = 0; i < numberOfEnemies; i++) {

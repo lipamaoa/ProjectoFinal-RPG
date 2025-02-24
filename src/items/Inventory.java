@@ -64,7 +64,7 @@ public class Inventory {
             System.out.println(" 📦 Empty - You have no items.");
         } else {
             for (int i = 0; i < items.size(); i++) {
-                var item = items.get(i);
+                Item item = items.get(i);
                 System.out.println((i + 1) + "️⃣ ");
                 item.showDetails();
             }
