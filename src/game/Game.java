@@ -29,23 +29,55 @@ public class Game {
         // Story Introduction
         introduceStory();
 
-        // Create Player Character
-        HeroCreationOptions options = getHeroCreationOptions();
+        boolean playAgain = true;
+        HeroCreationOptions options = null;
+        Hero player = null;
 
-        Hero player = createHero(options);
+        while (playAgain) {
+            if (options == null) {
+                // Get Hero Creation Options
+                options = getHeroCreationOptions();
+            }
 
-        // Initialize Map
-        Map gameMap = new Map();
-        gameMap.startExploring(player);
+            // Create Player Character
+            player = createHero(options);
 
-        // Check if player is still alive for the final battle
-        if (player.getCurrentHp() > 0) {
-            ArrayList<Entity> survivingFriends = gameMap.getSurvivingFriends();
-            startFinalBattle(player, survivingFriends);
+            // Initialize Map
+            Map gameMap = new Map();
+            gameMap.startExploring(player);
+
+            // Check if player is still alive for the final battle
+            if (player.getCurrentHp() > 0) {
+                ArrayList<Entity> survivingFriends = gameMap.getSurvivingFriends();
+                startFinalBattle(player, survivingFriends);
+            }
+
+            showEndScreen(player);
+
+            System.out.println("\nWhat would you like to do next?");
+            System.out.println("1️⃣ Try again with the same hero");
+            System.out.println("2️⃣ Create a new hero");
+            System.out.println("3️⃣ Exit game");
+
+            int choice = GameScanner.getIntInRange("Enter your choice: ", 1, 3);
+
+            switch (choice) {
+                case 2:
+                    // Create a new hero
+                    options = null;
+                    break;
+                case 3:
+                    // Exit game
+                    playAgain = false;
+                    break;
+                case 1:
+                default:
+                    // Try again with the same hero
+                    break;
+            }
+
         }
-
-        // End the game
-        endGame(player);
+        System.out.println("\n🎮  **GAME OVER! THANKS FOR PLAYING.**");
     }
 
     /**
@@ -259,7 +291,7 @@ public class Game {
      *
      * @param player The hero character.
      */
-    private static void endGame(Hero player) {
+    private static void showEndScreen(Hero player) {
         System.out.println("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
 
         if (player.getCurrentHp() > 0) {
@@ -268,7 +300,6 @@ public class Game {
             showDefeatScreen();
         }
 
-        System.out.println("\n🎮  **GAME OVER! THANKS FOR PLAYING.**");
         System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
     }
 
