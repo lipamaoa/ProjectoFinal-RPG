@@ -14,7 +14,10 @@ public class ConsoleScreens {
         System.out.println("   ██║   ██║  ██║██║  ██║███████╗██║ ╚████║██║     ██║  ██║██║  ██╗");
         System.out.println("   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═══╝╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝");
         System.out.println("====================================================================");
-        System.out.println("           Welcome to **LABORATORY OF CHAOS** - Escape PharmaCorp!\n");
+        System.out.println("                 Welcome to **LABORATORY OF CHAOS**                 ");
+        System.out.println("             🧪  Escape PharmaCorp! Save the world!  🌍            ");
+        System.out.println("====================================================================");
+        System.out.println("          A text-based RPG adventure game by Andreia Santos       \n");
     }
 
     public static void showBattleScreen() {
@@ -36,7 +39,6 @@ public class ConsoleScreens {
 
     }
 
-
     public static void showDefeatScreen() {
         System.out.println("\n💀  **FATAL ERROR: LIFE SIGNS LOST** 💀");
         System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
@@ -48,7 +50,6 @@ public class ConsoleScreens {
 
     }
 
-
     public static void showFinalBattleScreen() {
         System.out.println("\n       🔥⚔️  **FINAL SHOWDOWN BEGINS!**  ⚔️🔥");
         System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
@@ -57,7 +58,6 @@ public class ConsoleScreens {
         System.out.println("⚠️  **FIGHT WITH EVERYTHING YOU HAVE! THIS IS YOUR LAST CHANCE!**");
         System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
     }
-
 
     public static void escapeTheLabScreen() {
         System.out.println("\n🚨 **ESCAPE SUCCESSFUL!** 🚨");
@@ -70,7 +70,4 @@ public class ConsoleScreens {
         System.out.println("⚖️  Will you expose their secrets or disappear into the shadows?");
         System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
     }
-
-
-
 }

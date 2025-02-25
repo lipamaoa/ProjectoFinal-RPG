@@ -12,69 +12,79 @@ The game begins **at the moment of your escape attempt**. You must explore diffe
 
 ## 🎮 Gameplay Features
 
- ☑️ Turn-Based Combat: Choose strategic actions like attacking, hacking, healing, or using battle items.
+☑️ Turn-Based Combat: Choose strategic actions like attacking, hacking, healing, or using battle items.
 
- ☑️ Hero Classes: Select from unique hero types, each with distinct abilities and weapons.
+☑️ Hero Classes: Select from unique hero types, each with distinct abilities and weapons.
 
- ☑️ Status Effects: Burning, poison, and regeneration impact battles dynamically.
+☑️ Status Effects: Burning, poison, and regeneration impact battles dynamically.
 
- ☑️ NPC Interactions: Engage with friendly NPCs who may assist in battle or provide valuable information.
+☑️ NPC Interactions: Engage with friendly NPCs who may assist in battle or provide valuable information.
 
- ☑️ Dynamic Inventory System: Manage weapons, potions, and tactical items for survival.
+☑️ Dynamic Inventory System: Manage weapons, potions, and tactical items for survival.
 
- ☑️ Multiple Endings: Your choices determine how the story unfolds.
+☑️ Multiple Endings: Your choices determine how the story unfolds.
 
 ---
 
 ## 🦸‍♀️ Hero Types (Playable Classes)
 
-1️⃣ **Pharmacologist Hacker** 💉💻  
-     
-   - **Abilities:**  
-     - Hacking security systems,
-     - Launching toxins,
-     - Disabling electronic enemies. 
+1️⃣ **Pharmacologist Hacker** 💉💻
 
-   - **Main Weapon:** Tranquilizer dart gun.
+- **Abilities:**
 
-2️⃣ **Bioengineer** 🧬🔬  
-   - Master of genetic engineering and survival in hostile environments.  
+  - Hacking security systems,
+  - Launching toxins,
+  - Disabling electronic enemies.
 
-   - **Abilities:**  
-     - Self-healing,
-     - Genetic enhancements,
-     - DNA-based enemy weakening. 
+- **Main Weapon:** Tranquilizer dart gun.
 
-   - **Main Weapon:** Biotechnological shock gloves.
+2️⃣ **Bioengineer** 🧬🔬
 
-3️⃣ **Tactical Chemist** ☣️🛠️  
-   - Specialist in explosives and reactive compounds.  
+- Master of genetic engineering and survival in hostile environments.
 
-   - **Abilities:**  
-     - Create toxic gas bombs.  
-     - Use chemical reactions to enhance the body.  
-     - Break doors with explosives.  
+- **Abilities:**
 
-   - **Main Weapon:** Chemical grenades.
+  - Self-healing,
+  - Genetic enhancements,
+  - DNA-based enemy weakening.
+
+- **Main Weapon:** Biotechnological shock gloves.
+
+3️⃣ **Tactical Chemist** ☣️🛠️
+
+- Specialist in explosives and reactive compounds.
+
+- **Abilities:**
+
+  - Create toxic gas bombs.
+  - Use chemical reactions to enhance the body.
+  - Break doors with explosives.
+
+- **Main Weapon:** Chemical grenades.
 
 ---
 
 ## 💀 Enemies
 
-1️⃣ **PharmaCorp Security Guards** 🕶️🔫  
-   - Patrol corridors, armed with shock weapons and paralyzing gas.
+1️⃣ **PharmaCorp Security Guards** 🕶️🔫
 
-2️⃣ **Surveillance Drones** 📡⚡  
-   - Monitor corridors and trigger alarms if they detect suspicious movement.
+- Patrol corridors, armed with shock weapons and paralyzing gas.
 
-3️⃣ **Biomechanical Dogs** 🐕‍🦺🔩  
-   - Lab-created hybrid creatures, half machine, half organism.
+2️⃣ **Surveillance Drones** 📡⚡
 
-4️⃣ **Mutant Soldiers** 🧬💥  
-   - Former humans altered by Eden-9 research, possessing superhuman strength and mental instability.
+- Monitor corridors and trigger alarms if they detect suspicious movement.
 
-5️⃣ **Prototype Eden-9** 👹⚠️  
-   - **Final boss** of the game. A monster created from failed experiments, programmed to eliminate all traitors.
+3️⃣ **Biomechanical Dogs** 🐕‍🦺🔩
+
+- Lab-created hybrid creatures, half machine, half organism.
+
+4️⃣ **Mutant Soldiers** 🧬💥
+
+- Former humans altered by Eden-9 research, possessing superhuman strength and mental instability.
+
+5️⃣ **Prototype Eden-9** 👹⚠️
+
+- **Final boss** of the game. A monster created from failed experiments, programmed to eliminate all traitors.
 
 ---
 
@@ -94,27 +104,32 @@ The game begins **at the moment of your escape attempt**. You must explore diffe
 
 ## 🏭 Game Locations / Levels
 
-1️⃣ **Biological Research Sector** 🧪🌡️  
-   - Where PharmaCorp’s first tests were conducted. The player discovers documents revealing the horrors of the experiments.
+1️⃣ **Biological Research Sector** 🧪🌡️
 
-2️⃣ **Security Department** 🔐📷  
-   - Drones and guards protect secret files. You can fight or hack the system to access confidential data.
+- Where PharmaCorp’s first tests were conducted. The player discovers documents revealing the horrors of the experiments.
 
-3️⃣ **Human Testing Laboratory** 🏥🧬  
-   - Discover the victims of the experiments and decide whether to free them (gaining allies) or leave them behind to avoid risks.
+2️⃣ **Security Department** 🔐📷
 
-4️⃣ **Chemical Storage Facility** ☣️💥  
-   - A sector with various reagents and compounds to collect, which can be used to craft new weapons or enhancement potions.
+- Drones and guards protect secret files. You can fight or hack the system to access confidential data.
 
-5️⃣ **Complex Exit** 🚪🏃‍♀️  
-   - The final battle, where you must defeat **Prototype Eden-9** before escaping and exposing the truth.
+3️⃣ **Human Testing Laboratory** 🏥🧬
+
+- Discover the victims of the experiments and decide whether to free them (gaining allies) or leave them behind to avoid risks.
+
+4️⃣ **Chemical Storage Facility** ☣️💥
+
+- A sector with various reagents and compounds to collect, which can be used to craft new weapons or enhancement potions.
+
+5️⃣ **Complex Exit** 🚪🏃‍♀️
+
+- The final battle, where you must defeat **Prototype Eden-9** before escaping and exposing the truth.
 
 ---
 
 ## 🛠️ Inventory & Items
 
 - Weapons: Equip powerful weapons to increase damage.
-- 
+-
 - Battle Items: Tactical tools like neurotoxins and explosives.
 
 - Health Potions: Restore HP to survive longer battles.
@@ -125,46 +140,49 @@ The game begins **at the moment of your escape attempt**. You must explore diffe
 
 ## 🏛️ Locations & Levels
 
- 1️⃣ Biological Research Lab: Learn the origins of PharmaCorp’s twisted experiments.
+1️⃣ Biological Research Lab: Learn the origins of PharmaCorp’s twisted experiments.
 
- 2️⃣ Security Department: Hack or fight your way through high-level security forces.
+2️⃣ Security Department: Hack or fight your way through high-level security forces.
 
- 3️⃣ Human Testing Facility: Encounter failed test subjects and make difficult choices.
+3️⃣ Human Testing Facility: Encounter failed test subjects and make difficult choices.
 
- 4️⃣ Chemical Storage: Gather ingredients to craft new battle enhancements.
+4️⃣ Chemical Storage: Gather ingredients to craft new battle enhancements.
 
- 5️⃣ Final Boss Battle: Face Prototype Eden-9, the ultimate PharmaCorp creation.
+5️⃣ Final Boss Battle: Face Prototype Eden-9, the ultimate PharmaCorp creation.
 
 ---
 
 ## 🎭 Game Endings (Multiple Outcomes)
 
-1️⃣ **Good Ending:**  
-   - You escape with proof of PharmaCorp’s crimes and expose them to the world.  
-   - The company is dismantled, and the experiments stop.  
+1️⃣ **Good Ending:**
 
-2️⃣ **Neutral Ending:**  
-   - You escape but lack enough proof.  
-   - PharmaCorp continues its operations, but you survive.  
+- You escape with proof of PharmaCorp’s crimes and expose them to the world.
+- The company is dismantled, and the experiments stop.
 
-3️⃣ **Bad Ending:**  
-   - You are captured and turned into the next PharmaCorp experiment.  
+2️⃣ **Neutral Ending:**
+
+- You escape but lack enough proof.
+- PharmaCorp continues its operations, but you survive.
+
+3️⃣ **Bad Ending:**
+
+- You are captured and turned into the next PharmaCorp experiment.
 
 ---
 
 ## 🚀 How to Play
 
- 1️⃣ Choose a Hero: Select your hero class with unique skills and weapons.
+1️⃣ Choose a Hero: Select your hero class with unique skills and weapons.
 
- 2️⃣ Explore Rooms: Move through different PharmaCorp sectors, unlocking doors and uncovering secrets.
+2️⃣ Explore Rooms: Move through different PharmaCorp sectors, unlocking doors and uncovering secrets.
 
- 3️⃣ Interact with NPCs: Gain allies or information through dialogue choices.
+3️⃣ Interact with NPCs: Gain allies or information through dialogue choices.
 
- 4️⃣ Engage in Battles: Use strategic turn-based combat to defeat enemies and bosses.
+4️⃣ Engage in Battles: Use strategic turn-based combat to defeat enemies and bosses.
 
- 5️⃣ Manage Inventory: Equip weapons, use health potions, and craft useful items.
+5️⃣ Manage Inventory: Equip weapons, use health potions, and craft useful items.
 
- 6️⃣ Unravel the Story: Make choices that impact your survival and determine the ending.
+6️⃣ Unravel the Story: Make choices that impact your survival and determine the ending.
 
 ---
 
@@ -179,5 +197,6 @@ The game begins **at the moment of your escape attempt**. You must explore diffe
 ✅ Choices Matter – Your decisions influence allies, battles, and the final outcome.
 
 ## 🚀 Ready to Escape PharmaCorp?
+
 Prepare your formulas, strategize your escape, and unveil the secrets hidden deep within the laboratory! 🏭💊
 Good luck escaping PharmaCorp! 🔬⚔️

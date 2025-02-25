@@ -25,8 +25,7 @@ public class Audio {
 
             // Load the audio file as an input stream
             AudioInputStream audioInput = AudioSystem.getAudioInputStream(
-                    new BufferedInputStream(new FileInputStream(audio))
-            );
+                    new BufferedInputStream(new FileInputStream(audio)));
 
             // Create a Clip object to play the audio
             Clip clip = AudioSystem.getClip();

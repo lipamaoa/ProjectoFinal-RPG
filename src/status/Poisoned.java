@@ -3,7 +3,8 @@ package src.status;
 import src.entities.Entity;
 
 /**
- * Represents a poisoned status effect that deals damage to an entity at the end of each turn.
+ * Represents a poisoned status effect that deals damage to an entity at the end
+ * of each turn.
  */
 public class Poisoned extends EndOfTurnStatus {
     private final int damagePerTurn;
@@ -12,7 +13,7 @@ public class Poisoned extends EndOfTurnStatus {
      * Constructs a Poisoned status effect.
      *
      * @param duration The number of turns the effect lasts.
-     * @param damage The amount of damage inflicted per turn.
+     * @param damage   The amount of damage inflicted per turn.
      */
     public Poisoned(int duration, int damage) {
         super("☠️Poison", duration, true);
@@ -20,7 +21,8 @@ public class Poisoned extends EndOfTurnStatus {
     }
 
     /**
-     * Applies the poison effect by dealing damage to the entity at the end of each turn.
+     * Applies the poison effect by dealing damage to the entity at the end of each
+     * turn.
      *
      * @param entity The entity affected by the poisoned status.
      */

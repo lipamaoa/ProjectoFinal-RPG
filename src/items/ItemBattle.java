@@ -5,7 +5,6 @@ import java.util.function.Consumer;
 import src.entities.HeroClass;
 import src.game.Battle;
 
-
 /**
  * Represents a battle-related item that can be used during combat.
  */
@@ -15,14 +14,15 @@ public class ItemBattle extends Item {
     /**
      * Constructs a battle item with its attributes.
      *
-     * @param name The name of the item.
-     * @param description A brief description of the item's effect.
-     * @param price The cost of the item in gold.
+     * @param name           The name of the item.
+     * @param description    A brief description of the item's effect.
+     * @param price          The cost of the item in gold.
      * @param allowedClasses The hero classes that can use this item.
-     * @param effect The effect of the item when used in battle.
+     * @param effect         The effect of the item when used in battle.
      */
 
-    public ItemBattle(String name, String description, int price, Set<HeroClass> allowedClasses, Consumer<Battle> effect) {
+    public ItemBattle(String name, String description, int price, Set<HeroClass> allowedClasses,
+            Consumer<Battle> effect) {
         super(name, description, price, allowedClasses);
         this.effect = effect;
     }

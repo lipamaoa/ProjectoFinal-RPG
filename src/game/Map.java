@@ -114,7 +114,7 @@ public class Map {
                 validChoices.add(i);
             }
 
-            int choiceIndex = GameScanner.getIntInRange("", 1,validChoices.size()) -1;
+            int choiceIndex = GameScanner.getIntInRange("", 1, validChoices.size()) - 1;
 
             currentRoomIndex = validChoices.get(choiceIndex);
         }

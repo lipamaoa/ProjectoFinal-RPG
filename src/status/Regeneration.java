@@ -3,7 +3,8 @@ package src.status;
 import src.entities.Entity;
 
 /**
- * Represents a regeneration status effect that restores health to an entity at the end of each turn.
+ * Represents a regeneration status effect that restores health to an entity at
+ * the end of each turn.
  */
 public class Regeneration extends EndOfTurnStatus {
     private final int healAmount;
@@ -11,7 +12,7 @@ public class Regeneration extends EndOfTurnStatus {
     /**
      * Constructs a Regeneration status effect.
      *
-     * @param duration The number of turns the effect lasts.
+     * @param duration   The number of turns the effect lasts.
      * @param healAmount The base amount of health restored per turn.
      */
 
@@ -21,7 +22,8 @@ public class Regeneration extends EndOfTurnStatus {
     }
 
     /**
-     * Applies the regeneration effect by healing the entity at the end of each turn.
+     * Applies the regeneration effect by healing the entity at the end of each
+     * turn.
      *
      * @param entity The entity affected by the regeneration status.
      */

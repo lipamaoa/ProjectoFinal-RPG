@@ -16,8 +16,9 @@ public abstract class TimedStatus {
     /**
      * Constructs a TimedStatus effect.
      *
-     * @param name The name of the status effect.
-     * @param duration The number of turns the effect lasts (-1 for permanent effects).
+     * @param name     The name of the status effect.
+     * @param duration The number of turns the effect lasts (-1 for permanent
+     *                 effects).
      */
     public TimedStatus(String name, int duration) {
         this.name = name;

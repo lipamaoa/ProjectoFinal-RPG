@@ -6,7 +6,8 @@ import src.entities.Hero;
 import src.entities.HeroClass;
 
 /**
- * Represents an item that can be used by a hero, applying effects such as healing or buffs.
+ * Represents an item that can be used by a hero, applying effects such as
+ * healing or buffs.
  */
 public class ItemHero extends Item {
     protected Consumer<Hero> effect;
@@ -14,11 +15,11 @@ public class ItemHero extends Item {
     /**
      * Constructs a hero-specific item with its attributes.
      *
-     * @param name The name of the item.
-     * @param description A brief description of the item's effect.
-     * @param price The cost of the item in gold.
+     * @param name           The name of the item.
+     * @param description    A brief description of the item's effect.
+     * @param price          The cost of the item in gold.
      * @param allowedClasses The hero classes that can use this item.
-     * @param effect The effect of the item when used by a hero.
+     * @param effect         The effect of the item when used by a hero.
      */
     public ItemHero(String name, String description, int price, Set<HeroClass> allowedClasses, Consumer<Hero> effect) {
         super(name, description, price, allowedClasses);

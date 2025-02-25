@@ -41,7 +41,6 @@ public class TacticalChemist extends Hero {
         return HeroClass.TACTICAL_CHEMIST;
     }
 
-
     /**
      * Applies damage reduction for the Tactical Chemist.
      * This hero takes 5% less damage from all sources.

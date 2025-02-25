@@ -55,7 +55,7 @@ public abstract class Hero extends Entity {
         System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
     }
 
-     /**
+    /**
      * Adds an item to the hero's inventory.
      *
      * @param item The item to be added.
@@ -84,7 +84,7 @@ public abstract class Hero extends Entity {
         }
     }
 
-     /**
+    /**
      * Adds gold to the hero's balance.
      *
      * @param amount The amount of gold to be added.
@@ -107,7 +107,7 @@ public abstract class Hero extends Entity {
      */
     protected abstract void initializeInventory();
 
-     /**
+    /**
      * Gets the hero's inventory.
      *
      * @return The inventory of the hero.
@@ -117,7 +117,7 @@ public abstract class Hero extends Entity {
         return inventory;
     }
 
-     /**
+    /**
      * Gets the size of the hero's inventory.
      *
      * @return The inventory size.
@@ -126,7 +126,7 @@ public abstract class Hero extends Entity {
         return inventory.getSize();
     }
 
-     /**
+    /**
      * Gets the class type of the hero.
      *
      * @return The hero's class type.
@@ -134,7 +134,7 @@ public abstract class Hero extends Entity {
 
     public abstract HeroClass getHeroClass();
 
-     /**
+    /**
      * Removes negative status effects from the hero.
      *
      * @return true if any negative statuses were removed, false otherwise.

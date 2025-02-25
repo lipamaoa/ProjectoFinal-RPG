@@ -20,7 +20,8 @@ public class Vendor {
     }
 
     /**
-     * Generates store inventory dynamically from `ItemRegistry` based on player type.
+     * Generates store inventory dynamically from `ItemRegistry` based on player
+     * type.
      *
      * @param player The player whose class determines the inventory items.
      */

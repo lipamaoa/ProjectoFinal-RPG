@@ -81,7 +81,8 @@ public class Room {
     private void showInventory(Hero player) {
         while (true) {
             System.out.println("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-            System.out.printf(" 💰 Gold: %d  |  ❤ HP: %d/%d\n", player.getGold(), player.getCurrentHp(), player.getMaxHp());
+            System.out.printf(" 💰 Gold: %d  |  ❤ HP: %d/%d\n", player.getGold(), player.getCurrentHp(),
+                    player.getMaxHp());
             System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
 
             player.showInventory();
@@ -259,8 +260,9 @@ public class Room {
     private void secretFile(Hero player) {
         System.out.println("📜 You discovered a hidden document!");
         System.out.println("It contains classified information about PharmaCorp's unethical projects...");
-        player.addItemToInventory(new ItemHero("Secret File", "📜 Classified document", 75, null, (Hero p) -> System.out.println(
-                "You read the secret file and learn about PharmaCorp's illegal experiments. Could probably have sold it for a good price.")));
+        player.addItemToInventory(
+                new ItemHero("Secret File", "📜 Classified document", 75, null, (Hero p) -> System.out.println(
+                        "You read the secret file and learn about PharmaCorp's illegal experiments. Could probably have sold it for a good price.")));
     }
 
     /**
@@ -307,6 +309,7 @@ public class Room {
 
         return null;
     }
+
     /**
      * Retrieves the name of the room.
      *

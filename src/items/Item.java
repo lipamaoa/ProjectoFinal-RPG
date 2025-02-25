@@ -6,7 +6,8 @@ import src.entities.HeroClass;
 import java.util.Set;
 
 /**
- * Represents an item that can be used by heroes, including weapons, potions, and consumables.
+ * Represents an item that can be used by heroes, including weapons, potions,
+ * and consumables.
  */
 public abstract class Item {
     protected String name;
@@ -17,9 +18,9 @@ public abstract class Item {
     /**
      * Constructs an item with its attributes.
      *
-     * @param name The name of the item.
-     * @param description A brief description of the item.
-     * @param price The cost of the item in gold.
+     * @param name           The name of the item.
+     * @param description    A brief description of the item.
+     * @param price          The cost of the item in gold.
      * @param allowedClasses The hero classes that can use this item.
      */
     public Item(String name, String description, int price, Set<HeroClass> allowedClasses) {
@@ -40,7 +41,8 @@ public abstract class Item {
     }
 
     /**
-     * Displays the details of the item, including name, description, price, and allowed classes.
+     * Displays the details of the item, including name, description, price, and
+     * allowed classes.
      */
     public void showDetails() {
         System.out.println("🛠️ Item: " + this.name);

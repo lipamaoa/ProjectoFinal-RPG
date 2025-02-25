@@ -67,7 +67,7 @@ public class ItemRegistry {
             new ItemBattle("Fire Bomb", "Throws a fire bomb that burns enemies for 3 turns.", 45,
                     Set.of(HeroClass.TACTICAL_CHEMIST), (Battle battle) -> {
                         System.out.println("🔥 You throw a Fire Bomb");
-                List<Entity>enemies = battle.getEnemies();
+                        List<Entity> enemies = battle.getEnemies();
                         for (Entity entity : enemies) {
                             entity.applyStatus(new Burning(3, 15));
                             System.out.println("🔥 " + entity.getName() + " is burning!");

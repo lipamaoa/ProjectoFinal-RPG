@@ -1,6 +1,6 @@
 package src.items;
 
-public enum HealthPotionSize{
+public enum HealthPotionSize {
     Small,
     Medium,
     Large

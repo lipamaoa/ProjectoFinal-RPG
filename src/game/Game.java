@@ -31,7 +31,6 @@ public class Game {
 
         boolean playAgain = true;
         HeroCreationOptions options = null;
-        Hero player = null;
 
         while (playAgain) {
             if (options == null) {
@@ -40,7 +39,7 @@ public class Game {
             }
 
             // Create Player Character
-            player = createHero(options);
+            Hero player = createHero(options);
 
             // Initialize Map
             Map gameMap = new Map();
@@ -65,6 +64,7 @@ public class Game {
                 case 2:
                     // Create a new hero
                     options = null;
+                    System.out.println("\n🦸 A new hero is ready to start the adventure!\n");
                     break;
                 case 3:
                     // Exit game
@@ -73,6 +73,7 @@ public class Game {
                 case 1:
                 default:
                     // Try again with the same hero
+                    System.out.println("\n🔄 Restarting the adventure with the same hero...\n");
                     break;
             }
 

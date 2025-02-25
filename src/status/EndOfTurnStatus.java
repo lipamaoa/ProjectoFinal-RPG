@@ -2,18 +2,17 @@ package src.status;
 
 import src.entities.Entity;
 
-
 /**
- * Represents a timed status effect that applies its effect at the end of each turn.
+ * Represents a timed status effect that applies its effect at the end of each
+ * turn.
  */
 public abstract class EndOfTurnStatus extends TimedStatus {
     protected boolean isNegative = false;
 
-
     /**
      * Constructs an end-of-turn status effect with a given name and duration.
      *
-     * @param name The name of the status effect.
+     * @param name     The name of the status effect.
      * @param duration The number of turns the effect lasts.
      */
 
@@ -22,10 +21,11 @@ public abstract class EndOfTurnStatus extends TimedStatus {
     }
 
     /**
-     * Constructs an end-of-turn status effect with a given name, duration, and negativity flag.
+     * Constructs an end-of-turn status effect with a given name, duration, and
+     * negativity flag.
      *
-     * @param name The name of the status effect.
-     * @param duration The number of turns the effect lasts.
+     * @param name       The name of the status effect.
+     * @param duration   The number of turns the effect lasts.
      * @param isNegative Indicates if the effect is detrimental.
      */
     public EndOfTurnStatus(String name, int duration, boolean isNegative) {

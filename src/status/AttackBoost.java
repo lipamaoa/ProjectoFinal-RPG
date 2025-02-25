@@ -9,7 +9,7 @@ public class AttackBoost extends TimedStatus {
     /**
      * Constructs an AttackBoost status effect.
      *
-     * @param duration The number of turns the effect lasts.
+     * @param duration      The number of turns the effect lasts.
      * @param strengthBoost The amount of additional strength granted.
      */
     public AttackBoost(int duration, int strengthBoost) {

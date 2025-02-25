@@ -7,7 +7,8 @@ import src.status.Regeneration;
 
 /**
  * A hero specialized in bioengineering and self-healing.
- * The Bioengineer has unique healing abilities and starts with a regeneration status.
+ * The Bioengineer has unique healing abilities and starts with a regeneration
+ * status.
  */
 public class Bioengineer extends Hero {
     /**
@@ -33,7 +34,6 @@ public class Bioengineer extends Hero {
     protected void initializeInventory() {
         inventory.addItem(new HealthPotion(HealthPotionSize.Large));
     }
-
 
     /**
      * Retrieves the hero class type of the Bioengineer.
