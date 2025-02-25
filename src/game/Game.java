@@ -30,7 +30,9 @@ public class Game {
         introduceStory();
 
         // Create Player Character
-        Hero player = createHero();
+        HeroCreationOptions options = getHeroCreationOptions();
+
+        Hero player = createHero(options);
 
         // Initialize Map
         Map gameMap = new Map();
@@ -85,33 +87,28 @@ public class Game {
 
     }
 
-
-        /**
-         * Checks if the given name is valid based on length constraints.
-         *
-         * @param name The player's input name.
-         * @return True if the name is valid, otherwise false.
-         */
+    /**
+     * Checks if the given name is valid based on length constraints.
+     *
+     * @param name The player's input name.
+     * @return True if the name is valid, otherwise false.
+     */
 
     private static boolean isNameValid(String name) {
         return name.length() >= 3 && name.length() <= 12;
     }
 
     /**
-     * Creates a character based on user input.
-     * Allows the player to choose hero type, difficulty, and distribute stat
-     * points.
+     * Gathers hero creation settings from the user.
      *
-     * @return The created hero.
+     * @return The options selected for creating a hero.
      */
-    private static Hero createHero() {
+    private static HeroCreationOptions getHeroCreationOptions() {
         String playerName = "";
-
         while (!isNameValid(playerName)) {
             System.out.print("\uD83E\uDDD1\u200D\uD83D\uDD2C Enter your name: ");
             playerName = GameScanner.getString();
         }
-
 
         // Choose Hero Type
         System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
@@ -128,7 +125,6 @@ public class Game {
         System.out.println("     ⚡ Masters reactive combat and volatile concoctions.\n");
 
         int heroChoice = GameScanner.getIntInRange("Enter your choice ", 1, 3);
-
 
         // Choose Difficulty
         System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
@@ -148,10 +144,8 @@ public class Game {
         int gold = (difficultyChoice == 1) ? 20 : 15;
 
         // Allocate Stat Points
-        // Starting points
         int health = 50;
         int strength = 10;
-        // Remove starting points
         statPoints -= 100;
 
         System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
@@ -174,7 +168,7 @@ public class Game {
             System.out.printf("   ❤ HP: %d   💪 Strength: %d\n", health, strength);
             System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
 
-            // Allocate Strength (5 points per Strength)
+            // Allocate Strength (if any points remain)
             if (statPoints > 0) {
                 int maxStrength = statPoints / 5;
                 System.out.println("💪 You can allocate up to " + maxStrength + " Strength.");
@@ -197,32 +191,43 @@ public class Game {
                     System.out.println("❌ Invalid choice. Please enter Y or N.");
                 }
             }
-
         }
 
+        return new HeroCreationOptions(playerName, heroChoice, health, strength, gold);
+    }
+
+    /**
+     * Creates a hero using previously collected settings.
+     *
+     * @return The created hero.
+     */
+    private static Hero createHero(HeroCreationOptions options) {
         Hero hero;
         String heroType;
 
-        if (heroChoice == 1) {
-            hero = new PharmacologistHacker(playerName, health, strength, gold);
+        if (options.getHeroChoice() == 1) {
+            hero = new PharmacologistHacker(options.getPlayerName(), options.getHealth(), options.getStrength(),
+                    options.getGold());
             heroType = "🧪 Pharmacologist Hacker";
-        } else if (heroChoice == 2) {
-            hero = new Bioengineer(playerName, health, strength, gold);
+        } else if (options.getHeroChoice() == 2) {
+            hero = new Bioengineer(options.getPlayerName(), options.getHealth(), options.getStrength(),
+                    options.getGold());
             heroType = "🔬 Bioengineer";
         } else {
-            hero = new TacticalChemist(playerName, health, strength, gold);
+            hero = new TacticalChemist(options.getPlayerName(), options.getHealth(), options.getStrength(),
+                    options.getGold());
             heroType = "💣 Tactical Chemist";
         }
 
-        // Character Passport
+        // Character Passport display
         System.out.println("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-        System.out.println(                "🎫 **CHARACTER PASSPORT** 🎫"           );
+        System.out.println("🎫 **CHARACTER PASSPORT** 🎫");
         System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-        System.out.printf("\uD83E\uDDD1\u200D\uD83D\uDD2C Name: %s\n", playerName);
+        System.out.printf("\uD83E\uDDD1\u200D\uD83D\uDD2C Name: %s\n", options.getPlayerName());
         System.out.printf("🏷️ Class: %s\n", heroType);
-        System.out.printf("💗 HP: %d\n", health);
-        System.out.printf("💪 Strength: %d\n", strength);
-        System.out.printf("💰 Gold: %d\n", gold);
+        System.out.printf("💗 HP: %d\n", options.getHealth());
+        System.out.printf("💪 Strength: %d\n", options.getStrength());
+        System.out.printf("💰 Gold: %d\n", options.getGold());
         System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
 
         return hero;
@@ -231,13 +236,13 @@ public class Game {
     /**
      * Starts the final battle against the boss.
      *
-     * @param player The hero character.
+     * @param player           The hero character.
      * @param survivingFriends Allies that survived up to the final battle.
      */
     private static void startFinalBattle(Hero player, ArrayList<Entity> survivingFriends) {
         ConsoleScreens.showFinalBattleScreen();
 
-        ArrayList<Enemy>finalEnemies = new ArrayList<Enemy>();
+        ArrayList<Enemy> finalEnemies = new ArrayList<Enemy>();
         Random random = GameRandom.getInstance();
         List<Enemy> possibleEnemies = NPCRegistry.FINAL_BOSS;
         // At least 1 enemy

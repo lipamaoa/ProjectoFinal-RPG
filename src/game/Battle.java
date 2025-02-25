@@ -21,13 +21,12 @@ public class Battle {
     private final ArrayList<Entity> enemies;
     private final ArrayList<Entity> allies;
     private final Random random;
-    private int goldWon = 0;
 
     /**
      * Constructs a battle instance with a predefined list of enemies.
      *
-     * @param player The player's hero.
-     * @param enemies The list of enemies in this room.
+     * @param player       The player's hero.
+     * @param enemies      The list of enemies in this room.
      * @param friendlyNPCs The list of friendly NPCs assisting the player.
      */
     public Battle(Hero player, ArrayList<Enemy> enemies, ArrayList<Entity> friendlyNPCs) {
@@ -80,7 +79,6 @@ public class Battle {
     public void start() {
         ConsoleScreens.showBattleScreen();
 
-
         while (!combatEnded()) {
             playerTurn();
             alliesTurn();
@@ -88,20 +86,22 @@ public class Battle {
             doEndOfTurnEffects();
         }
 
-
-
-        if (player.getCurrentHp() > 0) {
-
-            for (Enemy enemy : originalEnemiesList) {
-                goldWon += enemy.getGold();
-            }
-
-            this.player.collectGold(goldWon);
+        if (player.getCurrentHp() <= 0) {
+            return;
         }
 
+        int goldWon = 0;
+        for (Enemy enemy : originalEnemiesList) {
+            goldWon += enemy.getGold();
+        }
 
+        this.player.collectGold(goldWon);
+        this.player.increaseMaxHp(10);
+        this.player.increaseStrength(1);
 
-        endBattle();
+        System.out.printf(" 💰 You looted %d🪙 Gold from your fallen enemies!\n", goldWon);
+        System.out.println(" 🎉 You leveled up! +10 HP, +1 Strength!");
+        System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
     }
 
     /**
@@ -282,18 +282,6 @@ public class Battle {
     }
 
     /**
-     * Ends the battle and determines the outcome.
-     */
-    private void endBattle() {
-        if (player.getCurrentHp() > 0) {
-            showVictoryScreen(player.getName());
-            System.out.printf(" 💰 You looted %d🪙 Gold from your fallen enemies!\n", goldWon);
-            System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
-
-        }
-    }
-
-    /**
      * Retrieves a list of alive enemies.
      *
      * @return A list of enemy entities that are still alive.
@@ -316,7 +304,6 @@ public class Battle {
     public List<Entity> getEnemies() {
         return getAliveEnemies();
     }
-
 
     /**
      * Retrieves the list of enemies or allies based on the given actor.

@@ -43,10 +43,10 @@ public abstract class Entity {
     /**
      * Constructs an Entity with the specified attributes.
      *
-     * @param name    The name of the entity.
-     * @param maxHp   The maximum health points of the entity.
+     * @param name     The name of the entity.
+     * @param maxHp    The maximum health points of the entity.
      * @param strength The base strength of the entity.
-     * @param canHeal Whether the entity can heal.
+     * @param canHeal  Whether the entity can heal.
      */
     public Entity(String name, int maxHp, int strength, boolean canHeal) {
         this.name = name;
@@ -69,8 +69,8 @@ public abstract class Entity {
     /**
      * Constructs an Entity with the specified attributes, assuming it cannot heal.
      *
-     * @param name    The name of the entity.
-     * @param maxHp   The maximum health points of the entity.
+     * @param name     The name of the entity.
+     * @param maxHp    The maximum health points of the entity.
      * @param strength The base strength of the entity.
      */
     public Entity(String name, int maxHp, int strength) {
@@ -108,6 +108,26 @@ public abstract class Entity {
             }
             System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
         }
+    }
+
+    /**
+     * Increases the maximum HP (hit points) of the entity by the specified amount.
+     * Also increases the current HP by the same amount.
+     *
+     * @param amount the amount to increase the maximum and current HP by
+     */
+    public void increaseMaxHp(int amount) {
+        this.maxHp += amount;
+        this.currentHp += amount;
+    }
+
+    /**
+     * Increases the strength of the entity by a specified amount.
+     *
+     * @param amount the amount by which to increase the entity's strength
+     */
+    public void increaseStrength(int amount) {
+        this.strength += amount;
     }
 
     /**
@@ -266,7 +286,8 @@ public abstract class Entity {
     }
 
     /**
-     * Ends the turn for the entity, processing statuses and handling turn-based effects.
+     * Ends the turn for the entity, processing statuses and handling turn-based
+     * effects.
      */
     public void endTurn() {
         if (currentHp == 0) {
